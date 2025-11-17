@@ -1,4 +1,5 @@
-export const RouteLists: Map<string, string> = new Map([
+export const ROUTE_LISTS: Map<string, string> = new Map([
     // Users
     ["user", "/admin/user"],
+    ["user-add", "/admin/user/add"],
 ]);

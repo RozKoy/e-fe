@@ -23,13 +23,18 @@ export default function Pagination({
     nextDisabled,
     previousDisabled,
 }: PaginationProps) {
-    const check = (index: number, page: number, totalPages: number) => {
+    const check = (value: number, page: number, totalPages: number) => {
         return (
-            index <= 1 ||
-            index >= totalPages - 2 ||
-            (page - 2 <= index && index <= page)
+            value <= 2 ||
+            value >= totalPages - 1 ||
+            (page - 1 <= value && value <= page + 1)
         );
     };
+
+    const pageArr = Array.from(
+        { length: totalPages ?? 0 },
+        (_, index) => index + 1
+    ).filter((value) => check(value, page ?? 0, totalPages ?? 0));
 
     return (
         <div className="flex justify-end gap-2.5 *:w-min">
@@ -43,23 +48,13 @@ export default function Pagination({
             </Button>
             {page &&
                 totalPages &&
-                Array.from({ length: totalPages }).map((_, index) => (
-                    <>
-                        {check(index, page, totalPages) && (
-                            <>
-                                {(index === 1 && page - 2 > index) ||
-                                (index === totalPages - 2 && index > page) ? (
-                                    <Button size="xs" variant="outline">
-                                        ...
-                                    </Button>
-                                ) : (
-                                    <Button size="xs" variant="outline">
-                                        {index + 1}
-                                    </Button>
-                                )}
-                            </>
-                        )}
-                    </>
+                pageArr.map((value) => (
+                    <Button key={value} size="xs" variant="outline">
+                        {(value === 2 && page - 1 > value) ||
+                        (value === totalPages - 1 && value > page + 1)
+                            ? "..."
+                            : value}
+                    </Button>
                 ))}
             <Button
                 size="xs"

@@ -27,7 +27,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                         className="w-5 rotate-180"
                     />
                     {item.path ? (
-                        <Link href={item.path}></Link>
+                        <Link href={item.path}>{item.name}</Link>
                     ) : (
                         <p>{item.name}</p>
                     )}

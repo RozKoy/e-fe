@@ -2,6 +2,7 @@
 
 import Link from "@/app/_components/link";
 import Lineicons from "@lineiconshq/react-lineicons";
+import { ROUTE_LISTS } from "@/app/_constants/route";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
@@ -32,18 +33,18 @@ export default function BaseUserPage() {
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center">
-                <div className="flex gap-1.5">
+                <div className="flex items-center gap-1.5">
                     <Lineicons icon={UserMultiple4Outlined} />
                     <h2>Manajemen Pengguna</h2>
                 </div>
                 <Link
-                    href="#"
+                    href={ROUTE_LISTS.get("user-add") ?? "#"}
                     size="sm"
                     variant="outline"
-                    className="ml-auto"
                     startIcon={
                         <Lineicons icon={PlusOutlined} className="w-5" />
                     }
+                    className="ml-auto"
                 >
                     Tambah
                 </Link>
@@ -52,8 +53,8 @@ export default function BaseUserPage() {
             <Pagination
                 next={() => {}}
                 previous={() => {}}
-                totalPages={10}
                 page={1}
+                totalPages={10}
             />
         </>
     );

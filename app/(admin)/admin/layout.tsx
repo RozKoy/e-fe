@@ -7,9 +7,9 @@ import {
     MenuHamburger1Outlined,
 } from "@lineiconshq/free-icons";
 import { usePathname } from "next/navigation";
-import { RouteLists } from "@/app/_constants/route";
 import { MouseEventHandler, useState } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
+import { ROUTE_LISTS } from "@/app/_constants/route";
 
 //
 interface MenuListInterface {
@@ -38,7 +38,7 @@ interface AdminLayoutProps {
 const MENU_LIST: MenuListInterface[] = [
     {
         icon: UserMultiple4Outlined,
-        path: RouteLists.get("user"),
+        path: ROUTE_LISTS.get("user"),
         title: "Pengguna",
     },
 ];
@@ -111,7 +111,11 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                             key={index}
                             icon={menu.icon}
                             title={menu.title}
-                            active={menu?.path?.startsWith(pathname) ?? false}
+                            active={
+                                menu.path
+                                    ? pathname.startsWith(menu.path)
+                                    : false
+                            }
                         />
                     ))}
                 </div>
