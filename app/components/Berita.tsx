@@ -82,7 +82,7 @@ const Berita = () => {
                             </h3>
 
                             <Link
-                                href={`/berita/${berita.id}`}
+                                href={`/pages/berita-detail`}
                                 className="bg-white text-[#284C66] px-5 py-2 rounded-full text-sm font-medium hover:bg-[#f4f4f4] transition"
                             >
                                 Lihat Selengkapnya

@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "@/app/components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
+import Footer from "@/app/components/Footer";
 
 const Partai = () => {
     return (
@@ -109,6 +110,7 @@ const Partai = () => {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </div>
     );
 };

@@ -16,7 +16,7 @@ const BeritaPage = () => {
                 <div className="text-sm text-gray-200">
                     <Link href="/" className="hover:underline">
                         Beranda
-                    </Link>{" "}
+                    </Link>{"/pages/berita-detail"}
                     <span className="mx-2">{">"}</span>
                     <span>Berita</span>
                 </div>
