@@ -24,7 +24,7 @@ export default function Select({
                 } peer w-full px-3 py-2 rounded-lg border-2 text-gray-600 appearance-none`}
             >
                 {placeholder && (
-                    <option value="" disabled selected>
+                    <option value={""} disabled>
                         {placeholder}
                     </option>
                 )}
