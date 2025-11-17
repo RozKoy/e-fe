@@ -3,9 +3,11 @@
 import {
     IconData,
     XmarkOutlined,
+    Shield2Outlined,
     UserMultiple4Outlined,
     MenuHamburger1Outlined,
 } from "@lineiconshq/free-icons";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MouseEventHandler, useState } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
@@ -26,6 +28,7 @@ interface MenuButtonProps {
 
 interface MenuItemProps {
     icon: IconData;
+    path: string;
     title: string;
     active: boolean;
 }
@@ -40,6 +43,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: UserMultiple4Outlined,
         path: ROUTE_LISTS.get("user"),
         title: "Pengguna",
+    },
+    {
+        icon: Shield2Outlined,
+        path: ROUTE_LISTS.get("role"),
+        title: "Peran",
     },
 ];
 
@@ -60,16 +68,17 @@ function MenuButton({ open, handle, className }: MenuButtonProps) {
     );
 }
 
-function MenuItem({ icon, title, active }: MenuItemProps) {
+function MenuItem({ icon, path, title, active }: MenuItemProps) {
     return (
-        <div
+        <Link
+            href={path}
             className={`${
-                active && "border-2 border-black/10"
-            } p-3 rounded-lg hover:bg-black/5 flex gap-3 transition-all`}
+                active ? "border-black/10" : "border-transparent"
+            } p-2 rounded-lg hover:bg-black/5 border-2 flex gap-3 transition-all`}
         >
             <Lineicons icon={icon} />
             <p>{title}</p>
-        </div>
+        </Link>
     );
 }
 
@@ -105,11 +114,12 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                 />
                 <div className="h-52 mx-16 my-5 bg-gray-100"></div>
                 {/* Sidebar Items */}
-                <div className="h-full my-8 px-10 space-y-5 overflow-x-hidden overflow-y-auto">
+                <div className="h-full my-8 px-10 space-y-3 overflow-x-hidden overflow-y-auto">
                     {MENU_LIST.map((menu, index) => (
                         <MenuItem
                             key={index}
                             icon={menu.icon}
+                            path={menu.path ?? "#"}
                             title={menu.title}
                             active={
                                 menu.path
