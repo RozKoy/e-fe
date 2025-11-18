@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "@/app/_components/link";
-import Input from "@/app/_components/input";
 import Label from "@/app/_components/label";
 import Button from "@/app/_components/button";
-import Select from "@/app/_components/select";
+import Input from "@/app/_components/inputs/input";
+import Select from "@/app/_components/inputs/select";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { UserMultiple4Outlined } from "@lineiconshq/free-icons";

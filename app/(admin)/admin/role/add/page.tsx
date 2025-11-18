@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "@/app/_components/link";
-import Input from "@/app/_components/input";
 import Label from "@/app/_components/label";
 import Button from "@/app/_components/button";
+import Input from "@/app/_components/inputs/input";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Checkbox from "@/app/_components/inputs/checkbox";
