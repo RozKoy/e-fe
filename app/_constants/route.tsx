@@ -5,6 +5,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // Fractions
     ["fraction", "/admin/fraction"],
+    ["fraction-add", "/admin/fraction/add"],
 
     // Users
     ["user", "/admin/user"],
