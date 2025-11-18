@@ -4,6 +4,7 @@ import {
     IconData,
     XmarkOutlined,
     Shield2Outlined,
+    MapMarker1Outlined,
     UserMultiple4Outlined,
     MenuHamburger1Outlined,
 } from "@lineiconshq/free-icons";
@@ -39,6 +40,11 @@ interface AdminLayoutProps {
 
 //
 const MENU_LIST: MenuListInterface[] = [
+    {
+        icon: MapMarker1Outlined,
+        path: ROUTE_LISTS.get("area"),
+        title: "Area",
+    },
     {
         icon: UserMultiple4Outlined,
         path: ROUTE_LISTS.get("user"),
