@@ -4,12 +4,14 @@ import {
 } from "@lineiconshq/free-icons";
 import Lineicons from "@lineiconshq/react-lineicons";
 
+//
 interface SelectProps {
     error?: string;
     children?: React.ReactNode;
     placeholder?: string;
 }
 
+//
 export default function Select({
     error,
     children,

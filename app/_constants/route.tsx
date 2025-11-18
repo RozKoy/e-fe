@@ -6,4 +6,5 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // Roles
     ["role", "/admin/role"],
+    ["role-add", "/admin/role/add"],
 ]);

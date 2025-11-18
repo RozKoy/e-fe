@@ -1,11 +1,13 @@
 import { HTMLInputTypeAttribute } from "react";
 
+//
 interface InputProps {
     type?: HTMLInputTypeAttribute;
     error?: string;
     placeholder?: string;
 }
 
+//
 export default function Input({
     type = "text",
     error,
