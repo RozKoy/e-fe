@@ -4,6 +4,7 @@ import {
     IconData,
     XmarkOutlined,
     Shield2Outlined,
+    Hierarchy1Outlined,
     MapMarker1Outlined,
     UserMultiple4Outlined,
     MenuHamburger1Outlined,
@@ -44,6 +45,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: MapMarker1Outlined,
         path: ROUTE_LISTS.get("area"),
         title: "Area",
+    },
+    {
+        icon: Hierarchy1Outlined,
+        path: ROUTE_LISTS.get("fraction"),
+        title: "Partai",
     },
     {
         icon: UserMultiple4Outlined,
