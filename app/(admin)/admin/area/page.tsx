@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "@/app/_components/link";
+import { ROUTE_LISTS } from "@/app/_constants/route";
 import Lineicons from "@lineiconshq/react-lineicons";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
@@ -35,7 +36,7 @@ export default function BaseAreaPage() {
                     <h2>Manajemen Area</h2>
                 </div>
                 <Link
-                    href={"#"}
+                    href={ROUTE_LISTS.get("area-add") ?? "#"}
                     size="sm"
                     variant="outline"
                     startIcon={
