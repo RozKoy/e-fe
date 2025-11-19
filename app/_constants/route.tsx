@@ -1,4 +1,7 @@
 export const ROUTE_LISTS: Map<string, string> = new Map([
+    // Categories
+    ["category", "/admin/category"],
+
     // Areas
     ["area", "/admin/area"],
     ["area-add", "/admin/area/add"],

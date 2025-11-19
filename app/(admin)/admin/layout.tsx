@@ -8,6 +8,7 @@ import {
     MapMarker1Outlined,
     UserMultiple4Outlined,
     MenuHamburger1Outlined,
+    SlidersHorizontalSquare2Outlined,
 } from "@lineiconshq/free-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,6 +42,11 @@ interface AdminLayoutProps {
 
 //
 const MENU_LIST: MenuListInterface[] = [
+    {
+        icon: SlidersHorizontalSquare2Outlined,
+        path: ROUTE_LISTS.get("category"),
+        title: "Kategori",
+    },
     {
         icon: MapMarker1Outlined,
         path: ROUTE_LISTS.get("area"),
