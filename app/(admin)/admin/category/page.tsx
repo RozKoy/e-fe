@@ -5,6 +5,7 @@ import {
     SlidersHorizontalSquare2Outlined,
 } from "@lineiconshq/free-icons";
 import Link from "@/app/_components/link";
+import { ROUTE_LISTS } from "@/app/_constants/route";
 import Lineicons from "@lineiconshq/react-lineicons";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
@@ -38,7 +39,7 @@ export default function BaseCategoryPage() {
                     <h2>Manajemen Kategori</h2>
                 </div>
                 <Link
-                    href={"#"}
+                    href={ROUTE_LISTS.get("category-add") ?? "#"}
                     size="sm"
                     variant="outline"
                     startIcon={
