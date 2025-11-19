@@ -4,6 +4,7 @@ import { HTMLInputTypeAttribute } from "react";
 interface InputProps {
     type?: HTMLInputTypeAttribute;
     error?: string;
+    className?: string;
     placeholder?: string;
 }
 
@@ -11,6 +12,7 @@ interface InputProps {
 export default function Input({
     type = "text",
     error,
+    className = "",
     placeholder = "Masukkan input",
 }: InputProps) {
     return (
@@ -19,7 +21,7 @@ export default function Input({
             placeholder={placeholder}
             className={`${
                 error ? "border-red-300" : "border-gray-300"
-            } w-full px-3 py-2 rounded-lg border-2 text-gray-600`}
+            } ${className} w-full px-3 py-2 rounded-lg border-2 text-gray-600`}
         />
     );
 }
