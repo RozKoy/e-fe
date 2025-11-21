@@ -1,5 +1,7 @@
 export const ROUTE_LISTS: Map<string, string> = new Map([
     // ADMIN
+    // Dashboards
+    ["dashboard", "/admin/role"],
 
     // Categories
     ["category", "/admin/category"],
@@ -25,4 +27,11 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // AUTH
     // Login
     ["login", "/auth/login"],
+
+    // LOCAL
+    ["local-login", "/be/auth/login"],
+
+    // API
+    // Auth
+    ["api-login", "/api/auth/login"],
 ]);
