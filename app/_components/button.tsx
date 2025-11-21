@@ -55,19 +55,15 @@ export default function Button({
             onClick={onClick}
             disabled={disabled || isLoading}
         >
-            {startIcon && startIcon}
-            {isLoading ? (
-                <div className="flex gap-0.5 items-center justify-center">
-                    <Lineicons
-                        icon={Spinner2SacleOutlined}
-                        className="animate-spin"
-                    />
-                    Loading...
-                </div>
-            ) : (
-                children
+            {!isLoading && startIcon && startIcon}
+            {isLoading && (
+                <Lineicons
+                    icon={Spinner2SacleOutlined}
+                    className="animate-spin"
+                />
             )}
-            {endIcon && endIcon}
+            {children}
+            {!isLoading && endIcon && endIcon}
         </button>
     );
 }

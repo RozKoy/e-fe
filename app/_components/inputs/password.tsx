@@ -1,23 +1,43 @@
 "use client";
 
 import Input from "./input";
-import { useState } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
+import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { EyeOutlined, LineDashedOutlined } from "@lineiconshq/free-icons";
 
-export default function Password() {
+//
+interface PasswordProps {
+    name?: string;
+    error?: string;
+    onInput?: FormEventHandler<HTMLInputElement>;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
+}
+
+//
+export default function Password({
+    name,
+    error,
+    onInput,
+    onChange,
+}: PasswordProps) {
     const [visible, setVisible] = useState<boolean>(false);
 
     return (
         <div className="relative">
             <Input
+                name={name}
+                error={error}
                 type={visible ? "text" : "password"}
                 placeholder="Masukkan kata sandi"
                 className="pr-8"
+                onInput={onInput}
+                onChange={onChange}
             />
             <button
                 type="button"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 transition-all"
+                className={`${
+                    error ? "text-red-500" : ""
+                } absolute right-1.5 top-1/2 -translate-y-1/2 transition-all`}
                 onClick={() => setVisible((prev) => !prev)}
             >
                 <Lineicons icon={EyeOutlined} />
