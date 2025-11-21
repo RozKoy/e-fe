@@ -7,8 +7,8 @@ import Button from "@/app/_components/button";
 import Input from "@/app/_components/inputs/input";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Password from "@/app/_components/inputs/password";
-import { useAlert } from "@/app/providers/AlertProvider";
-import { badRequestResponseFormat } from "@/app/utils/api";
+import { useAlert } from "@/app/_providers/AlertProvider";
+import { badRequestResponseFormat } from "@/app/_utils/api";
 
 export default function LoginPage() {
     const alert = useAlert();
