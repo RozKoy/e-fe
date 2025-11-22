@@ -1,14 +1,27 @@
 "use client";
 
+import useSWR from "swr";
+import { useMemo, useState } from "react";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
+import { useRouter } from "next/navigation";
+import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import Input from "@/app/_components/inputs/input";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
+import { IPermission } from "@/app/_types/permission";
 import Checkbox from "@/app/_components/inputs/checkbox";
+import { useAlert } from "@/app/_providers/AlertProvider";
 import { Shield2Outlined } from "@lineiconshq/free-icons";
+import { badRequestResponseFormat } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+
+//
+interface PermissionGroup {
+    group: string;
+    items: IPermission[];
+}
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -21,91 +34,102 @@ const breadcrumbItems: BreadcrumbItem[] = [
     },
 ];
 
-const dummyPermissions = [
-    {
-        group: "Manajemen Pengguna",
-        items: [
-            {
-                id: "1",
-                name: "Tambah Pengguna",
-            },
-            {
-                id: "2",
-                name: "Ubah Pengguna",
-            },
-            {
-                id: "3",
-                name: "Hapus Pengguna",
-            },
-            {
-                id: "1",
-                name: "Tambah Pengguna",
-            },
-            {
-                id: "2",
-                name: "Ubah Pengguna",
-            },
-            {
-                id: "3",
-                name: "Hapus Pengguna",
-            },
-        ],
-    },
-    {
-        group: "Manajemen Peran",
-        items: [
-            {
-                id: "4",
-                name: "Tambah Peran",
-            },
-            {
-                id: "5",
-                name: "Ubah Peran",
-            },
-            {
-                id: "6",
-                name: "Hapus Peran",
-            },
-        ],
-    },
-    {
-        group: "Manajemen Pengguna",
-        items: [
-            {
-                id: "1",
-                name: "Tambah Pengguna",
-            },
-            {
-                id: "2",
-                name: "Ubah Pengguna",
-            },
-            {
-                id: "3",
-                name: "Hapus Pengguna",
-            },
-        ],
-    },
-    {
-        group: "Manajemen Peran",
-        items: [
-            {
-                id: "4",
-                name: "Tambah Peran",
-            },
-            {
-                id: "5",
-                name: "Ubah Peran",
-            },
-            {
-                id: "6",
-                name: "Hapus Peran",
-            },
-        ],
-    },
-];
+const prevRoute: string = ROUTE_LISTS.get("role") ?? "/";
+
+//
+function mapPermissionsByGroup(data: IPermission[]): PermissionGroup[] {
+    const groups: Record<string, PermissionGroup> = {};
+
+    data.forEach((item) => {
+        if (!groups[item.group]) {
+            groups[item.group] = {
+                group: item.group,
+                items: [],
+            };
+        }
+
+        groups[item.group].items.push(item);
+    });
+
+    return Object.values(groups);
+}
 
 //
 export default function AddRolePage() {
+    const alert = useAlert();
+    const router = useRouter();
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>("test");
+
+    const [name, setName] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [permissionIds, setPermissionIds] = useState<{ id: string }[]>([]);
+
+    const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataPermission,
+        // error: errorPermission,
+        // isLoading: isLoadingPermission,
+    } = useSWR<IResponse<IPermission[]>>(ROUTE_LISTS.get("api-permission-get"));
+
+    const permissions: PermissionGroup[] = useMemo(() => {
+        if (!dataPermission?.data) {
+            return [];
+        }
+        return mapPermissionsByGroup(dataPermission.data);
+    }, [dataPermission]);
+
+    const submit = async () => {
+        setLoading(true);
+
+        setErrors(null);
+        setErrorMessage(null);
+
+        const url = ROUTE_LISTS.get("api-role-add");
+
+        if (!url) {
+            setLoading(false);
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+            return;
+        }
+
+        const res = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({ name, description, permissionIds }),
+        });
+
+        const response = await res.json();
+
+        if (res.ok) {
+            alert.addAlert({
+                type: "success",
+                message: "Berhasil menambahkan peran",
+            });
+
+            setTimeout(() => {
+                router.push(prevRoute);
+            }, 1500);
+        } else {
+            if (Array.isArray(response.message)) {
+                setErrors(badRequestResponseFormat(response.message));
+            } else {
+                setErrorMessage(response.message);
+
+                alert.addAlert({
+                    type: "error",
+                    message: "Gagal menambahkan peran",
+                });
+            }
+
+            setLoading(false);
+        }
+    };
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
@@ -114,15 +138,39 @@ export default function AddRolePage() {
                 <h2>Tambah Peran</h2>
             </div>
             <form className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
-                <Label text="Nama">
-                    <Input placeholder="Masukkan Nama" />
+                <Label text="Nama" error={errors?.get("name")} required>
+                    <Input
+                        error={errors?.get("name")}
+                        placeholder="Masukkan Nama"
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("name");
+                                return prev;
+                            })
+                        }
+                        onChange={(e) => setName(e.target.value)}
+                    />
                 </Label>
-                <Label text="Deskripsi">
-                    <Input placeholder="Masukkan Deskripsi" />
+                <Label text="Deskripsi" error={errors?.get("description")}>
+                    <Input
+                        error={errors?.get("description")}
+                        placeholder="Masukkan Deskripsi"
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("description");
+                                return prev;
+                            })
+                        }
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
                 </Label>
-                <Label text="Pilih Hak Akses" />
+                <Label
+                    text="Pilih Hak Akses"
+                    error={errors?.get("permissionIds")}
+                    required
+                />
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {dummyPermissions.map((item, index) => (
+                    {permissions.map((item, index) => (
                         <div key={index}>
                             <p className="font-semibold">{item.group}</p>
                             <div className="flex flex-col">
@@ -131,21 +179,51 @@ export default function AddRolePage() {
                                         key={index}
                                         text={item.name}
                                         value={item.id}
+                                        checked={permissionIds.some(
+                                            (permission) =>
+                                                permission.id === item.id
+                                        )}
+                                        onChange={() => {
+                                            if (
+                                                permissionIds.some(
+                                                    (permission) =>
+                                                        permission.id ===
+                                                        item.id
+                                                )
+                                            ) {
+                                                setPermissionIds((prev) =>
+                                                    prev.filter(
+                                                        (prevValue) =>
+                                                            prevValue.id !==
+                                                            item.id
+                                                    )
+                                                );
+                                            } else {
+                                                setPermissionIds((prev) => [
+                                                    ...prev,
+                                                    { id: item.id },
+                                                ]);
+                                            }
+                                        }}
                                     />
                                 ))}
                             </div>
                         </div>
                     ))}
                 </div>
+                <p className="md:col-span-2 text-red-500 text-center">
+                    {errorMessage && errorMessage}
+                </p>
                 <div className="md:col-span-2 flex justify-end gap-3">
-                    <Link
-                        href={ROUTE_LISTS.get("role") ?? "#"}
-                        size="sm"
-                        variant="outline"
-                    >
+                    <Link href={prevRoute} size="sm" variant="outline">
                         Kembali
                     </Link>
-                    <Button size="sm" variant="outline">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={submit}
+                        isLoading={loading}
+                    >
                         Simpan
                     </Button>
                 </div>
