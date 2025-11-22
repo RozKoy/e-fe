@@ -1,31 +1,24 @@
 "use client";
 
 import Input from "./input";
+import { useState } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
-import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { EyeOutlined, LineDashedOutlined } from "@lineiconshq/free-icons";
 
 //
 interface PasswordProps {
-    name?: string;
     error?: string;
-    onInput?: FormEventHandler<HTMLInputElement>;
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onInput?: React.FormEventHandler<HTMLInputElement>;
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 //
-export default function Password({
-    name,
-    error,
-    onInput,
-    onChange,
-}: PasswordProps) {
+export default function Password({ error, onInput, onChange }: PasswordProps) {
     const [visible, setVisible] = useState<boolean>(false);
 
     return (
         <div className="relative">
             <Input
-                name={name}
                 error={error}
                 type={visible ? "text" : "password"}
                 placeholder="Masukkan kata sandi"

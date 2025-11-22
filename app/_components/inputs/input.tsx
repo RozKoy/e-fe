@@ -1,36 +1,30 @@
-import {
-    FormEventHandler,
-    ChangeEventHandler,
-    HTMLInputTypeAttribute,
-} from "react";
-
 //
 interface InputProps {
-    name?: string;
-    type?: HTMLInputTypeAttribute;
+    type?: React.HTMLInputTypeAttribute;
     error?: string;
-    onInput?: FormEventHandler<HTMLInputElement>;
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onInput?: React.FormEventHandler<HTMLInputElement>;
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
     className?: string;
+    autoFocus?: boolean;
     placeholder?: string;
 }
 
 //
 export default function Input({
-    name,
     type = "text",
     error,
     onInput,
     onChange,
     className = "",
+    autoFocus,
     placeholder = "Masukkan input",
 }: InputProps) {
     return (
         <input
-            name={name}
             type={type}
             onInput={onInput}
             onChange={onChange}
+            autoFocus={autoFocus}
             placeholder={placeholder}
             className={`${
                 error ? "border-red-300" : "border-gray-300"

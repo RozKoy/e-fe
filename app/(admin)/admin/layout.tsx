@@ -11,8 +11,8 @@ import {
     SlidersHorizontalSquare2Outlined,
 } from "@lineiconshq/free-icons";
 import Link from "next/link";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { MouseEventHandler, useState } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { SWRProvider } from "@/app/_providers/SWRProvider";
@@ -26,7 +26,7 @@ interface MenuListInterface {
 
 interface MenuButtonProps {
     open: boolean;
-    handle: MouseEventHandler;
+    handle: React.MouseEventHandler;
     className?: string;
 }
 

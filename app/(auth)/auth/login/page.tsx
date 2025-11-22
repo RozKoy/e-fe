@@ -10,6 +10,7 @@ import { ROUTE_LISTS } from "@/app/_constants/route";
 import Password from "@/app/_components/inputs/password";
 import { useAlert } from "@/app/_providers/AlertProvider";
 
+//
 export default function LoginPage() {
     const alert = useAlert();
     const router = useRouter();
@@ -22,7 +23,9 @@ export default function LoginPage() {
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
 
-    const login = async () => {
+    const login = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         await postRequest({
             body: { email, password },
             alert,
@@ -50,15 +53,11 @@ export default function LoginPage() {
                 <h1 className="md:text-center">
                     Selamat Datang di SIMRESES DPRD Provinsi Lampung
                 </h1>
-                <form
-                    method="POST"
-                    action="/be/auth/login"
-                    className="flex flex-col gap-3"
-                >
+                <form onSubmit={login} className="flex flex-col gap-3">
                     <Label text="Email" error={errors?.get("email")} required>
                         <Input
-                            name="email"
                             error={errors?.get("email")}
+                            autoFocus={true}
                             placeholder="Masukkan email"
                             onInput={() =>
                                 setErrors((prev) => {
@@ -75,7 +74,6 @@ export default function LoginPage() {
                         required
                     >
                         <Password
-                            name="password"
                             error={errors?.get("password")}
                             onInput={() =>
                                 setErrors((prev) => {
@@ -89,11 +87,7 @@ export default function LoginPage() {
                     <p className="text-red-500 text-center">
                         {errorMessage && errorMessage}
                     </p>
-                    <Button
-                        variant="outline"
-                        onClick={login}
-                        isLoading={loading}
-                    >
+                    <Button type="submit" variant="outline" isLoading={loading}>
                         Masuk
                     </Button>
                 </form>

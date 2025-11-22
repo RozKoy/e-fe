@@ -1,12 +1,12 @@
-import { ChangeEventHandler } from "react";
-
+//
 interface CheckboxProps {
     text: string;
     value: string | number;
     checked?: boolean;
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
+//
 export default function Checkbox({
     text,
     value,

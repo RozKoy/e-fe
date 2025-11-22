@@ -1,14 +1,13 @@
 "use client";
 
 import Button from "./button";
-import { Dispatch, SetStateAction } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ChevronLeftOutlined } from "@lineiconshq/free-icons";
 
 //
 interface PaginationProps {
     page?: number;
-    setPage?: Dispatch<SetStateAction<number>>;
+    setPage?: React.Dispatch<React.SetStateAction<number>>;
     totalPages?: number;
 }
 
