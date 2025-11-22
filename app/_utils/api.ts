@@ -1,4 +1,4 @@
-import { SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { ROUTE_LISTS } from "../_constants/route";
 import { AlertContextValue } from "../_providers/AlertProvider";
 
@@ -11,9 +11,9 @@ interface ErrorInterface {
 interface PostRequest {
     body: object;
     alert: AlertContextValue;
-    setErrors: (value: SetStateAction<Map<string, string> | null>) => void;
-    setLoading: (value: SetStateAction<boolean>) => void;
-    setErrorMessage: (value: SetStateAction<string | null>) => void;
+    setErrors: Dispatch<SetStateAction<Map<string, string> | null>>;
+    setLoading: Dispatch<SetStateAction<boolean>>;
+    setErrorMessage: Dispatch<SetStateAction<string | null>>;
     route?: string;
     errorMessage?: string;
     successMessage?: string;

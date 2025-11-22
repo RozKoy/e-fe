@@ -1,66 +1,87 @@
 "use client";
 
 import Button from "./button";
+import { Dispatch, SetStateAction } from "react";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ChevronLeftOutlined } from "@lineiconshq/free-icons";
 
 //
 interface PaginationProps {
-    next: () => void;
-    previous: () => void;
     page?: number;
+    setPage?: Dispatch<SetStateAction<number>>;
     totalPages?: number;
-    nextDisabled?: boolean;
-    previousDisabled?: boolean;
 }
 
 //
 export default function Pagination({
-    next,
-    previous,
     page,
+    setPage,
     totalPages,
-    nextDisabled,
-    previousDisabled,
 }: PaginationProps) {
-    const check = (value: number, page: number, totalPages: number) => {
+    const check = (value: number) => {
         return (
-            value <= 2 ||
-            value >= totalPages - 1 ||
-            (page - 1 <= value && value <= page + 1)
+            page &&
+            totalPages &&
+            (value <= 2 ||
+                value >= totalPages - 1 ||
+                (page - 1 <= value && value <= page + 1))
+        );
+    };
+
+    const itemCheck = (value: number) => {
+        return (
+            page &&
+            totalPages &&
+            ((value === 2 && page - 1 > value) ||
+                (value === totalPages - 1 && value > page + 1))
         );
     };
 
     const pageArr = Array.from(
         { length: totalPages ?? 0 },
         (_, index) => index + 1
-    ).filter((value) => check(value, page ?? 0, totalPages ?? 0));
+    ).filter((value) => check(value));
 
     return (
         <div className="flex justify-end gap-2.5 *:w-min">
             <Button
                 size="xs"
                 variant="outline"
-                onClick={previous}
-                disabled={previousDisabled}
+                onClick={() => {
+                    if (setPage) {
+                        setPage((prev) => prev - 1);
+                    }
+                }}
+                disabled={!page || page <= 1}
             >
                 <Lineicons icon={ChevronLeftOutlined} className="w-4" />
             </Button>
             {page &&
                 totalPages &&
                 pageArr.map((value) => (
-                    <Button key={value} size="xs" variant="outline">
-                        {(value === 2 && page - 1 > value) ||
-                        (value === totalPages - 1 && value > page + 1)
-                            ? "..."
-                            : value}
+                    <Button
+                        key={value}
+                        size="xs"
+                        variant="outline"
+                        onClick={() => {
+                            if (!itemCheck && setPage) {
+                                setPage(value);
+                            }
+                        }}
+                        disabled={!page || page === value}
+                    >
+                        {itemCheck(value) ? "..." : value}
                     </Button>
                 ))}
             <Button
                 size="xs"
                 variant="outline"
-                onClick={next}
-                disabled={nextDisabled}
+                onClick={() => {
+                    if (setPage) {
+                        setPage((prev) => prev + 1);
+                    }
+                }}
+                disabled={!page || !totalPages || page >= totalPages}
             >
                 <Lineicons
                     icon={ChevronLeftOutlined}

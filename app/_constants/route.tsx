@@ -33,6 +33,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // API
     // Roles
+    ["api-role-get", "/api/roles"],
     ["api-role-add", "/api/roles"],
 
     // Permissions

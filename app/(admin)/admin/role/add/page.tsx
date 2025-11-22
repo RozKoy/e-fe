@@ -60,7 +60,7 @@ export default function AddRolePage() {
     const router = useRouter();
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>("test");
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");

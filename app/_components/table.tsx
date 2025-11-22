@@ -27,7 +27,7 @@ export default function Table<T>({
                 colSpan={columns.length}
                 className="px-4 py-3 text-red-500 text-center"
             >
-                Something went wrong
+                Tidak dapat memuat data
             </td>
         </tr>
     );
@@ -59,7 +59,8 @@ export default function Table<T>({
                         >
                             {typeof column.accessor === "function"
                                 ? column.accessor(item)
-                                : String(item[column.accessor])}
+                                : item[column.accessor] &&
+                                  String(item[column.accessor])}
                         </td>
                     ))}
                 </tr>
