@@ -7,6 +7,7 @@ import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
+import { postRequest } from "@/app/_utils/api";
 import Input from "@/app/_components/inputs/input";
 import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -14,7 +15,6 @@ import { IPermission } from "@/app/_types/permission";
 import Checkbox from "@/app/_components/inputs/checkbox";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { Shield2Outlined } from "@lineiconshq/free-icons";
-import { badRequestResponseFormat } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -82,52 +82,21 @@ export default function AddRolePage() {
     }, [dataPermission]);
 
     const submit = async () => {
-        setLoading(true);
-
-        setErrors(null);
-        setErrorMessage(null);
-
-        const url = ROUTE_LISTS.get("api-role-add");
-
-        if (!url) {
-            setLoading(false);
-            alert.addAlert({
-                type: "error",
-                message: "Mohon maaf, sistem sedang bermasalah",
-            });
-            return;
-        }
-
-        const res = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({ name, description, permissionIds }),
+        await postRequest({
+            body: { name, description, permissionIds },
+            alert,
+            setErrors,
+            setLoading,
+            setErrorMessage,
+            route: "api-role-add",
+            errorMessage: "Gagal menambahkan peran",
+            successMessage: "Berhasil menambahkan peran",
+            successAction: () => {
+                setTimeout(() => {
+                    router.push(prevRoute);
+                }, 1500);
+            },
         });
-
-        const response = await res.json();
-
-        if (res.ok) {
-            alert.addAlert({
-                type: "success",
-                message: "Berhasil menambahkan peran",
-            });
-
-            setTimeout(() => {
-                router.push(prevRoute);
-            }, 1500);
-        } else {
-            if (Array.isArray(response.message)) {
-                setErrors(badRequestResponseFormat(response.message));
-            } else {
-                setErrorMessage(response.message);
-
-                alert.addAlert({
-                    type: "error",
-                    message: "Gagal menambahkan peran",
-                });
-            }
-
-            setLoading(false);
-        }
     };
 
     return (

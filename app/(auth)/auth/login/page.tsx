@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Label from "@/app/_components/label";
 import Button from "@/app/_components/button";
+import { postRequest } from "@/app/_utils/api";
 import Input from "@/app/_components/inputs/input";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Password from "@/app/_components/inputs/password";
 import { useAlert } from "@/app/_providers/AlertProvider";
-import { badRequestResponseFormat } from "@/app/_utils/api";
 
 export default function LoginPage() {
     const alert = useAlert();
@@ -23,56 +23,25 @@ export default function LoginPage() {
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
 
     const login = async () => {
-        setLoading(true);
-
-        setErrors(null);
-        setErrorMessage(null);
-
-        const url = ROUTE_LISTS.get("local-login");
-
-        if (!url) {
-            setLoading(false);
-            alert.addAlert({
-                type: "error",
-                message: "Mohon maaf, sistem sedang bermasalah",
-            });
-            return;
-        }
-
-        const res = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({ email, password }),
+        await postRequest({
+            body: { email, password },
+            alert,
+            setErrors,
+            setLoading,
+            setErrorMessage,
+            route: "local-login",
+            errorMessage: "Gagal masuk, silahkan coba kembali",
+            successMessage: "Berhasil masuk",
+            successAction: () => {
+                setTimeout(() => {
+                    router.push(ROUTE_LISTS.get("dashboard") ?? "/");
+                    alert.addAlert({
+                        type: "success",
+                        message: "Selamat Datang :)",
+                    });
+                }, 1500);
+            },
         });
-
-        const response = await res.json();
-
-        if (res.ok) {
-            alert.addAlert({
-                type: "success",
-                message: "Berhasil masuk",
-            });
-
-            setTimeout(() => {
-                router.push(ROUTE_LISTS.get("dashboard") ?? "/");
-                alert.addAlert({
-                    type: "success",
-                    message: "Selamat Datang :)",
-                });
-            }, 1500);
-        } else {
-            if (Array.isArray(response.message)) {
-                setErrors(badRequestResponseFormat(response.message));
-            } else {
-                setErrorMessage(response.message);
-
-                alert.addAlert({
-                    type: "error",
-                    message: "Gagal masuk, silahkan coba kembali",
-                });
-            }
-
-            setLoading(false);
-        }
     };
 
     return (

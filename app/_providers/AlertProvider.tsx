@@ -25,7 +25,7 @@ interface AlertOption {
     autoClose?: boolean;
 }
 
-interface AlertContextValue {
+export interface AlertContextValue {
     alerts: AlertItem[];
     addAlert: (param: AddAlert) => void;
     closeAlert: (id: string) => void;
