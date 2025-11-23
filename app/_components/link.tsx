@@ -1,16 +1,19 @@
 "use client";
 
 import DefaultLink from "next/link";
-import Lineicons from "@lineiconshq/react-lineicons";
-import { Spinner2SacleOutlined } from "@lineiconshq/free-icons";
+import { CachedOutlined } from "@mui/icons-material";
 
 //
+type LinkSize = "xs" | "sm" | "md";
+
+type LinkVariant = "primary" | "outline" | "danger";
+
 interface LinkProps {
     href: string;
     children: React.ReactNode;
-    size?: "xs" | "sm" | "md";
+    size?: LinkSize;
     endIcon?: React.ReactNode;
-    variant?: "primary" | "outline" | "danger";
+    variant?: LinkVariant;
     className?: string;
     isLoading?: boolean;
     startIcon?: React.ReactNode;
@@ -46,19 +49,10 @@ export default function Link({
             href={href}
             className={`${className} ${sizeClasses[size]} ${variantClasses[variant]} rounded-lg flex items-center justify-center gap-0.5 transition`}
         >
-            {startIcon && startIcon}
-            {isLoading ? (
-                <div className="flex items-center justify-center">
-                    <Lineicons
-                        icon={Spinner2SacleOutlined}
-                        className="animate-spin"
-                    />
-                    Loading...
-                </div>
-            ) : (
-                children
-            )}
-            {endIcon && endIcon}
+            {!isLoading && startIcon && startIcon}
+            {isLoading && <CachedOutlined className="animate-spin" />}
+            {children}
+            {!isLoading && endIcon && endIcon}
         </DefaultLink>
     );
 }

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Lineicons from "@lineiconshq/react-lineicons";
-import { ChevronLeftOutlined, Home2Outlined } from "@lineiconshq/free-icons";
+import { ChevronRightOutlined, HomeOutlined } from "@mui/icons-material";
 
 //
 interface BreadcrumbProps {
@@ -18,14 +17,11 @@ export interface BreadcrumbItem {
 export default function Breadcrumb({ items }: BreadcrumbProps) {
     return (
         <div className="flex items-center gap-1 text-sm">
-            <Lineicons icon={Home2Outlined} className="w-5" />
+            <HomeOutlined fontSize="small" />
             <p>Beranda</p>
             {items.map((item, index) => (
                 <div key={index} className="flex items-center gap-1">
-                    <Lineicons
-                        icon={ChevronLeftOutlined}
-                        className="w-5 rotate-180"
-                    />
+                    <ChevronRightOutlined fontSize="small" />
                     {item.path ? (
                         <Link href={item.path}>{item.name}</Link>
                     ) : (

@@ -6,11 +6,10 @@ import { IRole } from "@/app/_types/role";
 import { IResponse } from "@/app/_types/api";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
-import Lineicons from "@lineiconshq/react-lineicons";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
-import { PlusOutlined, Shield2Outlined } from "@lineiconshq/free-icons";
+import { AddOutlined, WorkspacesOutline } from "@mui/icons-material";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -68,16 +67,14 @@ export default function BaseRolePage() {
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center">
                 <div className="flex items-center gap-1.5">
-                    <Lineicons icon={Shield2Outlined} />
+                    <WorkspacesOutline />
                     <h2>Manajemen Peran</h2>
                 </div>
                 <Link
                     href={ROUTE_LISTS.get("role-add") ?? "#"}
                     size="sm"
                     variant="outline"
-                    startIcon={
-                        <Lineicons icon={PlusOutlined} className="w-5" />
-                    }
+                    startIcon={<AddOutlined className="w-5" />}
                     className="ml-auto"
                 >
                     Tambah

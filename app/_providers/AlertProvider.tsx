@@ -1,7 +1,6 @@
 "use client";
 
-import Lineicons from "@lineiconshq/react-lineicons";
-import { XmarkOutlined } from "@lineiconshq/free-icons";
+import { CloseOutlined } from "@mui/icons-material";
 import { useState, useContext, createContext } from "react";
 
 //
@@ -15,14 +14,14 @@ interface AlertItem {
     isVisible: boolean;
 }
 
+interface AlertOption {
+    autoClose?: boolean;
+}
+
 interface AddAlert {
     type?: AlertType;
     message?: string;
     options?: AlertOption;
-}
-
-interface AlertOption {
-    autoClose?: boolean;
 }
 
 export interface AlertContextValue {
@@ -113,7 +112,7 @@ export function AlertProvider({ children }: AlertProviderProps) {
                             onClick={() => closeAlert(alert.id)}
                             className="ml-3 hover:opacity-70"
                         >
-                            <Lineicons icon={XmarkOutlined} />
+                            <CloseOutlined />
                         </button>
                     </div>
                 ))}

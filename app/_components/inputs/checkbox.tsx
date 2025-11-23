@@ -1,9 +1,11 @@
+"use client";
+
 //
 interface CheckboxProps {
     text: string;
-    value: string | number;
-    checked?: boolean;
-    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    value: React.InputHTMLAttributes<HTMLInputElement>["value"];
+    checked?: React.InputHTMLAttributes<HTMLInputElement>["checked"];
+    onChange?: React.InputHTMLAttributes<HTMLInputElement>["onChange"];
 }
 
 //

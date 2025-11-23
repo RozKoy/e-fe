@@ -1,18 +1,21 @@
 "use client";
 
-import Lineicons from "@lineiconshq/react-lineicons";
-import { Spinner2SacleOutlined } from "@lineiconshq/free-icons";
+import { CachedOutlined } from "@mui/icons-material";
 
 //
+type ButtonSize = "xs" | "sm" | "md";
+
+type ButtonVariant = "primary" | "outline" | "danger";
+
 interface ButtonProps {
     children: React.ReactNode;
-    size?: "xs" | "sm" | "md";
-    type?: "button" | "submit" | "reset" | undefined;
+    size?: ButtonSize;
+    type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
     endIcon?: React.ReactNode;
-    onClick?: () => void;
-    variant?: "primary" | "outline" | "danger";
-    disabled?: boolean;
-    className?: string;
+    onClick?: React.ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
+    variant?: ButtonVariant;
+    disabled?: React.ButtonHTMLAttributes<HTMLButtonElement>["disabled"];
+    className?: React.ButtonHTMLAttributes<HTMLButtonElement>["className"];
     isLoading?: boolean;
     startIcon?: React.ReactNode;
 }
@@ -57,10 +60,7 @@ export default function Button({
         >
             {!isLoading && startIcon && startIcon}
             {isLoading && (
-                <Lineicons
-                    icon={Spinner2SacleOutlined}
-                    className="animate-spin"
-                />
+                <CachedOutlined className="animate-spin" fontSize="small" />
             )}
             {children}
             {!isLoading && endIcon && endIcon}

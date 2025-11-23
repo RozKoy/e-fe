@@ -1,8 +1,7 @@
 "use client";
 
 import Button from "./button";
-import Lineicons from "@lineiconshq/react-lineicons";
-import { ChevronLeftOutlined } from "@lineiconshq/free-icons";
+import { ChevronLeftOutlined, ChevronRightOutlined } from "@mui/icons-material";
 
 //
 interface PaginationProps {
@@ -53,7 +52,7 @@ export default function Pagination({
                 }}
                 disabled={!page || page <= 1}
             >
-                <Lineicons icon={ChevronLeftOutlined} className="w-4" />
+                <ChevronLeftOutlined className="w-4" />
             </Button>
             {page &&
                 totalPages &&
@@ -82,10 +81,7 @@ export default function Pagination({
                 }}
                 disabled={!page || !totalPages || page >= totalPages}
             >
-                <Lineicons
-                    icon={ChevronLeftOutlined}
-                    className="w-4 rotate-180"
-                />
+                <ChevronRightOutlined className="w-4" />
             </Button>
         </div>
     );

@@ -2,14 +2,13 @@
 
 import Input from "./input";
 import { useState } from "react";
-import Lineicons from "@lineiconshq/react-lineicons";
-import { EyeOutlined, LineDashedOutlined } from "@lineiconshq/free-icons";
+import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 
 //
 interface PasswordProps {
     error?: string;
-    onInput?: React.FormEventHandler<HTMLInputElement>;
-    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    onInput?: React.InputHTMLAttributes<HTMLInputElement>["onInput"];
+    onChange?: React.InputHTMLAttributes<HTMLInputElement>["onChange"];
 }
 
 //
@@ -22,7 +21,7 @@ export default function Password({ error, onInput, onChange }: PasswordProps) {
                 error={error}
                 type={visible ? "text" : "password"}
                 placeholder="Masukkan kata sandi"
-                className="pr-8"
+                className="pr-10"
                 onInput={onInput}
                 onChange={onChange}
             />
@@ -30,15 +29,13 @@ export default function Password({ error, onInput, onChange }: PasswordProps) {
                 type="button"
                 className={`${
                     error ? "text-red-500" : ""
-                } absolute right-1.5 top-1/2 -translate-y-1/2 transition-all`}
+                } absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center transition-all`}
                 onClick={() => setVisible((prev) => !prev)}
             >
-                <Lineicons icon={EyeOutlined} />
-                {!visible && (
-                    <Lineicons
-                        icon={LineDashedOutlined}
-                        className="absolute left-0 top-0 right-0 bottom-0 rotate-45 transition-all"
-                    />
+                {visible ? (
+                    <VisibilityOutlined fontSize="small" />
+                ) : (
+                    <VisibilityOffOutlined fontSize="small" />
                 )}
             </button>
         </div>

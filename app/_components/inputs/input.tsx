@@ -1,12 +1,14 @@
+"use client";
+
 //
 interface InputProps {
-    type?: React.HTMLInputTypeAttribute;
+    type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
     error?: string;
-    onInput?: React.FormEventHandler<HTMLInputElement>;
-    onChange?: React.ChangeEventHandler<HTMLInputElement>;
-    className?: string;
-    autoFocus?: boolean;
-    placeholder?: string;
+    onInput?: React.InputHTMLAttributes<HTMLInputElement>["onInput"];
+    onChange?: React.InputHTMLAttributes<HTMLInputElement>["onChange"];
+    autoFocus?: React.InputHTMLAttributes<HTMLInputElement>["autoFocus"];
+    className?: React.InputHTMLAttributes<HTMLInputElement>["className"];
+    placeholder?: React.InputHTMLAttributes<HTMLInputElement>["placeholder"];
 }
 
 //
@@ -15,8 +17,8 @@ export default function Input({
     error,
     onInput,
     onChange,
-    className = "",
     autoFocus,
+    className = "",
     placeholder = "Masukkan input",
 }: InputProps) {
     return (

@@ -1,8 +1,6 @@
-import {
-    ChevronUpOutlined,
-    ChevronDownOutlined,
-} from "@lineiconshq/free-icons";
-import Lineicons from "@lineiconshq/react-lineicons";
+"use client";
+
+import { ExpandLessOutlined, ExpandMoreOutlined } from "@mui/icons-material";
 
 //
 interface SelectProps {
@@ -32,14 +30,8 @@ export default function Select({
                 )}
                 {children && children}
             </select>
-            <Lineicons
-                icon={ChevronDownOutlined}
-                className="peer-open:hidden absolute top-1/2 right-0 -translate-1/2 transition-all"
-            />
-            <Lineicons
-                icon={ChevronUpOutlined}
-                className="hidden peer-open:block absolute top-1/2 right-0 -translate-1/2 transition-all"
-            />
+            <ExpandMoreOutlined className="peer-open:hidden absolute top-1/2 right-0 -translate-1/2 transition-all" />
+            <ExpandLessOutlined className="hidden peer-open:block absolute top-1/2 right-0 -translate-1/2 transition-all" />
         </div>
     );
 }

@@ -9,12 +9,11 @@ import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import { postRequest } from "@/app/_utils/api";
 import Input from "@/app/_components/inputs/input";
-import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { IPermission } from "@/app/_types/permission";
+import { WorkspacesOutline } from "@mui/icons-material";
 import Checkbox from "@/app/_components/inputs/checkbox";
 import { useAlert } from "@/app/_providers/AlertProvider";
-import { Shield2Outlined } from "@lineiconshq/free-icons";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -105,7 +104,7 @@ export default function AddRolePage() {
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5">
-                <Lineicons icon={Shield2Outlined} />
+                <WorkspacesOutline />
                 <h2>Tambah Peran</h2>
             </div>
             <form
