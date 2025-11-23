@@ -88,7 +88,7 @@ export function AlertProvider({ children }: AlertProviderProps) {
         <AlertContext.Provider value={{ alerts, addAlert, closeAlert }}>
             {children}
 
-            <div className="fixed top-5 right-5 space-y-3 z-50">
+            <div className="fixed top-5 right-5 space-y-3 z-45">
                 {alerts.map((alert) => (
                     <div
                         key={alert.id}

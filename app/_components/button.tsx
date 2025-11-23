@@ -1,6 +1,6 @@
 "use client";
 
-import { CachedOutlined } from "@mui/icons-material";
+import { AutorenewOutlined } from "@mui/icons-material";
 
 //
 type ButtonSize = "xs" | "sm" | "md";
@@ -60,7 +60,7 @@ export default function Button({
         >
             {!isLoading && startIcon && startIcon}
             {isLoading && (
-                <CachedOutlined className="animate-spin" fontSize="small" />
+                <AutorenewOutlined className="animate-spin" fontSize="small" />
             )}
             {children}
             {!isLoading && endIcon && endIcon}

@@ -9,9 +9,12 @@ interface SWRProviderProps {
 
 //
 async function fetcher(url: string) {
-    const res = await fetch(url);
+    const response = await fetch(url);
 
-    return res.json();
+    return {
+        ...(await response.json()),
+        code: response.status,
+    };
 }
 
 export function SWRProvider({ children }: SWRProviderProps) {

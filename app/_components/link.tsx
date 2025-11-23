@@ -1,7 +1,7 @@
 "use client";
 
 import DefaultLink from "next/link";
-import { CachedOutlined } from "@mui/icons-material";
+import { AutorenewOutlined } from "@mui/icons-material";
 
 //
 type LinkSize = "xs" | "sm" | "md";
@@ -50,7 +50,7 @@ export default function Link({
             className={`${className} ${sizeClasses[size]} ${variantClasses[variant]} rounded-lg flex items-center justify-center gap-0.5 transition`}
         >
             {!isLoading && startIcon && startIcon}
-            {isLoading && <CachedOutlined className="animate-spin" />}
+            {isLoading && <AutorenewOutlined className="animate-spin" />}
             {children}
             {!isLoading && endIcon && endIcon}
         </DefaultLink>

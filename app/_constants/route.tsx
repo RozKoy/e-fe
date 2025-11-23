@@ -41,4 +41,5 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // Auth
     ["api-login", "/api/auth/login"],
+    ["api-token-check", "/api/auth/check-token"],
 ]);
