@@ -18,23 +18,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const alert = useAlert();
     const router = useRouter();
 
-    const hasError = useRef<boolean>(false);
+    const checkTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 
-    const { data, isLoading } = useSWR<IResponse<object | null>>(
+    const hasError = useRef<boolean>(false);
+    const hasMutateStatus = useRef<number>(0);
+
+    const { data, mutate, isLoading } = useSWR<IResponse<object | null>>(
         ROUTE_LISTS.get("api-token-check")
     );
 
     const isAuth = !isLoading && data?.code !== 401;
 
     useEffect(() => {
-        if (!hasError.current) {
-            if (!isLoading && data?.code === 401 && !isAuth) {
-                alert.clearAlert();
-                hasError.current = true;
-                router.push(ROUTE_LISTS.get("login") ?? "/");
+        const check = async () => {
+            if (!hasMutateStatus.current) {
+                hasMutateStatus.current = 1;
+                await mutate();
+                hasMutateStatus.current = 2;
+            } else {
+                clearTimeout(checkTimer.current);
+                checkTimer.current = setTimeout(() => {
+                    if (
+                        hasMutateStatus.current === 2 &&
+                        !isLoading &&
+                        data?.code === 401 &&
+                        !isAuth
+                    ) {
+                        alert.clearAlert();
+                        hasError.current = true;
+                        hasMutateStatus.current = 0;
+                        router.push(ROUTE_LISTS.get("login") ?? "/");
+                    } else if (isLoading) {
+                        check();
+                    }
+                }, 750);
             }
+        };
+        if (!hasError.current) {
+            check();
         }
-    }, [data, alert, isAuth, router, isLoading]);
+    }, [data, alert, isAuth, mutate, router, isLoading]);
 
     return (
         <>
