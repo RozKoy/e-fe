@@ -1,5 +1,10 @@
 "use client";
 
+import {
+    AddOutlined,
+    DeleteOutline,
+    WorkspacesOutline,
+} from "@mui/icons-material";
 import useSWR from "swr";
 import Link from "@/app/_components/link";
 import { IRole } from "@/app/_types/role";
@@ -8,8 +13,8 @@ import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
+import DeleteModal from "@/app/_components/modals/delete";
 import { useAlert } from "@/app/_providers/AlertProvider";
-import { AddOutlined, WorkspacesOutline } from "@mui/icons-material";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -17,11 +22,6 @@ const breadcrumbItems: BreadcrumbItem[] = [
     {
         name: "Peran",
     },
-];
-
-const columns: Column<IRole>[] = [
-    { header: "Name", accessor: "name" },
-    { header: "Deskripsi", accessor: "description" },
 ];
 
 //
@@ -32,10 +32,16 @@ export default function BaseRolePage() {
 
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(10);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [selectedRole, setSelectedRole] = useState<IRole | null>(null);
+
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
 
     const {
         data: dataRole,
         error: errorRole,
+        mutate: mutateRole,
         isLoading: isLoadingRole,
     } = useSWR<IResponse<IRole[]>>(
         `${ROUTE_LISTS.get("api-role-get")}?${new URLSearchParams({
@@ -44,6 +50,70 @@ export default function BaseRolePage() {
             // search: "",
         })}`
     );
+
+    const columns: Column<IRole>[] = [
+        { header: "Name", accessor: "name" },
+        { header: "Deskripsi", accessor: "description" },
+        {
+            header: "Aksi",
+            accessor: (item: IRole) => (
+                <button
+                    className="text-red-400"
+                    onClick={() => {
+                        handleDeleteItem(item);
+                    }}
+                >
+                    <DeleteOutline />
+                </button>
+            ),
+        },
+    ];
+
+    const handleDeleteClose = () => {
+        setSelectedRole(null);
+        setDeleteModal(false);
+    };
+
+    const handleDeleteItem = (role: IRole) => {
+        setSelectedRole(role);
+        setDeleteModal(true);
+    };
+
+    const handleDelete = async () => {
+        let url = ROUTE_LISTS.get("api-role-delete");
+
+        if (!url || !selectedRole?.id) {
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+
+            return;
+        }
+
+        setIsLoading(true);
+
+        url = url.replace(":id", selectedRole.id);
+
+        const res = await fetch(url, { method: "DELETE" });
+
+        if (res.ok) {
+            alert.addAlert({
+                type: "success",
+                message: "Berhasil menghapus data",
+            });
+            await mutateRole();
+        } else {
+            alert.addAlert({
+                type: "error",
+                message: "Gagal menghapus data",
+            });
+        }
+
+        setIsLoading(false);
+        setDeleteModal(false);
+        setSelectedRole(null);
+    };
 
     useEffect(() => {
         if (!hasError.current) {
@@ -89,6 +159,12 @@ export default function BaseRolePage() {
                 page={page}
                 setPage={setPage}
                 totalPages={dataRole?.totalPage ?? 1}
+            />
+            <DeleteModal
+                show={deleteModal}
+                onClose={handleDeleteClose}
+                onConfirm={handleDelete}
+                isLoading={isLoading}
             />
         </>
     );

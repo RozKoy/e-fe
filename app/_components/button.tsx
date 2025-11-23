@@ -31,7 +31,7 @@ const variantClasses = {
     primary: "",
     outline:
         "bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 text-gray-700",
-    danger: "",
+    danger: "bg-red-500 hover:bg-red-600 text-white",
 };
 
 //
