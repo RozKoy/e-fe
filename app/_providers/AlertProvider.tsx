@@ -28,6 +28,7 @@ export interface AlertContextValue {
     alerts: AlertItem[];
     addAlert: (param: AddAlert) => void;
     closeAlert: (id: string) => void;
+    clearAlert: () => void;
 }
 
 interface AlertProviderProps {
@@ -84,8 +85,20 @@ export function AlertProvider({ children }: AlertProviderProps) {
         }, 500);
     };
 
+    const clearAlert = () => {
+        setAlerts((prev) =>
+            prev.map((prevItem) => ({ ...prevItem, isVisible: false }))
+        );
+
+        setTimeout(() => {
+            setAlerts([]);
+        }, 500);
+    };
+
     return (
-        <AlertContext.Provider value={{ alerts, addAlert, closeAlert }}>
+        <AlertContext.Provider
+            value={{ alerts, addAlert, closeAlert, clearAlert }}
+        >
             {children}
 
             <div className="fixed top-5 right-5 space-y-3 z-45">

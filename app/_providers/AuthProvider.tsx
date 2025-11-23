@@ -1,8 +1,9 @@
 "use client";
 
 import useSWR from "swr";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { IResponse } from "../_types/api";
+import { useAlert } from "./AlertProvider";
 import { useRouter } from "next/navigation";
 import { ROUTE_LISTS } from "../_constants/route";
 import { AutorenewOutlined } from "@mui/icons-material";
@@ -14,7 +15,10 @@ interface AuthProviderProps {
 
 //
 export function AuthProvider({ children }: AuthProviderProps) {
+    const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const { data, isLoading } = useSWR<IResponse<object | null>>(
         ROUTE_LISTS.get("api-token-check")
@@ -23,10 +27,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const isAuth = !isLoading && data?.code !== 401;
 
     useEffect(() => {
-        if (!isLoading && data?.code === 401 && !isAuth) {
-            router.push(ROUTE_LISTS.get("login") ?? "/");
+        if (!hasError.current) {
+            if (!isLoading && data?.code === 401 && !isAuth) {
+                alert.clearAlert();
+                hasError.current = true;
+                router.push(ROUTE_LISTS.get("login") ?? "/");
+            }
         }
-    }, [data, isAuth, router, isLoading]);
+    }, [data, alert, isAuth, router, isLoading]);
 
     return (
         <>
