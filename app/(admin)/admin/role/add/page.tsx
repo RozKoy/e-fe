@@ -81,7 +81,9 @@ export default function AddRolePage() {
         return mapPermissionsByGroup(dataPermission.data);
     }, [dataPermission]);
 
-    const submit = async () => {
+    const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         await postRequest({
             body: { name, description, permissionIds },
             alert,
@@ -106,7 +108,10 @@ export default function AddRolePage() {
                 <Lineicons icon={Shield2Outlined} />
                 <h2>Tambah Peran</h2>
             </div>
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
+            <form
+                onSubmit={submit}
+                className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3"
+            >
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
                         error={errors?.get("name")}
@@ -188,9 +193,9 @@ export default function AddRolePage() {
                         Kembali
                     </Link>
                     <Button
+                        type="submit"
                         size="sm"
                         variant="outline"
-                        onClick={submit}
                         isLoading={loading}
                     >
                         Simpan
