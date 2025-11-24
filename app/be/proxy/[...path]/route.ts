@@ -1,12 +1,10 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-//
 interface Context {
     params: Promise<{ path: string[] }>;
 }
 
-//
 async function handleRequest(req: Request, context: Context) {
     const { path } = await context.params;
 
@@ -21,17 +19,28 @@ async function handleRequest(req: Request, context: Context) {
         new URL(req.url).search
     }`;
 
-    const body =
-        req.method === "GET" || req.method === "HEAD"
-            ? undefined
-            : await req.text();
+    const headers: HeadersInit = {
+        Authorization: `Bearer ${token}`,
+    };
+
+    let body: BodyInit | undefined;
+    if (req.method !== "GET" && req.method !== "HEAD") {
+        const contentType = req.headers.get("Content-Type") || "";
+
+        if (contentType.includes("multipart/form-data")) {
+            body = await req.formData();
+        } else if (contentType.includes("application/json")) {
+            body = JSON.stringify(await req.json());
+            headers["Content-Type"] = "application/json";
+        } else {
+            body = await req.text();
+            if (contentType) headers["Content-Type"] = contentType;
+        }
+    }
 
     const externalRes = await fetch(url, {
         method: req.method,
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": req.headers.get("Content-Type") ?? "",
-        },
+        headers,
         body,
     });
 
@@ -50,5 +59,7 @@ export {
     handleRequest as GET,
     handleRequest as PUT,
     handleRequest as POST,
+    handleRequest as PATCH,
     handleRequest as DELETE,
+    handleRequest as OPTIONS,
 };
