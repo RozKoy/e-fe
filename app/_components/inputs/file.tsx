@@ -4,26 +4,34 @@ import { CloudUploadOutlined } from "@mui/icons-material";
 
 //
 interface FileProps {
+    name?: React.InputHTMLAttributes<HTMLInputElement>["name"];
     note?: string;
+    error?: string;
+    onChange?: React.InputHTMLAttributes<HTMLInputElement>["onChange"];
 }
 
 //
-export default function File({ note }: FileProps) {
+export default function File({ name, note, error, onChange }: FileProps) {
     return (
-        <div className="flex items-center justify-center w-full">
-            <label className="w-full h-60 bg-white hover:bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer transition-all">
-                <div className="pt-5 pb-6 flex flex-col items-center justify-center text-gray-600">
-                    <CloudUploadOutlined className="mb-4" fontSize="large" />
-                    <p className="mb-2 text-sm">
-                        <span className="font-semibold">
-                            Klik untuk mengunggah
-                        </span>{" "}
-                        atau seret dan lepas
-                    </p>
-                    <p className="text-xs">{note ?? ""}</p>
-                </div>
-                <input type="file" className="hidden" />
-            </label>
-        </div>
+        <label
+            className={`${
+                error ? "border-red-300" : "border-gray-300"
+            } w-full h-60 bg-white hover:bg-gray-50 rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all`}
+        >
+            <div className="pt-5 pb-6 flex flex-col items-center justify-center text-gray-600">
+                <CloudUploadOutlined className="mb-4" fontSize="large" />
+                <p className="mb-2 text-sm">
+                    <span className="font-semibold">Klik untuk mengunggah</span>{" "}
+                    atau seret dan lepas
+                </p>
+                <p className="text-xs">{note ?? ""}</p>
+            </div>
+            <input
+                type="file"
+                name={name}
+                className="hidden"
+                onChange={onChange}
+            />
+        </label>
     );
 }

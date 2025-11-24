@@ -85,6 +85,12 @@ export default function AddUserPage() {
                     <Input
                         error={errors?.get("email")}
                         placeholder="email@example.com"
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("email");
+                                return prev?.size ? prev : null;
+                            })
+                        }
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </Label>
@@ -96,6 +102,12 @@ export default function AddUserPage() {
                     <Password
                         error={errors?.get("password")}
                         placeholder="Kata sandi"
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("password");
+                                return prev?.size ? prev : null;
+                            })
+                        }
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Label>
@@ -104,7 +116,13 @@ export default function AddUserPage() {
                         value={roleId}
                         error={errors?.get("roleId")}
                         placeholder="Pilih peran"
-                        onChange={(e) => setRoleId(e.target.value)}
+                        onChange={(e) => {
+                            setRoleId(e.target.value);
+                            setErrors((prev) => {
+                                prev?.delete("roleId");
+                                return prev?.size ? prev : null;
+                            });
+                        }}
                     >
                         {dataRole?.data?.map((role, index) => (
                             <option key={index} value={role.id}>

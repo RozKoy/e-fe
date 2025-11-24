@@ -114,11 +114,11 @@ export default function AddRolePage() {
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
                         error={errors?.get("name")}
-                        placeholder="Masukkan Nama"
+                        placeholder="Masukkan nama"
                         onInput={() =>
                             setErrors((prev) => {
                                 prev?.delete("name");
-                                return prev;
+                                return prev?.size ? prev : null;
                             })
                         }
                         onChange={(e) => setName(e.target.value)}
@@ -127,11 +127,11 @@ export default function AddRolePage() {
                 <Label text="Deskripsi" error={errors?.get("description")}>
                     <Input
                         error={errors?.get("description")}
-                        placeholder="Masukkan Deskripsi"
+                        placeholder="Masukkan deskripsi"
                         onInput={() =>
                             setErrors((prev) => {
                                 prev?.delete("description");
-                                return prev;
+                                return prev?.size ? prev : null;
                             })
                         }
                         onChange={(e) => setDescription(e.target.value)}

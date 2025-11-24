@@ -3,6 +3,7 @@
 //
 interface InputProps {
     type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
+    name?: React.InputHTMLAttributes<HTMLInputElement>["name"];
     error?: string;
     onInput?: React.InputHTMLAttributes<HTMLInputElement>["onInput"];
     onChange?: React.InputHTMLAttributes<HTMLInputElement>["onChange"];
@@ -14,6 +15,7 @@ interface InputProps {
 //
 export default function Input({
     type = "text",
+    name,
     error,
     onInput,
     onChange,
@@ -24,6 +26,7 @@ export default function Input({
     return (
         <input
             type={type}
+            name={name}
             onInput={onInput}
             onChange={onChange}
             autoFocus={autoFocus}
