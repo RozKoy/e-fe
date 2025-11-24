@@ -9,10 +9,16 @@ interface PasswordProps {
     error?: string;
     onInput?: React.InputHTMLAttributes<HTMLInputElement>["onInput"];
     onChange?: React.InputHTMLAttributes<HTMLInputElement>["onChange"];
+    placeholder?: React.InputHTMLAttributes<HTMLInputElement>["placeholder"];
 }
 
 //
-export default function Password({ error, onInput, onChange }: PasswordProps) {
+export default function Password({
+    error,
+    onInput,
+    onChange,
+    placeholder = "Masukkan kata sandi",
+}: PasswordProps) {
     const [visible, setVisible] = useState<boolean>(false);
 
     return (
@@ -20,7 +26,7 @@ export default function Password({ error, onInput, onChange }: PasswordProps) {
             <Input
                 error={error}
                 type={visible ? "text" : "password"}
-                placeholder="Masukkan kata sandi"
+                placeholder={placeholder}
                 className="pr-10"
                 onInput={onInput}
                 onChange={onChange}

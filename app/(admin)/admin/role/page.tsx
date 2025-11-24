@@ -147,7 +147,7 @@ export default function BaseRolePage() {
                     href={ROUTE_LISTS.get("role-add") ?? "#"}
                     size="sm"
                     variant="outline"
-                    startIcon={<AddOutlined className="w-5" />}
+                    startIcon={<AddOutlined />}
                     className="ml-auto"
                 >
                     Tambah
