@@ -77,8 +77,8 @@ export default function BaseRolePage() {
         setDeleteModal(false);
     };
 
-    const handleDeleteItem = (role: IRole) => {
-        setSelectedRole(role);
+    const handleDeleteItem = (item: IRole) => {
+        setSelectedRole(item);
         setDeleteModal(true);
     };
 

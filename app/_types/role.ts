@@ -19,8 +19,9 @@ export interface IRole {
     name: string;
     description: string | null;
 
-    rolePermissions: IRolePermission[];
+    rolePermissions?: IRolePermission[];
 
     createdAt: string;
     updatedAt: string;
+    deletedAt: string | null;
 }
