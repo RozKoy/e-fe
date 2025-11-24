@@ -11,6 +11,7 @@ import { IRole } from "@/app/_types/role";
 import { IResponse } from "@/app/_types/api";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
+import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
 import DeleteModal from "@/app/_components/modals/delete";
@@ -24,6 +25,8 @@ const breadcrumbItems: BreadcrumbItem[] = [
     },
 ];
 
+const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
+
 //
 export default function BaseRolePage() {
     const alert = useAlert();
@@ -31,7 +34,7 @@ export default function BaseRolePage() {
     const hasError = useRef<boolean>(false);
 
     const [page, setPage] = useState<number>(1);
-    const [limit] = useState<number>(10);
+    const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [selectedRole, setSelectedRole] = useState<IRole | null>(null);
@@ -155,11 +158,25 @@ export default function BaseRolePage() {
                 columns={columns}
                 isLoading={isLoadingRole}
             />
-            <Pagination
-                page={page}
-                setPage={setPage}
-                totalPages={dataRole?.totalPage ?? 1}
-            />
+            <div className="flex items-center justify-between">
+                <div>
+                    <Select
+                        value={limit}
+                        onChange={(e) => setLimit(parseInt(e.target.value))}
+                    >
+                        {limitOptions.map((value, index) => (
+                            <option key={index} value={value}>
+                                {value}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPages={dataRole?.totalPage ?? 1}
+                />
+            </div>
             <DeleteModal
                 show={deleteModal}
                 onClose={handleDeleteClose}

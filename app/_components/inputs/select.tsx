@@ -4,24 +4,29 @@ import { ExpandLessOutlined, ExpandMoreOutlined } from "@mui/icons-material";
 
 //
 interface SelectProps {
+    value?: React.SelectHTMLAttributes<HTMLSelectElement>["value"];
     error?: string;
     children?: React.ReactNode;
+    onChange?: React.SelectHTMLAttributes<HTMLSelectElement>["onChange"];
     placeholder?: string;
 }
 
 //
 export default function Select({
+    value,
     error,
     children,
-    placeholder = "Silahkan pilih",
+    onChange,
+    placeholder,
 }: SelectProps) {
     return (
-        <div className="relative w-full">
+        <div className="relative w-full transition-all">
             <select
-                defaultValue={""}
+                value={value}
+                onChange={onChange}
                 className={`${
                     error ? "border-red-300" : "border-gray-300"
-                } peer w-full px-3 py-2 rounded-lg border-2 text-gray-600 appearance-none`}
+                } peer w-full pl-3 py-2 pr-8 rounded-lg border-2 text-gray-600 appearance-none`}
             >
                 {placeholder && (
                     <option value={""} disabled>
@@ -30,8 +35,12 @@ export default function Select({
                 )}
                 {children && children}
             </select>
-            <ExpandMoreOutlined className="peer-open:hidden absolute top-1/2 right-0 -translate-1/2 transition-all" />
-            <ExpandLessOutlined className="hidden peer-open:block absolute top-1/2 right-0 -translate-1/2 transition-all" />
+            <div className="peer-open:hidden absolute top-1/2 right-1 -translate-y-1/2 transition-all">
+                <ExpandMoreOutlined />
+            </div>
+            <div className="hidden peer-open:block absolute top-1/2 right-1 -translate-y-1/2 transition-all">
+                <ExpandLessOutlined />
+            </div>
         </div>
     );
 }
