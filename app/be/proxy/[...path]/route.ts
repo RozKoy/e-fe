@@ -17,7 +17,9 @@ async function handleRequest(req: Request, context: Context) {
         return NextResponse.json({}, { status: 401 });
     }
 
-    const url = `${process.env.API_URL}/api/${path.join("/")}`;
+    const url = `${process.env.API_URL}/api/${path.join("/")}${
+        new URL(req.url).search
+    }`;
 
     const body =
         req.method === "GET" || req.method === "HEAD"
