@@ -4,6 +4,7 @@ import {
     MapOutlined,
     MenuOutlined,
     CloseOutlined,
+    LogoutOutlined,
     CategoryOutlined,
     DashboardOutlined,
     PeopleAltOutlined,
@@ -12,8 +13,9 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
 import { ROUTE_LISTS } from "@/app/_constants/route";
+import { usePathname, useRouter } from "next/navigation";
+import { useAlert } from "@/app/_providers/AlertProvider";
 import { SWRProvider } from "@/app/_providers/SWRProvider";
 import { AuthProvider } from "@/app/_providers/AuthProvider";
 
@@ -104,12 +106,40 @@ function MenuItem({ icon, path, title, active }: MenuItemProps) {
 
 //
 export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
+    const alert = useAlert();
+    const router = useRouter();
     const pathname: string = usePathname();
 
     const [open, setOpen] = useState<boolean>(false);
+    const [openProfile, setOpenProfile] = useState<boolean>(false);
 
     const menuHandle = () => {
         setOpen((prev) => !prev);
+    };
+
+    const logoutHandle = async () => {
+        const url = ROUTE_LISTS.get("local-logout");
+        const loginUrl = ROUTE_LISTS.get("login");
+
+        if (!url || !loginUrl) {
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+
+            return;
+        }
+
+        await fetch(url);
+
+        alert.addAlert({
+            type: "success",
+            message: "Berhasil keluar",
+        });
+
+        setTimeout(() => {
+            router.replace(loginUrl);
+        }, 500);
     };
 
     return (
@@ -152,7 +182,26 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                     <div className="relative w-full h-full xl:ml-80 bg-gray-100 flex flex-col overflow-x-hidden overflow-y-auto transition-all">
                         <nav className="sticky z-30 top-0 p-5 bg-white flex items-center">
                             <MenuButton open={open} onClick={menuHandle} />
-                            <p className="ml-auto">USER</p>
+                            <button
+                                type="button"
+                                className="w-8 md:w-10 aspect-square ml-auto rounded-full bg-[url('/images/user.png')] bg-center bg-cover bg-no-repeat shadow/30 hover:shadow/50 cursor-pointer transition-all"
+                                onClick={() => setOpenProfile((prev) => !prev)}
+                            ></button>
+                            <div
+                                className={`${
+                                    openProfile
+                                        ? "visible top-[110%]"
+                                        : "invisible top-full"
+                                } absolute right-5 p-1.5 rounded-lg bg-white shadow transition-all`}
+                            >
+                                <button
+                                    className="min-w-32 p-2 rounded-lg hover:bg-gray-100 flex items-center justify-start transition-all"
+                                    onClick={logoutHandle}
+                                >
+                                    <LogoutOutlined fontSize="small" />
+                                    <p>Keluar</p>
+                                </button>
+                            </div>
                         </nav>
                         <main className="m-5 p-5 rounded-2xl bg-white space-y-5">
                             {children}

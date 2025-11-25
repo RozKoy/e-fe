@@ -30,6 +30,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // LOCAL
     ["local-login", "/be/auth/login"],
+    ["local-logout", "/be/auth/logout"],
 
     // API
     // Categories
