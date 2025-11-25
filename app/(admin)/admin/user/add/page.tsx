@@ -38,6 +38,7 @@ export default function AddUserPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [roleId, setRoleId] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -54,7 +55,7 @@ export default function AddUserPage() {
         e.preventDefault();
 
         await postRequest({
-            body: { email, roleId, password },
+            body: { name, email, roleId, password },
             alert,
             setErrors,
             setLoading,
@@ -81,6 +82,19 @@ export default function AddUserPage() {
                 onSubmit={submit}
                 className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3"
             >
+                <Label text="Nama" error={errors?.get("name")} required>
+                    <Input
+                        error={errors?.get("name")}
+                        placeholder="Masukkan nama"
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("name");
+                                return prev?.size ? prev : null;
+                            })
+                        }
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </Label>
                 <Label text="Email" error={errors?.get("email")} required>
                     <Input
                         error={errors?.get("email")}
@@ -101,7 +115,6 @@ export default function AddUserPage() {
                 >
                     <Password
                         error={errors?.get("password")}
-                        placeholder="Kata sandi"
                         onInput={() =>
                             setErrors((prev) => {
                                 prev?.delete("password");
