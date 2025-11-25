@@ -32,6 +32,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["local-login", "/be/auth/login"],
 
     // API
+    // Areas
+    ["api-area-add", "/api/areas"],
+
     // Fractions
     ["api-fraction-get", "/api/fractions"],
     ["api-fraction-add", "/api/fractions"],

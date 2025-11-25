@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "@/app/_components/link";
+import { useRouter } from "next/navigation";
 import Label from "@/app/_components/label";
 import Button from "@/app/_components/button";
+import { postRequest } from "@/app/_utils/api";
+import { MapOutlined } from "@mui/icons-material";
 import Input from "@/app/_components/inputs/input";
-import Lineicons from "@lineiconshq/react-lineicons";
 import { ROUTE_LISTS } from "@/app/_constants/route";
-import { MapMarker1Outlined } from "@lineiconshq/free-icons";
+import { useAlert } from "@/app/_providers/AlertProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -20,28 +23,77 @@ const breadcrumbItems: BreadcrumbItem[] = [
     },
 ];
 
+const prevRoute: string = ROUTE_LISTS.get("area") ?? "/";
+
 //
 export default function AddAreaPage() {
+    const alert = useAlert();
+    const router = useRouter();
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const [name, setName] = useState<string>("");
+
+    const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        await postRequest({
+            body: { name },
+            alert,
+            setErrors,
+            setLoading,
+            setErrorMessage,
+            route: "api-area-add",
+            errorMessage: "Gagal menambahkan area",
+            successMessage: "Berhasil menambahkan area",
+            successAction: () => {
+                setTimeout(() => {
+                    router.push(prevRoute);
+                }, 1500);
+            },
+        });
+    };
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5">
-                <Lineicons icon={MapMarker1Outlined} />
+                <MapOutlined />
                 <h2>Tambah Area</h2>
             </div>
-            <form className="grid grid-cols-1 gap-x-5 gap-y-3">
-                <Label text="Nama">
-                    <Input placeholder="Masukkan Nama" />
+            <form
+                onSubmit={submit}
+                className="grid grid-cols-1 gap-x-5 gap-y-3"
+            >
+                <Label text="Nama" error={errors?.get("name")} required>
+                    <Input
+                        error={errors?.get("name")}
+                        placeholder="Masukkan Nama"
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("name");
+                                return prev?.size ? prev : null;
+                            })
+                        }
+                        onChange={(e) => setName(e.target.value)}
+                    />
                 </Label>
-                <div className="md:col-span-2 flex justify-end gap-3">
-                    <Link
-                        href={ROUTE_LISTS.get("area") ?? "#"}
-                        size="sm"
-                        variant="outline"
-                    >
+                <p className="text-red-500 text-center">
+                    {errorMessage && errorMessage}
+                </p>
+                <div className="flex justify-end gap-3">
+                    <Link href={prevRoute} size="sm" variant="outline">
                         Kembali
                     </Link>
-                    <Button size="sm" variant="outline">
+                    <Button
+                        type="submit"
+                        size="sm"
+                        variant="outline"
+                        isLoading={loading}
+                    >
                         Simpan
                     </Button>
                 </div>
