@@ -2,13 +2,15 @@
 
 import useSWR from "swr";
 import { useState } from "react";
-import { IRole } from "@/app/_types/role";
+import { IArea } from "@/app/_types/area";
+import { IUser } from "@/app/_types/user";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import { postRequest } from "@/app/_utils/api";
+import { IFraction } from "@/app/_types/fraction";
 import { BadgeOutlined } from "@mui/icons-material";
 import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -39,30 +41,47 @@ export default function AddUserAccessPage() {
     const [areaId, setAreaId] = useState<string>("");
     const [userId, setUserId] = useState<string>("");
     const [fractionId, setFractionId] = useState<string>("");
-    const [email] = useState<string>("");
-    const [roleId] = useState<string>("");
-    const [password] = useState<string>("");
+    const [publicUser, setPublicUser] = useState<string>("false");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
 
     const {
-        data: dataRole,
-        // error: errorRole,
-        // isLoading: isLoadingRole,
-    } = useSWR<IResponse<IRole[]>>(`${ROUTE_LISTS.get("api-role-get")}`);
+        data: dataArea,
+        // error: errorArea,
+        // isLoading: isLoadingArea,
+    } = useSWR<IResponse<IArea[]>>(`${ROUTE_LISTS.get("api-area-get")}`);
+
+    const {
+        data: dataUser,
+        // error: errorUser,
+        // isLoading: isLoadingUser,
+    } = useSWR<IResponse<IUser[]>>(`${ROUTE_LISTS.get("api-user-get")}`);
+
+    const {
+        data: dataFraction,
+        // error: errorFraction,
+        // isLoading: isLoadingFraction,
+    } = useSWR<IResponse<IFraction[]>>(
+        `${ROUTE_LISTS.get("api-fraction-get")}`
+    );
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         await postRequest({
-            body: { email, roleId, password },
+            body: {
+                areaId,
+                userId,
+                fractionId,
+                publicUser: publicUser === "true",
+            },
             alert,
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-user-add",
-            errorMessage: "Gagal menambahkan pengguna",
-            successMessage: "Berhasil menambahkan pengguna",
+            route: "api-access-add",
+            errorMessage: "Gagal menambahkan akses pengguna",
+            successMessage: "Berhasil menambahkan akses pengguna",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -95,9 +114,9 @@ export default function AddUserAccessPage() {
                             });
                         }}
                     >
-                        {dataRole?.data?.map((role, index) => (
-                            <option key={index} value={role.id}>
-                                {role.name}
+                        {dataUser?.data?.map((item, index) => (
+                            <option key={index} value={item.id}>
+                                {item.profile?.name} ({item.email})
                             </option>
                         ))}
                     </Select>
@@ -115,9 +134,9 @@ export default function AddUserAccessPage() {
                             });
                         }}
                     >
-                        {dataRole?.data?.map((role, index) => (
-                            <option key={index} value={role.id}>
-                                {role.name}
+                        {dataArea?.data?.map((item, index) => (
+                            <option key={index} value={item.id}>
+                                {item.name}
                             </option>
                         ))}
                     </Select>
@@ -135,11 +154,31 @@ export default function AddUserAccessPage() {
                             });
                         }}
                     >
-                        {dataRole?.data?.map((role, index) => (
-                            <option key={index} value={role.id}>
-                                {role.name}
+                        {dataFraction?.data?.map((item, index) => (
+                            <option key={index} value={item.id}>
+                                {item.name}
                             </option>
                         ))}
+                    </Select>
+                </Label>
+                <Label
+                    text="Visibilitas"
+                    error={errors?.get("publicUser")}
+                    required
+                >
+                    <Select
+                        value={publicUser}
+                        error={errors?.get("publicUser")}
+                        onChange={(e) => {
+                            setPublicUser(e.target.value);
+                            setErrors((prev) => {
+                                prev?.delete("publicUser");
+                                return prev?.size ? prev : null;
+                            });
+                        }}
+                    >
+                        <option value="false">Privat</option>
+                        <option value="true">Publik</option>
                     </Select>
                 </Label>
                 <p className="md:col-span-2 text-red-500 text-center">
