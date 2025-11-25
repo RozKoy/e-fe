@@ -3,6 +3,7 @@
 import {
     MapOutlined,
     MenuOutlined,
+    BadgeOutlined,
     CloseOutlined,
     LogoutOutlined,
     CategoryOutlined,
@@ -64,6 +65,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: <Diversity2Outlined />,
         path: ROUTE_LISTS.get("fraction"),
         title: "Partai",
+    },
+    {
+        icon: <BadgeOutlined />,
+        path: ROUTE_LISTS.get("access"),
+        title: "Akses Pengguna",
     },
     {
         icon: <PeopleAltOutlined />,
