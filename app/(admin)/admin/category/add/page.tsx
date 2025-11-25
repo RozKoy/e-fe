@@ -83,7 +83,7 @@ export default function AddCategoryPage() {
                 <p className="text-red-500 text-center">
                     {errorMessage && errorMessage}
                 </p>
-                <div className="md:col-span-2 flex justify-end gap-3">
+                <div className="flex justify-end gap-3">
                     <Link href={prevRoute} size="sm" variant="outline">
                         Kembali
                     </Link>
