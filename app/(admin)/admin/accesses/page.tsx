@@ -147,7 +147,7 @@ export default function BaseUserAccessPage() {
                     <h2>Manajemen Akses Pengguna</h2>
                 </div>
                 <Link
-                    href={ROUTE_LISTS.get("user-add") ?? "#"}
+                    href={ROUTE_LISTS.get("access-add") ?? "#"}
                     size="sm"
                     variant="outline"
                     startIcon={<AddOutlined />}
