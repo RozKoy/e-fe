@@ -71,7 +71,7 @@ export default function AddAreaPage() {
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
                         error={errors?.get("name")}
-                        placeholder="Masukkan Nama"
+                        placeholder="Masukkan nama"
                         onInput={() =>
                             setErrors((prev) => {
                                 prev?.delete("name");
