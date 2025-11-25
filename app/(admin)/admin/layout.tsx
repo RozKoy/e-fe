@@ -5,6 +5,7 @@ import {
     MenuOutlined,
     CloseOutlined,
     CategoryOutlined,
+    DashboardOutlined,
     PeopleAltOutlined,
     WorkspacesOutline,
     Diversity2Outlined,
@@ -42,6 +43,11 @@ interface AdminLayoutProps {
 
 //
 const MENU_LIST: MenuListInterface[] = [
+    {
+        icon: <DashboardOutlined />,
+        path: ROUTE_LISTS.get("dashboard"),
+        title: "Beranda",
+    },
     {
         icon: <CategoryOutlined />,
         path: ROUTE_LISTS.get("category"),
