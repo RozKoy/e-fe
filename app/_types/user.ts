@@ -1,4 +1,5 @@
 import { IRole } from "./role";
+import { IUserAccess } from "./userAccess";
 
 export interface IProfile {
     id: string;
@@ -22,12 +23,13 @@ export interface IUser {
     id: string;
 
     roleId: string;
+    positionId: string | null;
 
     email: string;
 
     role: IRole | null;
     profile: IProfile | null;
-    accesses: object[];
+    accesses: IUserAccess[];
     position: object | null;
 
     createdAt: string;

@@ -53,7 +53,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["api-fraction-delete", "/api/fractions/:id"],
 
     // User Accesses
+    ["api-access-get", "/api/userAccesses"],
     ["api-access-add", "/api/userAccesses"],
+    ["api-access-delete", "/api/userAccesses/:id"],
 
     // Users
     ["api-user-get", "/api/users"],

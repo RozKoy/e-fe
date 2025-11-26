@@ -2,12 +2,12 @@
 
 import useSWR from "swr";
 import Link from "@/app/_components/link";
-import { IUser } from "@/app/_types/user";
 import { IResponse } from "@/app/_types/api";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
+import { IUserAccess } from "@/app/_types/userAccess";
 import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
@@ -33,36 +33,47 @@ export default function BaseUserAccessPage() {
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+    const [selectedUserAccess, setSelectedUserAccess] =
+        useState<IUserAccess | null>(null);
 
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
 
     const {
-        data: dataUser,
-        error: errorUser,
-        mutate: mutateUser,
-        isLoading: isLoadingUser,
-    } = useSWR<IResponse<IUser[]>>(
-        `${ROUTE_LISTS.get("api-user-get")}?${new URLSearchParams({
+        data: dataUserAccess,
+        error: errorUserAccess,
+        mutate: mutateUserAccess,
+        isLoading: isLoadingUserAccess,
+    } = useSWR<IResponse<IUserAccess[]>>(
+        `${ROUTE_LISTS.get("api-access-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
             // search: "",
-            // roleId: "",
             // areaId: "",
             // fractionId: "",
         })}`
     );
 
-    const columns: Column<IUser>[] = [
-        { header: "Email", accessor: "email" },
+    const columns: Column<IUserAccess>[] = [
         {
-            header: "Nama",
-            accessor: (item: IUser) => item.profile?.name ?? "-",
+            header: "Email",
+            accessor: (item: IUserAccess) => item.user?.email ?? "-",
         },
-        { header: "Peran", accessor: (item: IUser) => item.role?.name ?? "-" },
+        {
+            header: "Area",
+            accessor: (item: IUserAccess) => item.area?.name ?? "-",
+        },
+        {
+            header: "Partai",
+            accessor: (item: IUserAccess) => item.fraction?.name ?? "-",
+        },
+        {
+            header: "Visibilitas",
+            accessor: (item: IUserAccess) =>
+                item.public ? "Publik" : "Privat",
+        },
         {
             header: "Aksi",
-            accessor: (item: IUser) => (
+            accessor: (item: IUserAccess) => (
                 <button
                     className="text-red-400"
                     onClick={() => {
@@ -76,19 +87,19 @@ export default function BaseUserAccessPage() {
     ];
 
     const handleDeleteClose = () => {
-        setSelectedUser(null);
+        setSelectedUserAccess(null);
         setDeleteModal(false);
     };
 
-    const handleDeleteItem = (item: IUser) => {
-        setSelectedUser(item);
+    const handleDeleteItem = (item: IUserAccess) => {
+        setSelectedUserAccess(item);
         setDeleteModal(true);
     };
 
     const handleDelete = async () => {
-        let url = ROUTE_LISTS.get("api-user-delete");
+        let url = ROUTE_LISTS.get("api-access-delete");
 
-        if (!url || !selectedUser?.id) {
+        if (!url || !selectedUserAccess?.id) {
             alert.addAlert({
                 type: "error",
                 message: "Mohon maaf, sistem sedang bermasalah",
@@ -99,7 +110,7 @@ export default function BaseUserAccessPage() {
 
         setIsLoading(true);
 
-        url = url.replace(":id", selectedUser.id);
+        url = url.replace(":id", selectedUserAccess.id);
 
         const res = await fetch(url, { method: "DELETE" });
 
@@ -108,7 +119,7 @@ export default function BaseUserAccessPage() {
                 type: "success",
                 message: "Berhasil menghapus data",
             });
-            await mutateUser();
+            await mutateUserAccess();
         } else {
             alert.addAlert({
                 type: "error",
@@ -118,25 +129,25 @@ export default function BaseUserAccessPage() {
 
         setIsLoading(false);
         setDeleteModal(false);
-        setSelectedUser(null);
+        setSelectedUserAccess(null);
     };
 
     useEffect(() => {
         if (!hasError.current) {
             if (
-                !isLoadingUser &&
-                ((!dataUser && errorUser) ||
-                    (dataUser && !Array.isArray(dataUser?.data)))
+                !isLoadingUserAccess &&
+                ((!dataUserAccess && errorUserAccess) ||
+                    (dataUserAccess && !Array.isArray(dataUserAccess?.data)))
             ) {
                 alert.addAlert({
                     type: "error",
-                    message: errorUser?.message || "Gagal memuat data",
+                    message: errorUserAccess?.message || "Gagal memuat data",
                     options: { autoClose: false },
                 });
                 hasError.current = true;
             }
         }
-    }, [alert, dataUser, errorUser, isLoadingUser]);
+    }, [alert, dataUserAccess, errorUserAccess, isLoadingUserAccess]);
 
     return (
         <>
@@ -157,9 +168,9 @@ export default function BaseUserAccessPage() {
                 </Link>
             </div>
             <Table
-                data={dataUser?.data}
+                data={dataUserAccess?.data}
                 columns={columns}
-                isLoading={isLoadingUser}
+                isLoading={isLoadingUserAccess}
             />
             <div className="flex items-center justify-between">
                 <div>
@@ -177,7 +188,7 @@ export default function BaseUserAccessPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataUser?.totalPage ?? 1}
+                    totalPages={dataUserAccess?.totalPage ?? 1}
                 />
             </div>
             <DeleteModal
