@@ -11,6 +11,7 @@ import {
     PeopleAltOutlined,
     WorkspacesOutline,
     Diversity2Outlined,
+    FilterFramesOutlined,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useState } from "react";
@@ -75,6 +76,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: <PeopleAltOutlined />,
         path: ROUTE_LISTS.get("user"),
         title: "Pengguna",
+    },
+    {
+        icon: <FilterFramesOutlined />,
+        path: ROUTE_LISTS.get("commission"),
+        title: "Komisi",
     },
     {
         icon: <WorkspacesOutline />,
