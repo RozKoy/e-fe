@@ -1,18 +1,22 @@
 "use client";
 
+import {
+    AddOutlined,
+    DeleteOutline,
+    FilterFramesOutlined,
+} from "@mui/icons-material";
 import useSWR from "swr";
 import Link from "@/app/_components/link";
-import { IArea } from "@/app/_types/area";
 import { IResponse } from "@/app/_types/api";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
+import { ICommission } from "@/app/_types/commission";
 import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
-import { AddOutlined, DeleteOutline, FilterFramesOutlined } from "@mui/icons-material";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -33,28 +37,29 @@ export default function BaseCommissionPage() {
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [selectedArea, setSelectedArea] = useState<IArea | null>(null);
+    const [selectedCommission, setSelectedCommission] =
+        useState<ICommission | null>(null);
 
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
 
     const {
-        data: dataArea,
-        error: errorArea,
-        mutate: mutateArea,
-        isLoading: isLoadingArea,
-    } = useSWR<IResponse<IArea[]>>(
-        `${ROUTE_LISTS.get("api-area-get")}?${new URLSearchParams({
+        data: dataCommission,
+        error: errorCommission,
+        mutate: mutateCommission,
+        isLoading: isLoadingCommission,
+    } = useSWR<IResponse<ICommission[]>>(
+        `${ROUTE_LISTS.get("api-commission-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
             // search: "",
         })}`
     );
 
-    const columns: Column<IArea>[] = [
+    const columns: Column<ICommission>[] = [
         { header: "Nama", accessor: "name" },
         {
             header: "Aksi",
-            accessor: (item: IArea) => (
+            accessor: (item: ICommission) => (
                 <button
                     className="text-red-400"
                     onClick={() => {
@@ -68,19 +73,19 @@ export default function BaseCommissionPage() {
     ];
 
     const handleDeleteClose = () => {
-        setSelectedArea(null);
+        setSelectedCommission(null);
         setDeleteModal(false);
     };
 
-    const handleDeleteItem = (item: IArea) => {
-        setSelectedArea(item);
+    const handleDeleteItem = (item: ICommission) => {
+        setSelectedCommission(item);
         setDeleteModal(true);
     };
 
     const handleDelete = async () => {
-        let url = ROUTE_LISTS.get("api-area-delete");
+        let url = ROUTE_LISTS.get("api-commission-delete");
 
-        if (!url || !selectedArea?.id) {
+        if (!url || !selectedCommission?.id) {
             alert.addAlert({
                 type: "error",
                 message: "Mohon maaf, sistem sedang bermasalah",
@@ -91,7 +96,7 @@ export default function BaseCommissionPage() {
 
         setIsLoading(true);
 
-        url = url.replace(":id", selectedArea.id);
+        url = url.replace(":id", selectedCommission.id);
 
         const res = await fetch(url, { method: "DELETE" });
 
@@ -100,7 +105,7 @@ export default function BaseCommissionPage() {
                 type: "success",
                 message: "Berhasil menghapus data",
             });
-            await mutateArea();
+            await mutateCommission();
         } else {
             alert.addAlert({
                 type: "error",
@@ -110,25 +115,25 @@ export default function BaseCommissionPage() {
 
         setIsLoading(false);
         setDeleteModal(false);
-        setSelectedArea(null);
+        setSelectedCommission(null);
     };
 
     useEffect(() => {
         if (!hasError.current) {
             if (
-                !isLoadingArea &&
-                ((!dataArea && errorArea) ||
-                    (dataArea && !Array.isArray(dataArea?.data)))
+                !isLoadingCommission &&
+                ((!dataCommission && errorCommission) ||
+                    (dataCommission && !Array.isArray(dataCommission?.data)))
             ) {
                 alert.addAlert({
                     type: "error",
-                    message: errorArea?.message || "Gagal memuat data",
+                    message: errorCommission?.message || "Gagal memuat data",
                     options: { autoClose: false },
                 });
                 hasError.current = true;
             }
         }
-    }, [alert, dataArea, errorArea, isLoadingArea]);
+    }, [alert, dataCommission, errorCommission, isLoadingCommission]);
 
     return (
         <>
@@ -149,9 +154,9 @@ export default function BaseCommissionPage() {
                 </Link>
             </div>
             <Table
-                data={dataArea?.data}
+                data={dataCommission?.data}
                 columns={columns}
-                isLoading={isLoadingArea}
+                isLoading={isLoadingCommission}
             />
             <div className="flex items-center justify-between">
                 <div>
@@ -169,7 +174,7 @@ export default function BaseCommissionPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataArea?.totalPage ?? 1}
+                    totalPages={dataCommission?.totalPage ?? 1}
                 />
             </div>
             <DeleteModal
