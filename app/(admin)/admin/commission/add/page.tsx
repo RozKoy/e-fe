@@ -46,9 +46,9 @@ export default function AddCommissionPage() {
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-area-add",
-            errorMessage: "Gagal menambahkan area",
-            successMessage: "Berhasil menambahkan area",
+            route: "api-commission-add",
+            errorMessage: "Gagal menambahkan komisi",
+            successMessage: "Berhasil menambahkan komisi",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);

@@ -66,6 +66,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["api-user-add", "/api/users"],
     ["api-user-delete", "/api/users/:id"],
 
+    // Commissions
+    ["api-commission-add", "/api/commissions"],
+
     // Roles
     ["api-role-get", "/api/roles"],
     ["api-role-add", "/api/roles"],
