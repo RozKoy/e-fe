@@ -139,7 +139,7 @@ export default function BaseCommissionPage() {
                     <h2>Manajemen Komisi</h2>
                 </div>
                 <Link
-                    href={"#"}
+                    href={ROUTE_LISTS.get("commission-add") ?? "#"}
                     size="sm"
                     variant="outline"
                     startIcon={<AddOutlined />}
