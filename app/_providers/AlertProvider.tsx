@@ -1,6 +1,12 @@
 "use client";
 
-import { CloseOutlined } from "@mui/icons-material";
+import {
+    InfoOutline,
+    ErrorOutline,
+    CloseOutlined,
+    CheckCircleOutline,
+    WarningAmberOutlined,
+} from "@mui/icons-material";
 import { useState, useContext, createContext } from "react";
 
 //
@@ -38,9 +44,52 @@ interface AlertProviderProps {
 //
 const AlertContext = createContext<AlertContextValue | null>(null);
 
+const typeClasses = {
+    info: "bg-blue-100 text-blue-700 border-blue-400",
+    error: "bg-red-100 text-red-700 border-red-400",
+    success: "bg-green-100 text-green-700 border-green-400",
+    warning: "bg-yellow-100 text-yellow-700 border-yellow-400",
+};
+
+const typeIcons = {
+    info: <InfoOutline />,
+    error: <ErrorOutline />,
+    success: <CheckCircleOutline />,
+    warning: <WarningAmberOutlined />,
+};
+
 //
 export function AlertProvider({ children }: AlertProviderProps) {
-    const [alerts, setAlerts] = useState<AlertItem[]>([]);
+    const [alerts, setAlerts] = useState<AlertItem[]>([
+        // {
+        //     id: "1",
+        //     type: "info",
+        //     message: "hahaha hahaha hahahah hahahah",
+        //     autoClose: false,
+        //     isVisible: true,
+        // },
+        // {
+        //     id: "2",
+        //     type: "error",
+        //     message: "Terjadi kesalahan",
+        //     autoClose: false,
+        //     isVisible: true,
+        // },
+        // {
+        //     id: "3",
+        //     type: "success",
+        //     message: "Berhasil banget aman banget",
+        //     autoClose: false,
+        //     isVisible: true,
+        // },
+        // {
+        //     id: "4",
+        //     type: "warning",
+        //     message: "Hayolooo",
+        //     autoClose: false,
+        //     isVisible: true,
+        // },
+    ]);
 
     const addAlert = (param: AddAlert) => {
         const { type, message, options } = param;
@@ -110,22 +159,16 @@ export function AlertProvider({ children }: AlertProviderProps) {
                                 ? "opacity-100 translate-x-0"
                                 : "opacity-0 translate-x-5"
                         } ${
-                            {
-                                info: "bg-blue-100 text-blue-700 border-blue-400",
-                                error: "bg-red-100 text-red-700 border-red-400",
-                                success:
-                                    "bg-green-100 text-green-700 border-green-400",
-                                warning:
-                                    "bg-yellow-100 text-yellow-700 border-yellow-400",
-                            }[alert.type]
-                        } min-w-72 px-4 py-3 rounded-xl shadow border-2 flex items-center justify-between gap-1.5 transform transition-all duration-300`}
+                            typeClasses[alert.type]
+                        } min-w-72 px-4 py-3 rounded-4xl shadow border-2 flex items-center justify-center gap-1.5 font-medium text-sm transform transition-all duration-300`}
                     >
-                        <span>{alert.message}</span>
+                        {typeIcons[alert.type]}
+                        <p>{alert.message}</p>
                         <button
                             onClick={() => closeAlert(alert.id)}
-                            className="ml-3 hover:opacity-70"
+                            className="ml-auto hover:opacity-70 flex items-center justify-center"
                         >
-                            <CloseOutlined />
+                            <CloseOutlined fontSize="small" />
                         </button>
                     </div>
                 ))}

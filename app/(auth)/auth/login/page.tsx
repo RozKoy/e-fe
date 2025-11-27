@@ -64,7 +64,7 @@ export default function LoginPage() {
             </div>
             <div className="bg-primary flex items-center justify-center">
                 <div className="max-w-2xl p-6 md:p-10 rounded-lg flex flex-col gap-6 text-white">
-                    <h1 className="font-bold tracking-wide text-2xl md:text-3xl text-center md:text-start">
+                    <h1 className="font-medium tracking-wide text-2xl md:text-3xl text-center md:text-start">
                         Selamat Datang di SIMRESES DPRD Provinsi Lampung
                     </h1>
                     <form
@@ -113,7 +113,7 @@ export default function LoginPage() {
                             rounded="full"
                             variant="outline"
                             isLoading={loading}
-                            className="text-primary"
+                            className="font-bold text-primary"
                         >
                             Masuk
                         </Button>
