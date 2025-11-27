@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import { postRequest } from "@/app/_utils/api";
+import { IPosition } from "@/app/_types/position";
 import Input from "@/app/_components/inputs/input";
 import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -42,6 +43,7 @@ export default function AddUserPage() {
     const [email, setEmail] = useState<string>("");
     const [roleId, setRoleId] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [positionId, setPositionId] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
 
@@ -51,11 +53,19 @@ export default function AddUserPage() {
         // isLoading: isLoadingRole,
     } = useSWR<IResponse<IRole[]>>(`${ROUTE_LISTS.get("api-role-get")}`);
 
+    const {
+        data: dataPosition,
+        // error: errorPosition,
+        // isLoading: isLoadingPosition,
+    } = useSWR<IResponse<IPosition[]>>(
+        `${ROUTE_LISTS.get("api-position-get")}`
+    );
+
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         await postRequest({
-            body: { name, email, roleId, password },
+            body: { name, email, roleId, password, positionId },
             alert,
             setErrors,
             setLoading,
@@ -137,9 +147,29 @@ export default function AddUserPage() {
                             });
                         }}
                     >
-                        {dataRole?.data?.map((role, index) => (
-                            <option key={index} value={role.id}>
-                                {role.name}
+                        {dataRole?.data?.map((item, index) => (
+                            <option key={index} value={item.id}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </Select>
+                </Label>
+                <Label text="Posisi" error={errors?.get("positionId")} required>
+                    <Select
+                        value={positionId}
+                        error={errors?.get("positionId")}
+                        placeholder="Pilih posisi"
+                        onChange={(e) => {
+                            setPositionId(e.target.value);
+                            setErrors((prev) => {
+                                prev?.delete("positionId");
+                                return prev?.size ? prev : null;
+                            });
+                        }}
+                    >
+                        {dataPosition?.data?.map((item, index) => (
+                            <option key={index} value={item.id}>
+                                {item.name}
                             </option>
                         ))}
                     </Select>
