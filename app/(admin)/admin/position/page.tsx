@@ -147,7 +147,7 @@ export default function BasePositionPage() {
                     <h2>Manajemen Posisi</h2>
                 </div>
                 <Link
-                    href={"#"}
+                    href={ROUTE_LISTS.get("position-add") ?? "#"}
                     size="sm"
                     variant="outline"
                     startIcon={<AddOutlined />}

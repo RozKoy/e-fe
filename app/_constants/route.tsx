@@ -26,6 +26,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // Positions
     ["position", "/admin/position"],
+    ["position-add", "/admin/position/add"],
 
     // Commissions
     ["commission", "/admin/commission"],
