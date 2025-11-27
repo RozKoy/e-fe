@@ -2,7 +2,6 @@
 
 import useSWR from "swr";
 import { useState } from "react";
-import { IRole } from "@/app/_types/role";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
@@ -13,7 +12,7 @@ import { WorkOutline } from "@mui/icons-material";
 import Input from "@/app/_components/inputs/input";
 import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
-import Password from "@/app/_components/inputs/password";
+import { ICommission } from "@/app/_types/commission";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
@@ -30,6 +29,36 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
 const prevRoute: string = ROUTE_LISTS.get("position") ?? "/";
 
+const levelOptions = [
+    {
+        value: "ketua",
+        label: "Ketua",
+    },
+    {
+        value: "wakil",
+        label: "Wakil",
+    },
+    {
+        value: "sekretaris",
+        label: "Sekretaris",
+    },
+    {
+        value: "anggota",
+        label: "Anggota",
+    },
+];
+
+const categoryOptions = [
+    {
+        value: "pimpinan",
+        label: "Pimpinan",
+    },
+    {
+        value: "komisi",
+        label: "Komisi",
+    },
+];
+
 //
 export default function AddPositionPage() {
     const alert = useAlert();
@@ -39,30 +68,32 @@ export default function AddPositionPage() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [name, setName] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [roleId, setRoleId] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [level, setLevel] = useState<string>("");
+    const [category, setCategory] = useState<string>("");
+    const [commissionId, setCommissionId] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
 
     const {
-        data: dataRole,
-        // error: errorRole,
-        // isLoading: isLoadingRole,
-    } = useSWR<IResponse<IRole[]>>(`${ROUTE_LISTS.get("api-role-get")}`);
+        data: dataCommission,
+        // error: errorCommission,
+        // isLoading: isLoadingCommission,
+    } = useSWR<IResponse<ICommission[]>>(
+        `${ROUTE_LISTS.get("api-commission-get")}`
+    );
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         await postRequest({
-            body: { name, email, roleId, password },
+            body: { name, level, category, commissionId },
             alert,
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-user-add",
-            errorMessage: "Gagal menambahkan pengguna",
-            successMessage: "Berhasil menambahkan pengguna",
+            route: "api-position-add",
+            errorMessage: "Gagal menambahkan posisi",
+            successMessage: "Berhasil menambahkan posisi",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -95,51 +126,66 @@ export default function AddPositionPage() {
                         onChange={(e) => setName(e.target.value)}
                     />
                 </Label>
-                <Label text="Email" error={errors?.get("email")} required>
-                    <Input
-                        error={errors?.get("email")}
-                        placeholder="email@example.com"
-                        onInput={() =>
-                            setErrors((prev) => {
-                                prev?.delete("email");
-                                return prev?.size ? prev : null;
-                            })
-                        }
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </Label>
-                <Label
-                    text="Kata Sandi"
-                    error={errors?.get("password")}
-                    required
-                >
-                    <Password
-                        error={errors?.get("password")}
-                        onInput={() =>
-                            setErrors((prev) => {
-                                prev?.delete("password");
-                                return prev?.size ? prev : null;
-                            })
-                        }
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Label>
-                <Label text="Peran" error={errors?.get("roleId")} required>
+                <Label text="Grup" error={errors?.get("category")} required>
                     <Select
-                        value={roleId}
-                        error={errors?.get("roleId")}
-                        placeholder="Pilih peran"
+                        value={category}
+                        error={errors?.get("category")}
+                        placeholder="Pilih grup"
                         onChange={(e) => {
-                            setRoleId(e.target.value);
+                            setCategory(e.target.value);
                             setErrors((prev) => {
-                                prev?.delete("roleId");
+                                prev?.delete("category");
                                 return prev?.size ? prev : null;
                             });
                         }}
                     >
-                        {dataRole?.data?.map((role, index) => (
-                            <option key={index} value={role.id}>
-                                {role.name}
+                        {categoryOptions.map((item, index) => (
+                            <option key={index} value={item.value}>
+                                {item.label}
+                            </option>
+                        ))}
+                    </Select>
+                </Label>
+                <Label text="Tingkat" error={errors?.get("level")} required>
+                    <Select
+                        value={level}
+                        error={errors?.get("level")}
+                        placeholder="Pilih tingkat"
+                        onChange={(e) => {
+                            setLevel(e.target.value);
+                            setErrors((prev) => {
+                                prev?.delete("level");
+                                return prev?.size ? prev : null;
+                            });
+                        }}
+                    >
+                        {levelOptions.map((item, index) => (
+                            <option key={index} value={item.value}>
+                                {item.label}
+                            </option>
+                        ))}
+                    </Select>
+                </Label>
+                <Label
+                    text="Komisi"
+                    error={errors?.get("commissionId")}
+                    required
+                >
+                    <Select
+                        value={commissionId}
+                        error={errors?.get("commissionId")}
+                        placeholder="Pilih komisi"
+                        onChange={(e) => {
+                            setCommissionId(e.target.value);
+                            setErrors((prev) => {
+                                prev?.delete("commissionId");
+                                return prev?.size ? prev : null;
+                            });
+                        }}
+                    >
+                        {dataCommission?.data?.map((item, index) => (
+                            <option key={index} value={item.id}>
+                                {item.name}
                             </option>
                         ))}
                     </Select>
