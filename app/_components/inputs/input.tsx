@@ -10,6 +10,7 @@ interface InputProps {
     autoFocus?: React.InputHTMLAttributes<HTMLInputElement>["autoFocus"];
     className?: React.InputHTMLAttributes<HTMLInputElement>["className"];
     placeholder?: React.InputHTMLAttributes<HTMLInputElement>["placeholder"];
+    defaultValue?: React.InputHTMLAttributes<HTMLInputElement>["defaultValue"];
 }
 
 //
@@ -22,6 +23,7 @@ export default function Input({
     autoFocus,
     className = "",
     placeholder = "Masukkan input",
+    defaultValue,
 }: InputProps) {
     return (
         <input
@@ -31,6 +33,7 @@ export default function Input({
             onChange={onChange}
             autoFocus={autoFocus}
             placeholder={placeholder}
+            defaultValue={defaultValue}
             className={`${
                 error ? "border-red-300" : "border-gray-300"
             } ${className} w-full px-3 py-2 rounded-lg border-2 text-gray-600 transition-all`}
