@@ -63,6 +63,10 @@ export default function BaseUserPage() {
             header: "Nama",
             accessor: (item: IUser) => item.profile?.name ?? "-",
         },
+        {
+            header: "Posisi",
+            accessor: (item: IUser) => item.position?.name ?? "-",
+        },
         { header: "Peran", accessor: (item: IUser) => item.role?.name ?? "-" },
         {
             header: "Aksi",
