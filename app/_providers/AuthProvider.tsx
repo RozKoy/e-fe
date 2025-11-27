@@ -41,8 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     if (
                         hasMutateStatus.current === 2 &&
                         !isLoading &&
-                        data?.code === 401 &&
-                        !isAuth
+                        data?.code === 401
                     ) {
                         alert.clearAlert();
                         hasError.current = true;
@@ -57,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (!hasError.current) {
             check();
         }
-    }, [data, alert, isAuth, mutate, router, isLoading]);
+    }, [data, alert, mutate, router, isLoading]);
 
     return (
         <>
