@@ -48,49 +48,77 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="w-screen h-screen bg-gray-100 flex items-center justify-center">
-            <div className="w-11/12 md:w-xl p-10 rounded-lg bg-white flex flex-col gap-6 shadow">
-                <h1 className="md:text-center">
-                    Selamat Datang di SIMRESES DPRD Provinsi Lampung
+        <div className="w-screen h-screen bg-gray-100 grid grid-cols-1 lg:grid-cols-2">
+            <div className="hidden lg:flex p-10 flex-col gap-4 justify-center">
+                <h1 className="font-extrabold leading-tight text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-primary">
+                    <span className="text-secondary tracking-wider">
+                        SELAMAT DATANG DI
+                    </span>{" "}
+                    SISTEM INFORMASI MANAJEMEN RESES DPRD LAMPUNG
                 </h1>
-                <form onSubmit={login} className="flex flex-col gap-3">
-                    <Label text="Email" error={errors?.get("email")} required>
-                        <Input
-                            error={errors?.get("email")}
-                            autoFocus={true}
-                            placeholder="Masukkan email"
-                            onInput={() =>
-                                setErrors((prev) => {
-                                    prev?.delete("email");
-                                    return prev;
-                                })
-                            }
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </Label>
-                    <Label
-                        text="Kata Sandi"
-                        error={errors?.get("password")}
-                        required
+                <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-lg">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua.
+                </p>
+            </div>
+            <div className="bg-primary flex items-center justify-center">
+                <div className="max-w-2xl p-6 md:p-10 rounded-lg flex flex-col gap-6 text-white">
+                    <h1 className="font-bold tracking-wide text-2xl md:text-3xl text-center md:text-start">
+                        Selamat Datang di SIMRESES DPRD Provinsi Lampung
+                    </h1>
+                    <form
+                        onSubmit={login}
+                        className="flex flex-col gap-3 font-semibold"
                     >
-                        <Password
+                        <Label
+                            text="Email"
+                            error={errors?.get("email")}
+                            required
+                        >
+                            <Input
+                                error={errors?.get("email")}
+                                autoFocus={true}
+                                placeholder="Masukkan email"
+                                onInput={() =>
+                                    setErrors((prev) => {
+                                        prev?.delete("email");
+                                        return prev;
+                                    })
+                                }
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </Label>
+                        <Label
+                            text="Kata Sandi"
                             error={errors?.get("password")}
-                            onInput={() =>
-                                setErrors((prev) => {
-                                    prev?.delete("password");
-                                    return prev;
-                                })
-                            }
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </Label>
-                    <p className="text-red-500 text-center">
-                        {errorMessage && errorMessage}
-                    </p>
-                    <Button type="submit" variant="outline" isLoading={loading}>
-                        Masuk
-                    </Button>
-                </form>
+                            required
+                        >
+                            <Password
+                                error={errors?.get("password")}
+                                onInput={() =>
+                                    setErrors((prev) => {
+                                        prev?.delete("password");
+                                        return prev;
+                                    })
+                                }
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </Label>
+                        <p className="text-red-500 text-center">
+                            {errorMessage && errorMessage}
+                        </p>
+                        <Button
+                            type="submit"
+                            rounded="full"
+                            variant="outline"
+                            isLoading={loading}
+                            className="text-primary"
+                        >
+                            Masuk
+                        </Button>
+                    </form>
+                </div>
             </div>
         </div>
     );

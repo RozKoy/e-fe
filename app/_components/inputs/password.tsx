@@ -34,8 +34,8 @@ export default function Password({
             <button
                 type="button"
                 className={`${
-                    error ? "text-red-500" : ""
-                } absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center transition-all`}
+                    error ? "text-red-500" : "text-primary"
+                } absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center transition-all`}
                 onClick={() => setVisible((prev) => !prev)}
             >
                 {visible ? (

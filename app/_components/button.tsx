@@ -7,12 +7,15 @@ type ButtonSize = "xs" | "sm" | "md";
 
 type ButtonVariant = "primary" | "outline" | "danger";
 
+type ButtonRounded = "base" | "full";
+
 interface ButtonProps {
     children: React.ReactNode;
     size?: ButtonSize;
     type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
     endIcon?: React.ReactNode;
     onClick?: React.ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
+    rounded?: ButtonRounded;
     variant?: ButtonVariant;
     disabled?: React.ButtonHTMLAttributes<HTMLButtonElement>["disabled"];
     className?: React.ButtonHTMLAttributes<HTMLButtonElement>["className"];
@@ -34,6 +37,11 @@ const variantClasses = {
     danger: "bg-red-500 hover:bg-red-600 text-white",
 };
 
+const roundedClasses = {
+    base: "rounded-xl",
+    full: "rounded-4xl",
+};
+
 //
 export default function Button({
     children,
@@ -41,6 +49,7 @@ export default function Button({
     type = "button",
     endIcon,
     onClick,
+    rounded = "base",
     variant = "primary",
     disabled = false,
     className = "",
@@ -51,10 +60,10 @@ export default function Button({
         <button
             type={type}
             className={`${className} ${sizeClasses[size]} ${
-                variantClasses[variant]
-            } ${
+                roundedClasses[rounded]
+            } ${variantClasses[variant]} ${
                 disabled && "opacity-50"
-            } rounded-lg inline-flex items-center justify-center gap-0.5 disabled:cursor-not-allowed transition`}
+            } inline-flex items-center justify-center gap-0.5 disabled:cursor-not-allowed transition`}
             onClick={onClick}
             disabled={disabled || isLoading}
         >
