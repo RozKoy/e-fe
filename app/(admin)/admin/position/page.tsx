@@ -2,8 +2,8 @@
 
 import useSWR from "swr";
 import Link from "@/app/_components/link";
-import { IUser } from "@/app/_types/user";
 import { IResponse } from "@/app/_types/api";
+import { IPosition } from "@/app/_types/position";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
@@ -33,36 +33,45 @@ export default function BasePositionPage() {
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+    const [selectedPosition, setSelectedPosition] = useState<IPosition | null>(
+        null
+    );
 
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
 
     const {
-        data: dataUser,
-        error: errorUser,
-        mutate: mutateUser,
-        isLoading: isLoadingUser,
-    } = useSWR<IResponse<IUser[]>>(
-        `${ROUTE_LISTS.get("api-user-get")}?${new URLSearchParams({
+        data: dataPosition,
+        error: errorPosition,
+        mutate: mutatePosition,
+        isLoading: isLoadingPosition,
+    } = useSWR<IResponse<IPosition[]>>(
+        `${ROUTE_LISTS.get("api-position-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
+            // level: "",
             // search: "",
-            // roleId: "",
-            // areaId: "",
-            // fractionId: "",
+            // category: "",
+            // commissionId: "",
         })}`
     );
 
-    const columns: Column<IUser>[] = [
-        { header: "Email", accessor: "email" },
+    const columns: Column<IPosition>[] = [
+        { header: "Nama", accessor: "name" },
         {
-            header: "Nama",
-            accessor: (item: IUser) => item.profile?.name ?? "-",
+            header: "Grup",
+            accessor: (item: IPosition) => item?.category?.toUpperCase() ?? "-",
         },
-        { header: "Peran", accessor: (item: IUser) => item.role?.name ?? "-" },
+        {
+            header: "Tingkat",
+            accessor: (item: IPosition) => item?.level?.toUpperCase() ?? "-",
+        },
+        {
+            header: "Komisi",
+            accessor: (item: IPosition) => item?.commission?.name ?? "-",
+        },
         {
             header: "Aksi",
-            accessor: (item: IUser) => (
+            accessor: (item: IPosition) => (
                 <button
                     className="text-red-400"
                     onClick={() => {
@@ -76,19 +85,19 @@ export default function BasePositionPage() {
     ];
 
     const handleDeleteClose = () => {
-        setSelectedUser(null);
+        setSelectedPosition(null);
         setDeleteModal(false);
     };
 
-    const handleDeleteItem = (item: IUser) => {
-        setSelectedUser(item);
+    const handleDeleteItem = (item: IPosition) => {
+        setSelectedPosition(item);
         setDeleteModal(true);
     };
 
     const handleDelete = async () => {
-        let url = ROUTE_LISTS.get("api-user-delete");
+        let url = ROUTE_LISTS.get("api-position-delete");
 
-        if (!url || !selectedUser?.id) {
+        if (!url || !selectedPosition?.id) {
             alert.addAlert({
                 type: "error",
                 message: "Mohon maaf, sistem sedang bermasalah",
@@ -99,7 +108,7 @@ export default function BasePositionPage() {
 
         setIsLoading(true);
 
-        url = url.replace(":id", selectedUser.id);
+        url = url.replace(":id", selectedPosition.id);
 
         const res = await fetch(url, { method: "DELETE" });
 
@@ -108,7 +117,7 @@ export default function BasePositionPage() {
                 type: "success",
                 message: "Berhasil menghapus data",
             });
-            await mutateUser();
+            await mutatePosition();
         } else {
             alert.addAlert({
                 type: "error",
@@ -118,25 +127,25 @@ export default function BasePositionPage() {
 
         setIsLoading(false);
         setDeleteModal(false);
-        setSelectedUser(null);
+        setSelectedPosition(null);
     };
 
     useEffect(() => {
         if (!hasError.current) {
             if (
-                !isLoadingUser &&
-                ((!dataUser && errorUser) ||
-                    (dataUser && !Array.isArray(dataUser?.data)))
+                !isLoadingPosition &&
+                ((!dataPosition && errorPosition) ||
+                    (dataPosition && !Array.isArray(dataPosition?.data)))
             ) {
                 alert.addAlert({
                     type: "error",
-                    message: errorUser?.message || "Gagal memuat data",
+                    message: errorPosition?.message || "Gagal memuat data",
                     options: { autoClose: false },
                 });
                 hasError.current = true;
             }
         }
-    }, [alert, dataUser, errorUser, isLoadingUser]);
+    }, [alert, dataPosition, errorPosition, isLoadingPosition]);
 
     return (
         <>
@@ -157,9 +166,9 @@ export default function BasePositionPage() {
                 </Link>
             </div>
             <Table
-                data={dataUser?.data}
+                data={dataPosition?.data}
                 columns={columns}
-                isLoading={isLoadingUser}
+                isLoading={isLoadingPosition}
             />
             <div className="flex items-center justify-between">
                 <div>
@@ -177,7 +186,7 @@ export default function BasePositionPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataUser?.totalPage ?? 1}
+                    totalPages={dataPosition?.totalPage ?? 1}
                 />
             </div>
             <DeleteModal
