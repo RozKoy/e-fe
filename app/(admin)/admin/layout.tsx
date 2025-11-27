@@ -2,6 +2,7 @@
 
 import {
     MapOutlined,
+    WorkOutline,
     MenuOutlined,
     BadgeOutlined,
     CloseOutlined,
@@ -76,6 +77,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: <PeopleAltOutlined />,
         path: ROUTE_LISTS.get("user"),
         title: "Pengguna",
+    },
+    {
+        icon: <WorkOutline />,
+        path: ROUTE_LISTS.get("position"),
+        title: "Posisi",
     },
     {
         icon: <FilterFramesOutlined />,
