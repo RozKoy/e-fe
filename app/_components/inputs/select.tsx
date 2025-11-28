@@ -31,8 +31,8 @@ export default function Select({
                 onChange={onChange}
                 defaultValue={defaultValue}
                 className={`${
-                    error ? "border-red-300" : "border-gray-300"
-                } peer w-full pl-3 py-2 pr-8 rounded-lg border-2 text-gray-600 appearance-none`}
+                    error ? "border-red-300" : "border-primary/80"
+                } peer w-full pl-3 py-2 pr-8 rounded-4xl border-2 bg-white focus:outline-primary text-gray-600 appearance-none`}
             >
                 {placeholder && (
                     <option value={""} disabled>
@@ -41,10 +41,10 @@ export default function Select({
                 )}
                 {children && children}
             </select>
-            <div className="peer-open:hidden absolute top-1/2 right-1 -translate-y-1/2 transition-all">
+            <div className="peer-open:hidden absolute top-1/2 right-2 -translate-y-1/2 transition-all">
                 <ExpandMoreOutlined />
             </div>
-            <div className="hidden peer-open:block absolute top-1/2 right-1 -translate-y-1/2 transition-all">
+            <div className="hidden peer-open:block absolute top-1/2 right-2 -translate-y-1/2 transition-all">
                 <ExpandLessOutlined />
             </div>
         </div>

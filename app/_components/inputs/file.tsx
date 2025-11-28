@@ -15,11 +15,14 @@ export default function File({ name, note, error, onChange }: FileProps) {
     return (
         <label
             className={`${
-                error ? "border-red-300" : "border-gray-300"
+                error ? "border-red-300" : "border-primary/80"
             } w-full h-60 bg-white hover:bg-gray-50 rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all`}
         >
             <div className="pt-5 pb-6 flex flex-col items-center justify-center text-gray-600">
-                <CloudUploadOutlined className="mb-4" fontSize="large" />
+                <CloudUploadOutlined
+                    className="mb-2 text-primary"
+                    sx={{ fontSize: "4rem" }}
+                />
                 <p className="mb-2 text-sm">
                     <span className="font-semibold">Klik untuk mengunggah</span>{" "}
                     atau seret dan lepas

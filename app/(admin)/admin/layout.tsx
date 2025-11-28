@@ -121,7 +121,7 @@ function MenuButton({ open, onClick, className }: MenuButtonProps) {
     return (
         <button
             type="button"
-            className={`${className} xl:hidden p-1.5 rounded-lg bg-black/5 hover:bg-black/10 flex items-center justify-center transition-all`}
+            className={`${className} xl:hidden p-1.5 rounded-lg bg-primary/5 hover:bg-primary/10 flex items-center justify-center text-primary transition-all`}
             onClick={onClick}
         >
             {open ? <CloseOutlined /> : <MenuOutlined />}
@@ -134,8 +134,10 @@ function MenuItem({ icon, path, title, active }: MenuItemProps) {
         <Link
             href={path}
             className={`${
-                active ? "border-black/10" : "border-transparent"
-            } p-2 rounded-lg hover:bg-black/5 border-2 flex gap-3 transition-all`}
+                active
+                    ? "bg-primary hover:bg-primary/90 text-white"
+                    : "hover:pl-3 hover:bg-gray-100 text-primary"
+            } p-2 rounded-lg flex items-center gap-3 transition-all`}
         >
             {icon}
             <p>{title}</p>
@@ -211,10 +213,10 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
 
             await mutateProfile();
         } else {
-            if (Array.isArray(response.error)) {
-                setErrors(badRequestResponseFormat(response.error));
+            if (Array.isArray(response.message)) {
+                setErrors(badRequestResponseFormat(response.message));
             } else {
-                setErrorMessage(response.error);
+                setErrorMessage(response.message);
 
                 alert.addAlert({
                     type: "error",
@@ -313,14 +315,14 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                             } absolute right-5 p-1.5 rounded-lg bg-white shadow transition-all`}
                         >
                             <button
-                                className="min-w-32 p-2 rounded-lg hover:bg-gray-100 flex gap-1 items-center justify-start transition-all"
+                                className="min-w-36 p-2 hover:pl-3 rounded-lg hover:bg-gray-100 flex gap-1 items-center justify-start text-primary transition-all"
                                 onClick={() => setShowProfile(true)}
                             >
                                 <ManageAccountsOutlined fontSize="small" />
                                 <p>Profil</p>
                             </button>
                             <button
-                                className="min-w-32 p-2 rounded-lg hover:bg-gray-100 flex gap-1 items-center justify-start transition-all"
+                                className="min-w-36 p-2 hover:pl-3 rounded-lg hover:bg-gray-100 flex gap-1 items-center justify-start text-primary transition-all"
                                 onClick={logoutHandle}
                             >
                                 <LogoutOutlined fontSize="small" />
