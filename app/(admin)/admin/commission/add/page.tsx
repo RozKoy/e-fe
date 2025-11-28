@@ -60,7 +60,7 @@ export default function AddCommissionPage() {
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <FilterFramesOutlined />
                 <h2>Tambah Komisi</h2>
             </div>
@@ -91,7 +91,7 @@ export default function AddCommissionPage() {
                     <Button
                         type="submit"
                         size="sm"
-                        variant="outline"
+                        variant="primary"
                         isLoading={loading}
                     >
                         Simpan
