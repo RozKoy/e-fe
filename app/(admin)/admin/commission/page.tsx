@@ -174,7 +174,7 @@ export default function BaseCommissionPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataCommission?.totalPage ?? 1}
+                    totalPages={dataCommission?.totalPage || 1}
                 />
             </div>
             <DeleteModal

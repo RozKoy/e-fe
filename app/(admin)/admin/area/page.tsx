@@ -169,7 +169,7 @@ export default function BaseAreaPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataArea?.totalPage ?? 1}
+                    totalPages={dataArea?.totalPage || 1}
                 />
             </div>
             <DeleteModal

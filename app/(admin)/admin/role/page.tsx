@@ -174,7 +174,7 @@ export default function BaseRolePage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataRole?.totalPage ?? 1}
+                    totalPages={dataRole?.totalPage || 1}
                 />
             </div>
             <DeleteModal

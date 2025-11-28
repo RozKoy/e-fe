@@ -194,7 +194,7 @@ export default function BaseFractionPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataFraction?.totalPage ?? 1}
+                    totalPages={dataFraction?.totalPage || 1}
                 />
             </div>
             <DeleteModal

@@ -175,7 +175,7 @@ export default function BaseCategoryPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataCategory?.totalPage ?? 1}
+                    totalPages={dataCategory?.totalPage || 1}
                 />
             </div>
             <DeleteModal

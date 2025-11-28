@@ -185,7 +185,7 @@ export default function BaseUserPage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataUser?.totalPage ?? 1}
+                    totalPages={dataUser?.totalPage || 1}
                 />
             </div>
             <DeleteModal
