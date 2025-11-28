@@ -55,7 +55,7 @@ export default function Table<T>({
                             key={colIndex}
                             className={`${
                                 column?.className ?? "text-center"
-                            } px-4 py-3 text-gray-500`}
+                            } px-4 py-3 text-gray-700`}
                         >
                             {typeof column.accessor === "function"
                                 ? column.accessor(item)
@@ -80,15 +80,15 @@ export default function Table<T>({
     }
 
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+        <div className="overflow-hidden rounded-xl border-2 border-primary bg-white">
             <div className="max-w-full overflow-x-auto">
                 <table className="min-w-full">
-                    <thead className="border-b border-gray-100 bg-gray-50">
+                    <thead className="border-b border-primary bg-primary">
                         <tr>
                             {columns.map((column, index) => (
                                 <th
                                     key={index}
-                                    className="px-5 py-3 font-medium text-gray-500"
+                                    className="px-5 py-3 font-medium text-white"
                                 >
                                     {column.header}
                                 </th>
