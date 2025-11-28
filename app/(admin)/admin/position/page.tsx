@@ -73,7 +73,7 @@ export default function BasePositionPage() {
             header: "Aksi",
             accessor: (item: IPosition) => (
                 <button
-                    className="text-red-400"
+                    className="p-1 rounded-full hover:bg-red-100 text-red-500 cursor-pointer transition-all"
                     onClick={() => {
                         handleDeleteItem(item);
                     }}

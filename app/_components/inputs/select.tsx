@@ -31,7 +31,7 @@ export default function Select({
                 onChange={onChange}
                 defaultValue={defaultValue}
                 className={`${
-                    error ? "border-red-300" : "border-primary/80"
+                    error ? "border-red-400" : "border-primary/80"
                 } peer w-full pl-3 py-2 pr-8 rounded-4xl border-2 bg-white focus:outline-primary text-gray-600 appearance-none`}
             >
                 {placeholder && (
