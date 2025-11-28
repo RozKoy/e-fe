@@ -62,7 +62,7 @@ export default function BaseCategoryPage() {
             header: "Aksi",
             accessor: (item: ICategory) => (
                 <button
-                    className="text-red-400"
+                    className="p-1 rounded-full hover:bg-red-100 text-red-500 cursor-pointer transition-all"
                     onClick={() => {
                         handleDeleteItem(item);
                     }}
@@ -140,15 +140,15 @@ export default function BaseCategoryPage() {
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                     <CategoryOutlined />
                     <h2>Manajemen Kategori</h2>
                 </div>
                 <Link
                     href={ROUTE_LISTS.get("category-add") ?? "#"}
                     size="sm"
-                    variant="outline"
-                    startIcon={<AddOutlined />}
+                    variant="primary"
+                    startIcon={<AddOutlined fontSize="small" />}
                     className="ml-auto"
                 >
                     Tambah

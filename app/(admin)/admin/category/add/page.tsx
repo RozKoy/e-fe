@@ -59,7 +59,7 @@ export default function AddCategoryPage() {
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <CategoryOutlined />
                 <h2>Tambah Kategori</h2>
             </div>
@@ -90,7 +90,7 @@ export default function AddCategoryPage() {
                     <Button
                         type="submit"
                         size="sm"
-                        variant="outline"
+                        variant="primary"
                         isLoading={loading}
                     >
                         Simpan
