@@ -151,15 +151,15 @@ export default function BasePositionPage() {
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                     <WorkOutline />
                     <h2>Manajemen Posisi</h2>
                 </div>
                 <Link
                     href={ROUTE_LISTS.get("position-add") ?? "#"}
                     size="sm"
-                    variant="outline"
-                    startIcon={<AddOutlined />}
+                    variant="primary"
+                    startIcon={<AddOutlined fontSize="small" />}
                     className="ml-auto"
                 >
                     Tambah
