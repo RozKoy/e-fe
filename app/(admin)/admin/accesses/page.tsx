@@ -75,7 +75,7 @@ export default function BaseUserAccessPage() {
             header: "Aksi",
             accessor: (item: IUserAccess) => (
                 <button
-                    className="text-red-400"
+                    className="p-1 rounded-full hover:bg-red-100 text-red-500 cursor-pointer transition-all"
                     onClick={() => {
                         handleDeleteItem(item);
                     }}
@@ -153,15 +153,15 @@ export default function BaseUserAccessPage() {
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                     <BadgeOutlined />
                     <h2>Manajemen Akses Pengguna</h2>
                 </div>
                 <Link
                     href={ROUTE_LISTS.get("access-add") ?? "#"}
                     size="sm"
-                    variant="outline"
-                    startIcon={<AddOutlined />}
+                    variant="primary"
+                    startIcon={<AddOutlined fontSize="small" />}
                     className="ml-auto"
                 >
                     Tambah
