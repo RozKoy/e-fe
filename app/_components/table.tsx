@@ -80,10 +80,10 @@ export default function Table<T>({
     }
 
     return (
-        <div className="overflow-hidden rounded-xl border-2 border-primary bg-white">
+        <div className="overflow-hidden rounded-xl border-2 border-primary/90 bg-white">
             <div className="max-w-full overflow-x-auto">
                 <table className="min-w-full">
-                    <thead className="border-b border-primary bg-primary">
+                    <thead className="border-b border-primary/90 bg-primary/90">
                         <tr>
                             {columns.map((column, index) => (
                                 <th

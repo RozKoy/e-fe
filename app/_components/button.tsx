@@ -31,7 +31,7 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-    primary: "",
+    primary: "bg-primary hover:bg-primary/90 text-white",
     outline:
         "bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 text-gray-700",
     danger: "bg-red-500 hover:bg-red-600 text-white",
@@ -63,7 +63,7 @@ export default function Button({
                 roundedClasses[rounded]
             } ${variantClasses[variant]} ${
                 disabled && "opacity-50"
-            } inline-flex items-center justify-center gap-0.5 disabled:cursor-not-allowed transition`}
+            } inline-flex items-center justify-center gap-0.5 cursor-pointer disabled:cursor-not-allowed transition`}
             onClick={onClick}
             disabled={disabled || isLoading}
         >

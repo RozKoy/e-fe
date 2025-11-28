@@ -103,7 +103,7 @@ export default function AddRolePage() {
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <WorkspacesOutline />
                 <h2>Tambah Peran</h2>
             </div>
@@ -144,7 +144,10 @@ export default function AddRolePage() {
                 />
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                     {permissions.map((item, index) => (
-                        <div key={index}>
+                        <div
+                            key={index}
+                            className="p-3 rounded-xl border border-primary/50 hover:bg-gray-100 text-primary space-y-1.5"
+                        >
                             <p className="font-semibold">{item.group}</p>
                             <div className="flex flex-col">
                                 {item.items.map((item, index) => (
@@ -194,7 +197,7 @@ export default function AddRolePage() {
                     <Button
                         type="submit"
                         size="sm"
-                        variant="outline"
+                        variant="primary"
                         isLoading={loading}
                     >
                         Simpan

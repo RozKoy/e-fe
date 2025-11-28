@@ -22,6 +22,7 @@ export default function Checkbox({
                 value={value}
                 checked={checked}
                 onChange={onChange}
+                className="w-3.5 aspect-square rounded border border-primary bg-white checked:bg-primary/90 appearance-none"
             />
             <span>{text}</span>
         </label>
