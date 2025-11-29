@@ -8,7 +8,6 @@ import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
-import { postRequest } from "@/app/_utils/api";
 import { IPosition } from "@/app/_types/position";
 import Input from "@/app/_components/inputs/input";
 import Select from "@/app/_components/inputs/select";
@@ -16,6 +15,7 @@ import { ROUTE_LISTS } from "@/app/_constants/route";
 import { PeopleAltOutlined } from "@mui/icons-material";
 import Password from "@/app/_components/inputs/password";
 import { useAlert } from "@/app/_providers/AlertProvider";
+import { mapRequest, postRequest } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -65,7 +65,7 @@ export default function AddUserPage() {
         e.preventDefault();
 
         await postRequest({
-            body: { name, email, roleId, password, positionId },
+            body: mapRequest({ name, email, roleId, password, positionId }),
             alert,
             setErrors,
             setLoading,
@@ -154,10 +154,11 @@ export default function AddUserPage() {
                         ))}
                     </Select>
                 </Label>
-                <Label text="Posisi" error={errors?.get("positionId")} required>
+                <Label text="Posisi" error={errors?.get("positionId")}>
                     <Select
                         value={positionId}
                         error={errors?.get("positionId")}
+                        firstOption={true}
                         placeholder="Pilih posisi"
                         onChange={(e) => {
                             setPositionId(e.target.value);

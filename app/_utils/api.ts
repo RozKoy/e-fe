@@ -30,6 +30,21 @@ export function badRequestResponseFormat(
     return new Map(errors.map((err) => [err.field, err.message]));
 }
 
+export function mapRequest(
+    data: Record<string, unknown>,
+    ignores: string[] = []
+): object {
+    const newData: Record<string, unknown> = {};
+
+    Object.keys(data).forEach((key) => {
+        if (data[key] || ignores.includes(key?.toString())) {
+            newData[key] = data[key];
+        }
+    });
+
+    return newData;
+}
+
 export async function postRequest({
     body,
     alert,
