@@ -2,6 +2,8 @@ import { ROUTE_LISTS } from "../_constants/route";
 import { AlertContextValue } from "../_providers/AlertProvider";
 
 //
+type RouteType = () => string;
+
 interface ErrorInterface {
     field: string;
     message: string;
@@ -13,7 +15,8 @@ interface PostRequest {
     setErrors: React.Dispatch<React.SetStateAction<Map<string, string> | null>>;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
-    route?: string;
+    route?: string | RouteType;
+    method?: RequestInit["method"];
     errorMessage?: string;
     successMessage?: string;
     preProcess?: () => void;
@@ -34,6 +37,7 @@ export async function postRequest({
     setLoading,
     setErrorMessage,
     route = "",
+    method = "POST",
     errorMessage = "Gagal",
     successMessage = "Berhasil",
     preProcess = () => {},
@@ -46,7 +50,7 @@ export async function postRequest({
 
     preProcess();
 
-    const url = ROUTE_LISTS.get(route);
+    const url = typeof route === "string" ? ROUTE_LISTS.get(route) : route();
 
     if (!url) {
         setLoading(false);
@@ -60,7 +64,7 @@ export async function postRequest({
     }
 
     const res = await fetch(url, {
-        method: "POST",
+        method,
         headers: {
             "Content-Type": "application/json",
         },
