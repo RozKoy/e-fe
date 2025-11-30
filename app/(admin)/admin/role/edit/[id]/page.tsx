@@ -1,7 +1,14 @@
 "use client";
 
+import React, {
+    useRef,
+    useMemo,
+    useState,
+    useEffect,
+    startTransition,
+} from "react";
 import useSWR from "swr";
-import { useMemo, useState } from "react";
+import { IRole } from "@/app/_types/role";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
@@ -17,6 +24,14 @@ import { mapRequest, postRequest } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
+interface Param {
+    id: string;
+}
+
+interface EditRolePageProps {
+    params: Promise<Param>;
+}
+
 interface PermissionGroup {
     group: string;
     items: IPermission[];
@@ -29,7 +44,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
         path: ROUTE_LISTS.get("role"),
     },
     {
-        name: "Tambah",
+        name: "Ubah",
     },
 ];
 
@@ -54,9 +69,13 @@ function mapPermissionsByGroup(data: IPermission[]): PermissionGroup[] {
 }
 
 //
-export default function AddRolePage() {
+export default function EditRolePage({ params }: EditRolePageProps) {
+    const { id } = React.use(params);
+
     const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -66,6 +85,14 @@ export default function AddRolePage() {
     const [permissionIds, setPermissionIds] = useState<{ id: string }[]>([]);
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataRole,
+        error: errorRole,
+        isLoading: isLoadingRole,
+    } = useSWR<IResponse<IRole>>(
+        `${ROUTE_LISTS.get("api-role-one")?.replace(":id", id)}`
+    );
 
     const {
         data: dataPermission,
@@ -84,14 +111,18 @@ export default function AddRolePage() {
         e.preventDefault();
 
         await postRequest({
-            body: mapRequest({ name, description, permissionIds }),
+            body: mapRequest({ name, description, permissionIds }, [
+                "description",
+            ]),
             alert,
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-role-add",
-            errorMessage: "Gagal menambahkan peran",
-            successMessage: "Berhasil menambahkan peran",
+            route: () =>
+                ROUTE_LISTS.get("api-role-update")?.replace(":id", id) ?? "",
+            method: "PUT",
+            errorMessage: "Gagal mengubah peran",
+            successMessage: "Berhasil mengubah peran",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -100,12 +131,35 @@ export default function AddRolePage() {
         });
     };
 
+    useEffect(() => {
+        if (!hasError.current) {
+            if (!isLoadingRole && errorRole) {
+                router.push(prevRoute);
+                hasError.current = true;
+            }
+        }
+    }, [router, errorRole, isLoadingRole]);
+
+    useEffect(() => {
+        if (dataRole?.data) {
+            startTransition(() => {
+                setName(dataRole.data?.name ?? "");
+                setDescription(dataRole.data?.description ?? "");
+                setPermissionIds(
+                    dataRole.data?.rolePermissions?.map((item) => ({
+                        id: item.permissionId,
+                    })) ?? []
+                );
+            });
+        }
+    }, [dataRole?.data]);
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <WorkspacesOutline />
-                <h2>Tambah Peran</h2>
+                <h2>Ubah Peran</h2>
             </div>
             <form
                 onSubmit={submit}
@@ -113,6 +167,7 @@ export default function AddRolePage() {
             >
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
+                        value={name}
                         error={errors?.get("name")}
                         placeholder="Masukkan nama"
                         onInput={() =>
@@ -126,6 +181,7 @@ export default function AddRolePage() {
                 </Label>
                 <Label text="Deskripsi" error={errors?.get("description")}>
                     <Input
+                        value={description}
                         error={errors?.get("description")}
                         placeholder="Masukkan deskripsi"
                         onInput={() =>

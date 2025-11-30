@@ -3,9 +3,11 @@
 import {
     AddOutlined,
     DeleteOutline,
+    EditOutlined,
     WorkspacesOutline,
 } from "@mui/icons-material";
 import useSWR from "swr";
+import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { IRole } from "@/app/_types/role";
 import { IResponse } from "@/app/_types/api";
@@ -60,14 +62,28 @@ export default function BaseRolePage() {
         {
             header: "Aksi",
             accessor: (item: IRole) => (
-                <button
-                    className="p-1 rounded-full hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                    onClick={() => {
-                        handleDeleteItem(item);
-                    }}
-                >
-                    <DeleteOutline />
-                </button>
+                <div className="flex items-center justify-center">
+                    <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                        <DefaultLink
+                            href={
+                                ROUTE_LISTS.get("role-edit")?.replace(
+                                    ":id",
+                                    item.id
+                                ) ?? "#"
+                            }
+                        >
+                            <EditOutlined />
+                        </DefaultLink>
+                    </div>
+                    <button
+                        className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                        onClick={() => {
+                            handleDeleteItem(item);
+                        }}
+                    >
+                        <DeleteOutline />
+                    </button>
+                </div>
             ),
         },
     ];

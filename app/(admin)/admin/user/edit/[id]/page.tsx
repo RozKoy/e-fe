@@ -84,7 +84,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
         e.preventDefault();
 
         await postRequest({
-            body: mapRequest({ email, roleId, positionId }),
+            body: mapRequest({ email, roleId, positionId }, ["positionId"]),
             alert,
             setErrors,
             setLoading,
@@ -92,8 +92,8 @@ export default function EditUserPage({ params }: EditUserPageProps) {
             route: () =>
                 ROUTE_LISTS.get("api-user-update")?.replace(":id", id) ?? "",
             method: "PUT",
-            errorMessage: "Gagal menambahkan pengguna",
-            successMessage: "Berhasil menambahkan pengguna",
+            errorMessage: "Gagal mengubah pengguna",
+            successMessage: "Berhasil mengubah pengguna",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);

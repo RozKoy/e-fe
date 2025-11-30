@@ -35,6 +35,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Roles
     ["role", "/admin/role"],
     ["role-add", "/admin/role/add"],
+    ["role-edit", "/admin/role/edit/:id"],
 
     // AUTH
     // Login
@@ -89,6 +90,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Roles
     ["api-role-get", "/api/roles"],
     ["api-role-add", "/api/roles"],
+    ["api-role-one", "/api/roles/:id"],
+    ["api-role-update", "/api/roles/:id"],
     ["api-role-delete", "/api/roles/:id"],
 
     // Permissions
