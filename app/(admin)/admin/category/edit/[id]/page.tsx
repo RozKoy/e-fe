@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,18 @@ import { ROUTE_LISTS } from "@/app/_constants/route";
 import { CategoryOutlined } from "@mui/icons-material";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import useSWR from "swr";
+import { IResponse } from "@/app/_types/api";
+import { ICategory } from "@/app/_types/category";
+
+//
+interface Param {
+    id: string;
+}
+
+interface EditCategoryPageProps {
+    params: Promise<Param>;
+}
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -19,16 +31,20 @@ const breadcrumbItems: BreadcrumbItem[] = [
         path: ROUTE_LISTS.get("category"),
     },
     {
-        name: "Tambah",
+        name: "Ubah",
     },
 ];
 
 const prevRoute: string = ROUTE_LISTS.get("category") ?? "/";
 
 //
-export default function AddCategoryPage() {
+export default function EditCategoryPage({ params }: EditCategoryPageProps) {
+    const { id } = React.use(params);
+
     const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -36,6 +52,14 @@ export default function AddCategoryPage() {
     const [name, setName] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataCategory,
+        error: errorCategory,
+        isLoading: isLoadingCategory,
+    } = useSWR<IResponse<ICategory>>(
+        `${ROUTE_LISTS.get("api-category-one")?.replace(":id", id)}`
+    );
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,9 +70,12 @@ export default function AddCategoryPage() {
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-category-add",
-            errorMessage: "Gagal menambahkan kategori",
-            successMessage: "Berhasil menambahkan kategori",
+            route: () =>
+                ROUTE_LISTS.get("api-category-update")?.replace(":id", id) ??
+                "",
+            method: "PUT",
+            errorMessage: "Gagal mengubah kategori",
+            successMessage: "Berhasil mengubah kategori",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -56,12 +83,30 @@ export default function AddCategoryPage() {
             },
         });
     };
+
+    useEffect(() => {
+        if (!hasError.current) {
+            if (!isLoadingCategory && errorCategory) {
+                router.push(prevRoute);
+                hasError.current = true;
+            }
+        }
+    }, [router, errorCategory, isLoadingCategory]);
+
+    useEffect(() => {
+        if (dataCategory?.data) {
+            startTransition(() => {
+                setName(dataCategory.data?.name ?? "");
+            });
+        }
+    }, [dataCategory?.data]);
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <CategoryOutlined />
-                <h2>Tambah Kategori</h2>
+                <h2>Ubah Kategori</h2>
             </div>
             <form
                 onSubmit={submit}
@@ -69,6 +114,7 @@ export default function AddCategoryPage() {
             >
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
+                        value={name}
                         error={errors?.get("name")}
                         placeholder="Masukkan nama"
                         onInput={() =>

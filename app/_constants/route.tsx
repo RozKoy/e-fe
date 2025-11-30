@@ -6,6 +6,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Categories
     ["category", "/admin/category"],
     ["category-add", "/admin/category/add"],
+    ["category-edit", "/admin/category/edit/:id"],
 
     // Areas
     ["area", "/admin/area"],
@@ -53,6 +54,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Categories
     ["api-category-get", "/api/categories"],
     ["api-category-add", "/api/categories"],
+    ["api-category-one", "/api/categories/:id"],
+    ["api-category-update", "/api/categories/:id"],
     ["api-category-delete", "/api/categories/:id"],
 
     // Areas
