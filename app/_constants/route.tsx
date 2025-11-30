@@ -10,6 +10,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Areas
     ["area", "/admin/area"],
     ["area-add", "/admin/area/add"],
+    ["area-edit", "/admin/area/edit/:id"],
 
     // Fractions
     ["fraction", "/admin/fraction"],
@@ -57,6 +58,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Areas
     ["api-area-get", "/api/areas"],
     ["api-area-add", "/api/areas"],
+    ["api-area-one", "/api/areas/:id"],
+    ["api-area-update", "/api/areas/:id"],
     ["api-area-delete", "/api/areas/:id"],
 
     // Fractions

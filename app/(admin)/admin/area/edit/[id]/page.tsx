@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import Link from "@/app/_components/link";
 import { useRouter } from "next/navigation";
 import Label from "@/app/_components/label";
@@ -11,6 +11,18 @@ import Input from "@/app/_components/inputs/input";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import useSWR from "swr";
+import { IResponse } from "@/app/_types/api";
+import { IArea } from "@/app/_types/area";
+
+//
+interface Param {
+    id: string;
+}
+
+interface EditAreaPageProps {
+    params: Promise<Param>;
+}
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -19,16 +31,20 @@ const breadcrumbItems: BreadcrumbItem[] = [
         path: ROUTE_LISTS.get("area"),
     },
     {
-        name: "Tambah",
+        name: "Ubah",
     },
 ];
 
 const prevRoute: string = ROUTE_LISTS.get("area") ?? "/";
 
 //
-export default function AddAreaPage() {
+export default function EditAreaPage({ params }: EditAreaPageProps) {
+    const { id } = React.use(params);
+
     const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -36,6 +52,14 @@ export default function AddAreaPage() {
     const [name, setName] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataArea,
+        error: errorArea,
+        isLoading: isLoadingArea,
+    } = useSWR<IResponse<IArea>>(
+        `${ROUTE_LISTS.get("api-area-one")?.replace(":id", id)}`
+    );
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,9 +70,11 @@ export default function AddAreaPage() {
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-area-add",
-            errorMessage: "Gagal menambahkan area",
-            successMessage: "Berhasil menambahkan area",
+            route: () =>
+                ROUTE_LISTS.get("api-area-update")?.replace(":id", id) ?? "",
+            method: "PUT",
+            errorMessage: "Gagal mengubah area",
+            successMessage: "Berhasil mengubah area",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -57,12 +83,29 @@ export default function AddAreaPage() {
         });
     };
 
+    useEffect(() => {
+        if (!hasError.current) {
+            if (!isLoadingArea && errorArea) {
+                router.push(prevRoute);
+                hasError.current = true;
+            }
+        }
+    }, [router, errorArea, isLoadingArea]);
+
+    useEffect(() => {
+        if (dataArea?.data) {
+            startTransition(() => {
+                setName(dataArea.data?.name ?? "");
+            });
+        }
+    }, [dataArea?.data]);
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <MapOutlined />
-                <h2>Tambah Area</h2>
+                <h2>Ubah Area</h2>
             </div>
             <form
                 onSubmit={submit}
@@ -70,6 +113,7 @@ export default function AddAreaPage() {
             >
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
+                        value={name}
                         error={errors?.get("name")}
                         placeholder="Masukkan nama"
                         onInput={() =>

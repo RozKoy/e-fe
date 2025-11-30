@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { IArea } from "@/app/_types/area";
 import { IResponse } from "@/app/_types/api";
@@ -12,7 +13,12 @@ import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
-import { AddOutlined, DeleteOutline, MapOutlined } from "@mui/icons-material";
+import {
+    AddOutlined,
+    DeleteOutline,
+    EditOutlined,
+    MapOutlined,
+} from "@mui/icons-material";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -55,14 +61,28 @@ export default function BaseAreaPage() {
         {
             header: "Aksi",
             accessor: (item: IArea) => (
-                <button
-                    className="p-1 rounded-full hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                    onClick={() => {
-                        handleDeleteItem(item);
-                    }}
-                >
-                    <DeleteOutline />
-                </button>
+                <div className="flex items-center justify-center">
+                    <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                        <DefaultLink
+                            href={
+                                ROUTE_LISTS.get("area-edit")?.replace(
+                                    ":id",
+                                    item.id
+                                ) ?? "#"
+                            }
+                        >
+                            <EditOutlined />
+                        </DefaultLink>
+                    </div>
+                    <button
+                        className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                        onClick={() => {
+                            handleDeleteItem(item);
+                        }}
+                    >
+                        <DeleteOutline />
+                    </button>
+                </div>
             ),
         },
     ];
