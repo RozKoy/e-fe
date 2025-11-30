@@ -38,7 +38,7 @@ export function mapRequest(
 
     Object.keys(data).forEach((key) => {
         if (data[key] || ignores.includes(key?.toString())) {
-            newData[key] = data[key];
+            newData[key] = data[key] ?? null;
         }
     });
 
