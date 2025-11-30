@@ -31,6 +31,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Commissions
     ["commission", "/admin/commission"],
     ["commission-add", "/admin/commission/add"],
+    ["commission-edit", "/admin/commission/edit/:id"],
 
     // Roles
     ["role", "/admin/role"],
@@ -85,6 +86,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Commissions
     ["api-commission-get", "/api/commissions"],
     ["api-commission-add", "/api/commissions"],
+    ["api-commission-one", "/api/commissions/:id"],
+    ["api-commission-update", "/api/commissions/:id"],
     ["api-commission-delete", "/api/commissions/:id"],
 
     // Roles

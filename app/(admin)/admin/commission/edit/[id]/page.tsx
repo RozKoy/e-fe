@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import Link from "@/app/_components/link";
 import { useRouter } from "next/navigation";
 import Label from "@/app/_components/label";
@@ -11,6 +11,18 @@ import { useAlert } from "@/app/_providers/AlertProvider";
 import { FilterFramesOutlined } from "@mui/icons-material";
 import { mapRequest, postRequest } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import useSWR from "swr";
+import { IResponse } from "@/app/_types/api";
+import { ICommission } from "@/app/_types/commission";
+
+//
+interface Param {
+    id: string;
+}
+
+interface EditCommissionPageProps {
+    params: Promise<Param>;
+}
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -19,16 +31,22 @@ const breadcrumbItems: BreadcrumbItem[] = [
         path: ROUTE_LISTS.get("commission"),
     },
     {
-        name: "Tambah",
+        name: "Ubah",
     },
 ];
 
 const prevRoute: string = ROUTE_LISTS.get("commission") ?? "/";
 
 //
-export default function AddCommissionPage() {
+export default function EditCommissionPage({
+    params,
+}: EditCommissionPageProps) {
+    const { id } = React.use(params);
+
     const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -36,6 +54,14 @@ export default function AddCommissionPage() {
     const [name, setName] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataCommission,
+        error: errorCommission,
+        isLoading: isLoadingCommission,
+    } = useSWR<IResponse<ICommission>>(
+        `${ROUTE_LISTS.get("api-commission-one")?.replace(":id", id)}`
+    );
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -46,9 +72,12 @@ export default function AddCommissionPage() {
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-commission-add",
-            errorMessage: "Gagal menambahkan komisi",
-            successMessage: "Berhasil menambahkan komisi",
+            route: () =>
+                ROUTE_LISTS.get("api-commission-update")?.replace(":id", id) ??
+                "",
+            method: "PUT",
+            errorMessage: "Gagal mengubah komisi",
+            successMessage: "Berhasil mengubah komisi",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -57,12 +86,29 @@ export default function AddCommissionPage() {
         });
     };
 
+    useEffect(() => {
+        if (!hasError.current) {
+            if (!isLoadingCommission && errorCommission) {
+                router.push(prevRoute);
+                hasError.current = true;
+            }
+        }
+    }, [router, errorCommission, isLoadingCommission]);
+
+    useEffect(() => {
+        if (dataCommission?.data) {
+            startTransition(() => {
+                setName(dataCommission.data?.name ?? "");
+            });
+        }
+    }, [dataCommission?.data]);
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <FilterFramesOutlined />
-                <h2>Tambah Komisi</h2>
+                <h2>Ubah Komisi</h2>
             </div>
             <form
                 onSubmit={submit}
@@ -70,6 +116,7 @@ export default function AddCommissionPage() {
             >
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
+                        value={name}
                         error={errors?.get("name")}
                         placeholder="Masukkan nama"
                         onInput={() =>
