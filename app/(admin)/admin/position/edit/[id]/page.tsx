@@ -113,9 +113,12 @@ export default function EditPositionPage({ params }: EditPositionPageProps) {
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-position-add",
-            errorMessage: "Gagal menambahkan posisi",
-            successMessage: "Berhasil menambahkan posisi",
+            route: () =>
+                ROUTE_LISTS.get("api-position-update")?.replace(":id", id) ??
+                "",
+            method: "PUT",
+            errorMessage: "Gagal mengubah posisi",
+            successMessage: "Berhasil mengubah posisi",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);

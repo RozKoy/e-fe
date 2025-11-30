@@ -62,11 +62,11 @@ export default function Pagination({
                         size="xs"
                         variant="outline"
                         onClick={() => {
-                            if (!itemCheck && setPage) {
+                            if (setPage) {
                                 setPage(value);
                             }
                         }}
-                        disabled={!page || page === value}
+                        disabled={itemCheck(value) || !page || page === value}
                     >
                         {itemCheck(value) ? "..." : value}
                     </Button>
