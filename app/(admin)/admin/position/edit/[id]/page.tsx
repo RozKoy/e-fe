@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,16 @@ import { ICommission } from "@/app/_types/commission";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { mapRequest, postRequest } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import { IPosition } from "@/app/_types/position";
+
+//
+interface Param {
+    id: string;
+}
+
+interface EditPositionPageProps {
+    params: Promise<Param>;
+}
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -23,7 +33,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
         path: ROUTE_LISTS.get("position"),
     },
     {
-        name: "Tambah",
+        name: "Ubah",
     },
 ];
 
@@ -60,9 +70,13 @@ const categoryOptions = [
 ];
 
 //
-export default function AddPositionPage() {
+export default function EditPositionPage({ params }: EditPositionPageProps) {
+    const { id } = React.use(params);
+
     const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -73,6 +87,14 @@ export default function AddPositionPage() {
     const [commissionId, setCommissionId] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataPosition,
+        error: errorPosition,
+        isLoading: isLoadingPosition,
+    } = useSWR<IResponse<IPosition>>(
+        `${ROUTE_LISTS.get("api-position-one")?.replace(":id", id)}`
+    );
 
     const {
         data: dataCommission,
@@ -102,12 +124,32 @@ export default function AddPositionPage() {
         });
     };
 
+    useEffect(() => {
+        if (!hasError.current) {
+            if (!isLoadingPosition && errorPosition) {
+                router.push(prevRoute);
+                hasError.current = true;
+            }
+        }
+    }, [router, errorPosition, isLoadingPosition]);
+
+    useEffect(() => {
+        if (dataPosition?.data) {
+            startTransition(() => {
+                setName(dataPosition.data?.name ?? "");
+                setLevel(dataPosition.data?.level ?? "");
+                setCategory(dataPosition.data?.category ?? "");
+                setCommissionId(dataPosition.data?.commissionId ?? "");
+            });
+        }
+    }, [dataPosition?.data]);
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <WorkOutline />
-                <h2>Tambah Posisi</h2>
+                <h2>Ubah Posisi</h2>
             </div>
             <form
                 onSubmit={submit}
@@ -115,6 +157,7 @@ export default function AddPositionPage() {
             >
                 <Label text="Nama" error={errors?.get("name")} required>
                     <Input
+                        value={name}
                         error={errors?.get("name")}
                         placeholder="Masukkan nama"
                         onInput={() =>
