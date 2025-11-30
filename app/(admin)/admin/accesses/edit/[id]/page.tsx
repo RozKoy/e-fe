@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import { IArea } from "@/app/_types/area";
 import { IUser } from "@/app/_types/user";
 import Link from "@/app/_components/link";
@@ -16,6 +16,16 @@ import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import { IUserAccess } from "@/app/_types/userAccess";
+
+//
+interface Param {
+    id: string;
+}
+
+interface EditUserAccessPageProps {
+    params: Promise<Param>;
+}
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -24,16 +34,22 @@ const breadcrumbItems: BreadcrumbItem[] = [
         path: ROUTE_LISTS.get("access"),
     },
     {
-        name: "Tambah",
+        name: "Ubah",
     },
 ];
 
 const prevRoute: string = ROUTE_LISTS.get("access") ?? "/";
 
 //
-export default function AddUserAccessPage() {
+export default function EditUserAccessPage({
+    params,
+}: EditUserAccessPageProps) {
+    const { id } = React.use(params);
+
     const alert = useAlert();
     const router = useRouter();
+
+    const hasError = useRef<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -44,6 +60,14 @@ export default function AddUserAccessPage() {
     const [publicUser, setPublicUser] = useState<string>("false");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
+
+    const {
+        data: dataUserAccess,
+        error: errorUserAccess,
+        isLoading: isLoadingUserAccess,
+    } = useSWR<IResponse<IUserAccess>>(
+        `${ROUTE_LISTS.get("api-access-one")?.replace(":id", id)}`
+    );
 
     const {
         data: dataArea,
@@ -79,9 +103,11 @@ export default function AddUserAccessPage() {
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "api-access-add",
-            errorMessage: "Gagal menambahkan akses pengguna",
-            successMessage: "Berhasil menambahkan akses pengguna",
+            route: () =>
+                ROUTE_LISTS.get("api-access-update")?.replace(":id", id) ?? "",
+            method: "PUT",
+            errorMessage: "Gagal mengubah akses pengguna",
+            successMessage: "Berhasil mengubah akses pengguna",
             successAction: () => {
                 setTimeout(() => {
                     router.push(prevRoute);
@@ -90,12 +116,32 @@ export default function AddUserAccessPage() {
         });
     };
 
+    useEffect(() => {
+        if (!hasError.current) {
+            if (!isLoadingUserAccess && errorUserAccess) {
+                router.push(prevRoute);
+                hasError.current = true;
+            }
+        }
+    }, [router, errorUserAccess, isLoadingUserAccess]);
+
+    useEffect(() => {
+        if (dataUserAccess?.data) {
+            startTransition(() => {
+                setAreaId(dataUserAccess.data?.areaId ?? "");
+                setUserId(dataUserAccess.data?.userId ?? "");
+                setFractionId(dataUserAccess.data?.fractionId ?? "");
+                setPublicUser(dataUserAccess.data?.public ? "true" : "false");
+            });
+        }
+    }, [dataUserAccess?.data]);
+
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex items-center gap-1.5 font-semibold text-lg text-primary">
                 <BadgeOutlined />
-                <h2>Tambah Akses Pengguna</h2>
+                <h2>Ubah Akses Pengguna</h2>
             </div>
             <form
                 onSubmit={submit}

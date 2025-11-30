@@ -18,6 +18,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // User Accesses
     ["access", "/admin/accesses"],
     ["access-add", "/admin/accesses/add"],
+    ["access-edit", "/admin/accesses/edit/:id"],
 
     // Users
     ["user", "/admin/user"],
@@ -66,6 +67,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // User Accesses
     ["api-access-get", "/api/userAccesses"],
     ["api-access-add", "/api/userAccesses"],
+    ["api-access-one", "/api/userAccesses/:id"],
+    ["api-access-update", "/api/userAccesses/:id"],
     ["api-access-delete", "/api/userAccesses/:id"],
 
     // Users

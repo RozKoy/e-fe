@@ -37,7 +37,7 @@ export function mapRequest(
     const newData: Record<string, unknown> = {};
 
     Object.keys(data).forEach((key) => {
-        if (data[key] || ignores.includes(key?.toString())) {
+        if (data[key] !== "" || ignores.includes(key?.toString())) {
             newData[key] = data[key] ?? null;
         }
     });

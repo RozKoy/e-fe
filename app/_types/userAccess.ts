@@ -5,6 +5,10 @@ import { IFraction } from "./fraction";
 export interface IUserAccess {
     id: string;
 
+    areaId: string;
+    userId: string;
+    fractionId: string;
+
     public: boolean;
 
     area: IArea;
