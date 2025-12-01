@@ -1,40 +1,117 @@
-import React from "react";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+"use client";
+import React, { useRef, useState } from "react";
+import {
+    MapContainer,
+    TileLayer,
+    GeoJSON,
+    GeoJSONProps,
+    // useMap,
+} from "react-leaflet";
+import L, { LeafletMouseEvent, GeoJSON as LeafletGeoJSON } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import leaflet from "leaflet";
+import lampung_dapil from "./lampung_dapil.json";
+import { Feature, Geometry } from "geojson";
+import Dapil from "./Dapil";
 
-const markerIcon = leaflet.divIcon({
-    html: '<?xml version="1.0"?><svg height="24" version="1.1" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><g transform="translate(0 -1028.4)"><path d="m12.031 1030.4c-3.8657 0-6.9998 3.1-6.9998 7 0 1.3 0.4017 2.6 1.0938 3.7 0.0334 0.1 0.059 0.1 0.0938 0.2l4.3432 8c0.204 0.6 0.782 1.1 1.438 1.1s1.202-0.5 1.406-1.1l4.844-8.7c0.499-1 0.781-2.1 0.781-3.2 0-3.9-3.134-7-7-7zm-0.031 3.9c1.933 0 3.5 1.6 3.5 3.5 0 2-1.567 3.5-3.5 3.5s-3.5-1.5-3.5-3.5c0-1.9 1.567-3.5 3.5-3.5z" fill="#c0392b"/><path d="m12.031 1.0312c-3.8657 0-6.9998 3.134-6.9998 7 0 1.383 0.4017 2.6648 1.0938 3.7498 0.0334 0.053 0.059 0.105 0.0938 0.157l4.3432 8.062c0.204 0.586 0.782 1.031 1.438 1.031s1.202-0.445 1.406-1.031l4.844-8.75c0.499-0.963 0.781-2.06 0.781-3.2188 0-3.866-3.134-7-7-7zm-0.031 3.9688c1.933 0 3.5 1.567 3.5 3.5s-1.567 3.5-3.5 3.5-3.5-1.567-3.5-3.5 1.567-3.5 3.5-3.5z" fill="#e74c3c" transform="translate(0 1028.4)"/></g></svg>',
+interface RegionProperties {
+    region_code: number;
+    region_name?: string;
+}
+type RegionFeature = Feature<Geometry, RegionProperties>;
 
-    iconSize: [64, 64],
-    iconAnchor: [64 / 2, 64],
-    className: "foo",
-});
+function getColor(d: number): string {
+    return d == 1
+        ? "#000036"
+        : d == 2
+        ? "#BD0027"
+        : d == 3
+        ? "#E31B41"
+        : d == 4
+        ? "#FC4E2A"
+        : d == 5
+        ? "#FD8D3C"
+        : d == 6
+        ? "#FEB24C"
+        : d == 7
+        ? "#FED976"
+        : "#FFEDA0";
+}
 
-const Map = () => {
+const defaultStyle = (feature: RegionFeature) => {
+    const code = feature.properties?.region_code ?? 0;
+    return {
+        fillColor: getColor(code),
+        weight: 1,
+        opacity: 1,
+        color: "white",
+        dashArray: "3",
+        fillOpacity: 0.7,
+    };
+};
+
+const InteractiveGeoJSON = ({ onClickDapil }: { onClickDapil: () => void }) => {
+    const geoJsonRef = useRef<LeafletGeoJSON>(null);
+    const highlight = (e: LeafletMouseEvent) => {
+        const layer = e.target as L.Path;
+        layer.setStyle({
+            weight: 3,
+            color: "#666",
+            dashArray: "",
+            fillOpacity: 0.9,
+        });
+        layer.bringToFront();
+    };
+
+    const resetHighlight = (e: LeafletMouseEvent) => {
+        geoJsonRef.current?.resetStyle(e.target);
+    };
+
+    const handleClick = () => {
+        onClickDapil();
+    };
+
+    const onEachFeature = (feature: RegionFeature, layer: L.Layer) => {
+        layer.on({
+            mouseover: highlight,
+            mouseout: resetHighlight,
+            click: handleClick, // buka modal
+        });
+    };
+
+    return (
+        <GeoJSON
+            ref={geoJsonRef}
+            data={lampung_dapil as GeoJSONProps["data"]}
+            style={defaultStyle as GeoJSONProps["style"]}
+            onEachFeature={onEachFeature}
+        />
+    );
+};
+
+export default function MapPage() {
+    const [modalOpen, setModalOpen] = useState(false);
+
     return (
         <div className="px-12 pt-12">
             <h2 className="text-center text-3xl md:text-4xl font-bold text-[#284C66] mb-12">
                 Anggota Dewan Perwakilan Rakyat Daerah Provinsi Lampung
             </h2>
+
             <MapContainer
-                center={[-5.2697581547047045, 105.1061972683746]}
-                zoom={9}
-                scrollWheelZoom={false}
-                style={{ height: "600px" }}
+                center={[-5.2697, 105.1061]}
+                zoom={8}
+                scrollWheelZoom={true}
+                style={{ height: "600px", borderRadius: "12px" }}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution="&copy; OpenStreetMap contributors"
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    
                 />
-                <Marker
-                    position={[-5.2697581547047045, 105.1061972683746]}
-                    icon={markerIcon}
-                />
+
+                <InteractiveGeoJSON onClickDapil={() => setModalOpen(true)} />
             </MapContainer>
+
+            <Dapil open={modalOpen} onClose={() => setModalOpen(false)} />
         </div>
     );
-};
-
-export default Map;
+}
