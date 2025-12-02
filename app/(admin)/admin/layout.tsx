@@ -271,7 +271,14 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                         onClick={menuHandle}
                         className="absolute top-3 right-3"
                     />
-                    <div className="h-52 mx-16 my-5 bg-gray-100"></div>
+                    <div className="relative h-52 mx-16 my-5">
+                        <Image
+                            src="/images/app-logo.png"
+                            alt="logo"
+                            style={{ objectFit: "cover" }}
+                            fill
+                        />
+                    </div>
                     <div className="h-full my-8 px-10 space-y-3 overflow-x-hidden overflow-y-auto">
                         {MENU_LIST.map((menu, index) => (
                             <MenuItem
