@@ -57,7 +57,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // API
     // Articles
+    ["api-article-get", "/api/public/news"],
     ["api-article-add", "/api/news"],
+    ["api-article-delete", "/api/news/:id"],
 
     // Categories
     ["api-category-get", "/api/categories"],

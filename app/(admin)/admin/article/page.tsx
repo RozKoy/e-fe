@@ -7,11 +7,9 @@ import {
     NewspaperOutlined,
 } from "@mui/icons-material";
 import useSWR from "swr";
-import Image from "next/image";
 import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { IResponse } from "@/app/_types/api";
-import { IFraction } from "@/app/_types/fraction";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
@@ -20,6 +18,7 @@ import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import { IArticle } from "@/app/_types/article";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -40,48 +39,35 @@ export default function BaseArticlePage() {
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [selectedFraction, setSelectedFraction] = useState<IFraction | null>(
+    const [selectedArticle, setSelectedArticle] = useState<IArticle | null>(
         null
     );
 
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
 
     const {
-        data: dataFraction,
-        error: errorFraction,
-        mutate: mutateFraction,
-        isLoading: isLoadingFraction,
-    } = useSWR<IResponse<IFraction[]>>(
-        `${ROUTE_LISTS.get("api-fraction-get")}?${new URLSearchParams({
+        data: dataArticle,
+        error: errorArticle,
+        mutate: mutateArticle,
+        isLoading: isLoadingArticle,
+    } = useSWR<IResponse<IArticle[]>>(
+        `${ROUTE_LISTS.get("api-article-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
             // search: "",
+            // categoryId: "",
         })}`
     );
 
-    const columns: Column<IFraction>[] = [
-        { header: "Nama", accessor: "name" },
+    const columns: Column<IArticle>[] = [
+        { header: "Judul", accessor: "title" },
         {
-            header: "Gambar",
-            accessor: (item: IFraction) => (
-                <>
-                    {item.imageUrl && (
-                        <div className="relative w-full max-w-32 h-auto mx-auto aspect-video">
-                            <Image
-                                src={item.imageUrl}
-                                alt={item.name}
-                                style={{ objectFit: "cover" }}
-                                fill
-                                unoptimized
-                            />
-                        </div>
-                    )}
-                </>
-            ),
+            header: "Kategori",
+            accessor: (item: IArticle) => item.category?.name,
         },
         {
             header: "Aksi",
-            accessor: (item: IFraction) => (
+            accessor: (item: IArticle) => (
                 <div className="flex items-center justify-center">
                     <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
                         <DefaultLink
@@ -109,19 +95,19 @@ export default function BaseArticlePage() {
     ];
 
     const handleDeleteClose = () => {
-        setSelectedFraction(null);
+        setSelectedArticle(null);
         setDeleteModal(false);
     };
 
-    const handleDeleteItem = (item: IFraction) => {
-        setSelectedFraction(item);
+    const handleDeleteItem = (item: IArticle) => {
+        setSelectedArticle(item);
         setDeleteModal(true);
     };
 
     const handleDelete = async () => {
-        let url = ROUTE_LISTS.get("api-fraction-delete");
+        let url = ROUTE_LISTS.get("api-article-delete");
 
-        if (!url || !selectedFraction?.id) {
+        if (!url || !selectedArticle?.id) {
             alert.addAlert({
                 type: "error",
                 message: "Mohon maaf, sistem sedang bermasalah",
@@ -132,7 +118,7 @@ export default function BaseArticlePage() {
 
         setIsLoading(true);
 
-        url = url.replace(":id", selectedFraction.id);
+        url = url.replace(":id", selectedArticle.id);
 
         const res = await fetch(url, { method: "DELETE" });
 
@@ -141,7 +127,7 @@ export default function BaseArticlePage() {
                 type: "success",
                 message: "Berhasil menghapus data",
             });
-            await mutateFraction();
+            await mutateArticle();
         } else {
             alert.addAlert({
                 type: "error",
@@ -151,25 +137,25 @@ export default function BaseArticlePage() {
 
         setIsLoading(false);
         setDeleteModal(false);
-        setSelectedFraction(null);
+        setSelectedArticle(null);
     };
 
     useEffect(() => {
         if (!hasError.current) {
             if (
-                !isLoadingFraction &&
-                ((!dataFraction && errorFraction) ||
-                    (dataFraction && !Array.isArray(dataFraction?.data)))
+                !isLoadingArticle &&
+                ((!dataArticle && errorArticle) ||
+                    (dataArticle && !Array.isArray(dataArticle?.data)))
             ) {
                 alert.addAlert({
                     type: "error",
-                    message: errorFraction?.message || "Gagal memuat data",
+                    message: errorArticle?.message || "Gagal memuat data",
                     options: { autoClose: false },
                 });
                 hasError.current = true;
             }
         }
-    }, [alert, dataFraction, errorFraction, isLoadingFraction]);
+    }, [alert, dataArticle, errorArticle, isLoadingArticle]);
 
     return (
         <>
@@ -190,9 +176,9 @@ export default function BaseArticlePage() {
                 </Link>
             </div>
             <Table
-                data={dataFraction?.data}
+                data={dataArticle?.data}
                 columns={columns}
-                isLoading={isLoadingFraction}
+                isLoading={isLoadingArticle}
             />
             <div className="flex items-center justify-between">
                 <div>
@@ -210,7 +196,7 @@ export default function BaseArticlePage() {
                 <Pagination
                     page={page}
                     setPage={setPage}
-                    totalPages={dataFraction?.totalPage || 1}
+                    totalPages={dataArticle?.totalPage || 1}
                 />
             </div>
             <DeleteModal
