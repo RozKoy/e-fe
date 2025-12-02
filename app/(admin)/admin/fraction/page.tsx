@@ -2,11 +2,13 @@
 
 import {
     AddOutlined,
+    EditOutlined,
     DeleteOutline,
     Diversity2Outlined,
 } from "@mui/icons-material";
 import useSWR from "swr";
 import Image from "next/image";
+import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { IResponse } from "@/app/_types/api";
 import { IFraction } from "@/app/_types/fraction";
@@ -66,7 +68,7 @@ export default function BaseFractionPage() {
                     {item.imageUrl && (
                         <div className="relative w-full max-w-32 h-auto mx-auto aspect-video">
                             <Image
-                                src={`http://${item.imageUrl}`}
+                                src={item.imageUrl}
                                 alt={item.name}
                                 style={{ objectFit: "cover" }}
                                 fill
@@ -80,14 +82,28 @@ export default function BaseFractionPage() {
         {
             header: "Aksi",
             accessor: (item: IFraction) => (
-                <button
-                    className="p-1 rounded-full hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                    onClick={() => {
-                        handleDeleteItem(item);
-                    }}
-                >
-                    <DeleteOutline />
-                </button>
+                <div className="flex items-center justify-center">
+                    <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                        <DefaultLink
+                            href={
+                                ROUTE_LISTS.get("fraction-edit")?.replace(
+                                    ":id",
+                                    item.id
+                                ) ?? "#"
+                            }
+                        >
+                            <EditOutlined />
+                        </DefaultLink>
+                    </div>
+                    <button
+                        className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                        onClick={() => {
+                            handleDeleteItem(item);
+                        }}
+                    >
+                        <DeleteOutline />
+                    </button>
+                </div>
             ),
         },
     ];

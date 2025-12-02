@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { CloudUploadOutlined } from "@mui/icons-material";
 
 //
@@ -12,6 +13,17 @@ interface FileProps {
 
 //
 export default function File({ name, note, error, onChange }: FileProps) {
+    const [value, setValue] = useState<string>("");
+
+    const change: React.InputHTMLAttributes<HTMLInputElement>["onChange"] = (
+        e
+    ) => {
+        const file = e.target.files?.[0];
+
+        setValue(file?.name ?? "");
+        onChange?.(e);
+    };
+
     return (
         <label
             className={`${
@@ -28,12 +40,17 @@ export default function File({ name, note, error, onChange }: FileProps) {
                     atau seret dan lepas
                 </p>
                 <p className="text-xs">{note ?? ""}</p>
+                {value && (
+                    <p className="mt-6 text-sm text-primary">
+                        File anda: <span className="font-medium">{value}</span>
+                    </p>
+                )}
             </div>
             <input
                 type="file"
                 name={name}
                 className="hidden"
-                onChange={onChange}
+                onChange={change}
             />
         </label>
     );

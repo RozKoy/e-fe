@@ -16,6 +16,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Fractions
     ["fraction", "/admin/fraction"],
     ["fraction-add", "/admin/fraction/add"],
+    ["fraction-edit", "/admin/fraction/edit/:id"],
 
     // User Accesses
     ["access", "/admin/accesses"],
@@ -68,6 +69,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Fractions
     ["api-fraction-get", "/api/fractions"],
     ["api-fraction-add", "/api/fractions"],
+    ["api-fraction-one", "/api/fractions/:id"],
+    ["api-fraction-update", "/api/fractions/:id"],
     ["api-fraction-delete", "/api/fractions/:id"],
 
     // User Accesses
