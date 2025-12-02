@@ -2,8 +2,8 @@
 
 import {
     AddOutlined,
-    DeleteOutline,
     EditOutlined,
+    DeleteOutline,
     FilterFramesOutlined,
 } from "@mui/icons-material";
 import useSWR from "swr";

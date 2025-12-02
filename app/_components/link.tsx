@@ -32,7 +32,7 @@ const sizeClasses = {
 const variantClasses = {
     primary: "bg-primary hover:bg-primary/90 text-white",
     outline:
-        "bg-white hover:bg-gray-50 ring-1 ring-inset ring-gray-300 text-gray-700",
+        "bg-white hover:bg-gray-50 ring-2 ring-inset ring-primary text-gray-700",
     danger: "bg-red-500 hover:bg-red-600 text-white",
 };
 
