@@ -65,7 +65,9 @@ export default function AddUserPage() {
         e.preventDefault();
 
         await postRequest({
-            body: mapRequest({ name, email, roleId, password, positionId }),
+            body: mapRequest({ name, email, roleId, password, positionId }, [
+                "positionId",
+            ]),
             alert,
             setErrors,
             setLoading,
