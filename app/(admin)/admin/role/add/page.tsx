@@ -160,6 +160,10 @@ export default function AddRolePage() {
                                                 permission.id === item.id
                                         )}
                                         onChange={() => {
+                                            setErrors((prev) => {
+                                                prev?.delete("permissionIds");
+                                                return prev?.size ? prev : null;
+                                            });
                                             if (
                                                 permissionIds.some(
                                                     (permission) =>
