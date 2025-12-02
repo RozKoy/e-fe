@@ -1,5 +1,11 @@
 "use client";
 
+import {
+    AddOutlined,
+    EditOutlined,
+    BadgeOutlined,
+    DeleteOutline,
+} from "@mui/icons-material";
 import useSWR from "swr";
 import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
@@ -13,12 +19,6 @@ import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
-import {
-    AddOutlined,
-    BadgeOutlined,
-    DeleteOutline,
-    EditOutlined,
-} from "@mui/icons-material";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
