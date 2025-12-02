@@ -200,7 +200,7 @@ export default function AddPositionPage() {
                     <Button
                         type="submit"
                         size="sm"
-                        variant="outline"
+                        variant="primary"
                         isLoading={loading}
                     >
                         Simpan

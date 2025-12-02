@@ -1,12 +1,12 @@
 "use client";
 
 import useSWR from "swr";
-import React, { startTransition, useEffect, useRef, useState } from "react";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
+import { IPosition } from "@/app/_types/position";
 import { WorkOutline } from "@mui/icons-material";
 import Input from "@/app/_components/inputs/input";
 import Select from "@/app/_components/inputs/select";
@@ -15,7 +15,7 @@ import { ICommission } from "@/app/_types/commission";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { mapRequest, postRequest } from "@/app/_utils/api";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
-import { IPosition } from "@/app/_types/position";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 
 //
 interface Param {
@@ -246,7 +246,7 @@ export default function EditPositionPage({ params }: EditPositionPageProps) {
                     <Button
                         type="submit"
                         size="sm"
-                        variant="outline"
+                        variant="primary"
                         isLoading={loading}
                     >
                         Simpan
