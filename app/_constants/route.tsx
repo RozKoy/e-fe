@@ -6,6 +6,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Articles
     ["article", "/admin/article"],
     ["article-add", "/admin/article/add"],
+    ["article-edit", "/admin/article/edit/:id"],
 
     // Categories
     ["category", "/admin/category"],
@@ -59,6 +60,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Articles
     ["api-article-get", "/api/public/news"],
     ["api-article-add", "/api/news"],
+    ["api-article-one", "/api/public/news/:id"],
+    ["api-article-update", "/api/news/:id"],
     ["api-article-delete", "/api/news/:id"],
 
     // Categories

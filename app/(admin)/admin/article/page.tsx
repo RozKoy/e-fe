@@ -72,7 +72,7 @@ export default function BaseArticlePage() {
                     <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
                         <DefaultLink
                             href={
-                                ROUTE_LISTS.get("fraction-edit")?.replace(
+                                ROUTE_LISTS.get("article-edit")?.replace(
                                     ":id",
                                     item.id
                                 ) ?? "#"
