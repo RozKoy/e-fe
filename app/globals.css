@@ -19,8 +19,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+
   }
 }
 
@@ -28,4 +27,20 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
 } */
+
+/* Leaflet supaya tidak menimpa modal */
+.leaflet-pane {
+    z-index: 1 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 2 !important;
+}
+
+.leaflet-container {
+    z-index: 1 !important;
+}
