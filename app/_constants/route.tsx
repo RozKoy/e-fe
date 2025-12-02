@@ -3,6 +3,10 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Dashboards
     ["dashboard", "/admin/dashboard"],
 
+    // Articles
+    ["article", "/admin/article"],
+    ["article-add", "/admin/article/add"],
+
     // Categories
     ["category", "/admin/category"],
     ["category-add", "/admin/category/add"],
@@ -52,6 +56,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["local-logout", "/be/auth/logout"],
 
     // API
+    // Articles
+    ["api-article-add", "/api/news"],
+
     // Categories
     ["api-category-get", "/api/categories"],
     ["api-category-add", "/api/categories"],

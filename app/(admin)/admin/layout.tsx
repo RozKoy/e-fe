@@ -9,6 +9,7 @@ import {
     LogoutOutlined,
     CategoryOutlined,
     DashboardOutlined,
+    NewspaperOutlined,
     PeopleAltOutlined,
     WorkspacesOutline,
     Diversity2Outlined,
@@ -62,6 +63,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: <DashboardOutlined />,
         path: ROUTE_LISTS.get("dashboard"),
         title: "Beranda",
+    },
+    {
+        icon: <NewspaperOutlined />,
+        path: ROUTE_LISTS.get("article"),
+        title: "Berita",
     },
     {
         icon: <CategoryOutlined />,
