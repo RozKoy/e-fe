@@ -9,6 +9,7 @@ import Input from "@/app/_components/inputs/input";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Password from "@/app/_components/inputs/password";
 import { useAlert } from "@/app/_providers/AlertProvider";
+import Image from "next/image";
 
 //
 export default function LoginPage() {
@@ -53,6 +54,24 @@ export default function LoginPage() {
             <div className="flex-1 bg-primary"></div>
             <div className="absolute left-1/2 top-1/2 -translate-1/2 w-full max-w-400 grid grid-cols-1 lg:grid-cols-2">
                 <div className="hidden lg:flex p-10 flex-col gap-4 justify-center">
+                    <div className="flex items-center justify-start">
+                        <div className="relative w-24 aspect-square">
+                            <Image
+                                src="/images/lampung-logo.png"
+                                alt="logo"
+                                style={{ objectFit: "contain" }}
+                                fill
+                            />
+                        </div>
+                        <div className="relative w-24 aspect-square">
+                            <Image
+                                src="/images/app-logo.png"
+                                alt="logo"
+                                style={{ objectFit: "cover" }}
+                                fill
+                            />
+                        </div>
+                    </div>
                     <h1 className="font-extrabold leading-tight text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-primary">
                         <span className="text-secondary tracking-wider">
                             SELAMAT DATANG DI
@@ -67,8 +86,20 @@ export default function LoginPage() {
                 </div>
                 <div className="bg-primary flex items-center justify-center">
                     <div className="max-w-2xl p-6 md:p-10 rounded-lg flex flex-col gap-6 text-white">
+                        <div className="block lg:hidden relative w-32 aspect-square rounded-full mx-auto bg-white">
+                            <Image
+                                src="/images/app-logo.png"
+                                alt="logo"
+                                style={{ objectFit: "contain" }}
+                                fill
+                            />
+                        </div>
                         <h1 className="font-medium tracking-wide text-2xl md:text-3xl text-center md:text-start">
-                            Selamat Datang di SIMRESES DPRD Provinsi Lampung
+                            Selamat Datang di{" "}
+                            <span className="font-bold text-secondary">
+                                SIMRESES
+                            </span>{" "}
+                            DPRD Provinsi Lampung
                         </h1>
                         <form
                             onSubmit={login}

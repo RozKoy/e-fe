@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { ROUTE_LISTS } from "../_constants/route";
 
 const Navbar = () => {
     const [isClick, setIsClick] = useState(false);
@@ -59,7 +60,10 @@ const Navbar = () => {
                             >
                                 Berita
                             </Link>
-                            <Link href="/login" className={loginButtonClass}>
+                            <Link
+                                href={ROUTE_LISTS.get("login") ?? "/"}
+                                className={loginButtonClass}
+                            >
                                 Masuk
                             </Link>
                         </div>
