@@ -1,8 +1,14 @@
 "use client";
 
+import {
+    // AddOutlined,
+    MapOutlined,
+    // EditOutlined,
+    // DeleteOutline,
+} from "@mui/icons-material";
 import useSWR from "swr";
-import DefaultLink from "next/link";
-import Link from "@/app/_components/link";
+// import DefaultLink from "next/link";
+// import Link from "@/app/_components/link";
 import { IArea } from "@/app/_types/area";
 import { IResponse } from "@/app/_types/api";
 import { useEffect, useRef, useState } from "react";
@@ -11,14 +17,8 @@ import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
 import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
-import DeleteModal from "@/app/_components/modals/delete";
+// import DeleteModal from "@/app/_components/modals/delete";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
-import {
-    AddOutlined,
-    DeleteOutline,
-    EditOutlined,
-    MapOutlined,
-} from "@mui/icons-material";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -37,16 +37,16 @@ export default function BaseAreaPage() {
 
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    // const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [selectedArea, setSelectedArea] = useState<IArea | null>(null);
+    // const [selectedArea, setSelectedArea] = useState<IArea | null>(null);
 
-    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+    // const [deleteModal, setDeleteModal] = useState<boolean>(false);
 
     const {
         data: dataArea,
         error: errorArea,
-        mutate: mutateArea,
+        // mutate: mutateArea,
         isLoading: isLoadingArea,
     } = useSWR<IResponse<IArea[]>>(
         `${ROUTE_LISTS.get("api-area-get")}?${new URLSearchParams({
@@ -58,80 +58,80 @@ export default function BaseAreaPage() {
 
     const columns: Column<IArea>[] = [
         { header: "Nama", accessor: "name" },
-        {
-            header: "Aksi",
-            accessor: (item: IArea) => (
-                <div className="flex items-center justify-center">
-                    <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                        <DefaultLink
-                            href={
-                                ROUTE_LISTS.get("area-edit")?.replace(
-                                    ":id",
-                                    item.id
-                                ) ?? "#"
-                            }
-                        >
-                            <EditOutlined />
-                        </DefaultLink>
-                    </div>
-                    <button
-                        className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                        onClick={() => {
-                            handleDeleteItem(item);
-                        }}
-                    >
-                        <DeleteOutline />
-                    </button>
-                </div>
-            ),
-        },
+        // {
+        //     header: "Aksi",
+        //     accessor: (item: IArea) => (
+        //         <div className="flex items-center justify-center">
+        //             <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+        //                 <DefaultLink
+        //                     href={
+        //                         ROUTE_LISTS.get("area-edit")?.replace(
+        //                             ":id",
+        //                             item.id
+        //                         ) ?? "#"
+        //                     }
+        //                 >
+        //                     <EditOutlined />
+        //                 </DefaultLink>
+        //             </div>
+        //             <button
+        //                 className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+        //                 onClick={() => {
+        //                     handleDeleteItem(item);
+        //                 }}
+        //             >
+        //                 <DeleteOutline />
+        //             </button>
+        //         </div>
+        //     ),
+        // },
     ];
 
-    const handleDeleteClose = () => {
-        setSelectedArea(null);
-        setDeleteModal(false);
-    };
+    // const handleDeleteClose = () => {
+    //     setSelectedArea(null);
+    //     setDeleteModal(false);
+    // };
 
-    const handleDeleteItem = (item: IArea) => {
-        setSelectedArea(item);
-        setDeleteModal(true);
-    };
+    // const handleDeleteItem = (item: IArea) => {
+    //     setSelectedArea(item);
+    //     setDeleteModal(true);
+    // };
 
-    const handleDelete = async () => {
-        let url = ROUTE_LISTS.get("api-area-delete");
+    // const handleDelete = async () => {
+    //     let url = ROUTE_LISTS.get("api-area-delete");
 
-        if (!url || !selectedArea?.id) {
-            alert.addAlert({
-                type: "error",
-                message: "Mohon maaf, sistem sedang bermasalah",
-            });
+    //     if (!url || !selectedArea?.id) {
+    //         alert.addAlert({
+    //             type: "error",
+    //             message: "Mohon maaf, sistem sedang bermasalah",
+    //         });
 
-            return;
-        }
+    //         return;
+    //     }
 
-        setIsLoading(true);
+    //     setIsLoading(true);
 
-        url = url.replace(":id", selectedArea.id);
+    //     url = url.replace(":id", selectedArea.id);
 
-        const res = await fetch(url, { method: "DELETE" });
+    //     const res = await fetch(url, { method: "DELETE" });
 
-        if (res.ok) {
-            alert.addAlert({
-                type: "success",
-                message: "Berhasil menghapus data",
-            });
-            await mutateArea();
-        } else {
-            alert.addAlert({
-                type: "error",
-                message: "Gagal menghapus data",
-            });
-        }
+    //     if (res.ok) {
+    //         alert.addAlert({
+    //             type: "success",
+    //             message: "Berhasil menghapus data",
+    //         });
+    //         await mutateArea();
+    //     } else {
+    //         alert.addAlert({
+    //             type: "error",
+    //             message: "Gagal menghapus data",
+    //         });
+    //     }
 
-        setIsLoading(false);
-        setDeleteModal(false);
-        setSelectedArea(null);
-    };
+    //     setIsLoading(false);
+    //     setDeleteModal(false);
+    //     setSelectedArea(null);
+    // };
 
     useEffect(() => {
         if (!hasError.current) {
@@ -158,7 +158,7 @@ export default function BaseAreaPage() {
                     <MapOutlined />
                     <h2>Manajemen Area</h2>
                 </div>
-                <Link
+                {/* <Link
                     href={ROUTE_LISTS.get("area-add") ?? "#"}
                     size="sm"
                     variant="primary"
@@ -166,7 +166,7 @@ export default function BaseAreaPage() {
                     className="ml-auto"
                 >
                     Tambah
-                </Link>
+                </Link> */}
             </div>
             <Table
                 data={dataArea?.data}
@@ -192,12 +192,12 @@ export default function BaseAreaPage() {
                     totalPages={dataArea?.totalPage || 1}
                 />
             </div>
-            <DeleteModal
+            {/* <DeleteModal
                 show={deleteModal}
                 onClose={handleDeleteClose}
                 onConfirm={handleDelete}
                 isLoading={isLoading}
-            />
+            /> */}
         </>
     );
 }
