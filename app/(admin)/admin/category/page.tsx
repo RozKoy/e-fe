@@ -2,9 +2,9 @@
 
 import {
     AddOutlined,
+    EditOutlined,
     DeleteOutline,
     CategoryOutlined,
-    EditOutlined,
 } from "@mui/icons-material";
 import useSWR from "swr";
 import DefaultLink from "next/link";
