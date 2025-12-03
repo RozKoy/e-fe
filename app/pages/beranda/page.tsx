@@ -1,17 +1,28 @@
 "use client";
 
+import useSWR from "swr";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { IArea } from "@/app/_types/area";
+import { IResponse } from "@/app/_types/api";
 import Berita from "@/app/components/Berita";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 import Landing from "@/app/components/Landing";
+import { ROUTE_LISTS } from "@/app/_constants/route";
 
 const Map = dynamic(() => import("@/app/components/Map"), {
     ssr: false,
 });
 
 const BerandaPage = () => {
+    const {
+        data: dataArea,
+        // error: errorArea,
+        // mutate: mutateArea,
+        isLoading: isLoadingArea,
+    } = useSWR<IResponse<IArea[]>>(`${ROUTE_LISTS.get("api-public-area-get")}`);
+
     return (
         <div>
             <Navbar />
@@ -51,8 +62,8 @@ const BerandaPage = () => {
                     </div>
                 </div>
             </div>
-            <Map />
-            <Landing />
+            <Map data={dataArea?.data} loading={isLoadingArea} />
+            <Landing data={dataArea?.data} loading={isLoadingArea} />
             <Berita />
             <Footer />
         </div>

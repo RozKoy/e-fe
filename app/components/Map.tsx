@@ -1,16 +1,27 @@
 "use client";
 
 import Dapil from "./Dapil";
+import { IArea } from "../_types/area";
 import { useRef, useState } from "react";
 import { Feature, Geometry } from "geojson";
 import lampung_dapil from "./lampung_dapil.json";
+import { AutorenewOutlined } from "@mui/icons-material";
 import L, { LeafletMouseEvent, GeoJSON as LeafletGeoJSON } from "leaflet";
 import { GeoJSON, TileLayer, GeoJSONProps, MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+interface MapProps {
+    data: IArea[] | undefined;
+    loading: boolean;
+}
+
 interface RegionProperties {
     region_code: number;
     region_name?: string;
+}
+
+interface InteractiveGeoJSONProps {
+    onClickDapil: (code: number) => void;
 }
 
 type RegionFeature = Feature<Geometry, RegionProperties>;
@@ -45,7 +56,7 @@ const defaultStyle = (feature: RegionFeature) => {
     };
 };
 
-const InteractiveGeoJSON = ({ onClickDapil }: { onClickDapil: () => void }) => {
+const InteractiveGeoJSON = ({ onClickDapil }: InteractiveGeoJSONProps) => {
     const geoJsonRef = useRef<LeafletGeoJSON>(null);
     const highlight = (e: LeafletMouseEvent) => {
         const layer = e.target as L.Path;
@@ -62,8 +73,9 @@ const InteractiveGeoJSON = ({ onClickDapil }: { onClickDapil: () => void }) => {
         geoJsonRef.current?.resetStyle(e.target);
     };
 
-    const handleClick = () => {
-        onClickDapil();
+    const handleClick = (e: LeafletMouseEvent) => {
+        const target: RegionFeature = e.target.feature as RegionFeature;
+        onClickDapil(target.properties.region_code);
     };
 
     const onEachFeature = (feature: RegionFeature, layer: L.Layer) => {
@@ -84,8 +96,8 @@ const InteractiveGeoJSON = ({ onClickDapil }: { onClickDapil: () => void }) => {
     );
 };
 
-export default function MapPage() {
-    const [modalOpen, setModalOpen] = useState(false);
+export default function MapPage({ data, loading }: MapProps) {
+    const [id, setId] = useState<string | null>(null);
 
     return (
         <div className="px-12 pt-12">
@@ -93,21 +105,53 @@ export default function MapPage() {
                 Anggota Dewan Perwakilan Rakyat Daerah Provinsi Lampung
             </h2>
 
-            <MapContainer
-                center={[-5.2697, 105.1061]}
-                zoom={8}
-                scrollWheelZoom={true}
-                style={{ height: "600px", borderRadius: "12px" }}
-            >
-                <TileLayer
-                    attribution="&copy; OpenStreetMap contributors"
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+            {loading && (
+                <div className="text-center">
+                    <AutorenewOutlined
+                        className="animate-spin"
+                        fontSize="large"
+                    />
+                </div>
+            )}
+            {!loading && data && (
+                <>
+                    <MapContainer
+                        center={[-5.2697, 105.1061]}
+                        zoom={8}
+                        scrollWheelZoom={true}
+                        style={{ height: "600px", borderRadius: "12px" }}
+                    >
+                        <TileLayer
+                            attribution="&copy; OpenStreetMap contributors"
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
 
-                <InteractiveGeoJSON onClickDapil={() => setModalOpen(true)} />
-            </MapContainer>
+                        <InteractiveGeoJSON
+                            onClickDapil={(code) => {
+                                const id = data?.find(
+                                    (item) => item.code === code
+                                )?.id;
 
-            <Dapil open={modalOpen} onClose={() => setModalOpen(false)} />
+                                setId(id ?? null);
+                            }}
+                        />
+                    </MapContainer>
+
+                    {id && (
+                        <Dapil
+                            id={id}
+                            onClose={() => {
+                                setId(null);
+                            }}
+                        />
+                    )}
+                </>
+            )}
+            {!loading && !data && (
+                <p className="text-red-500 text-center">
+                    Mohon maaf, terjadi kesalahan sistem
+                </p>
+            )}
         </div>
     );
 }

@@ -57,6 +57,10 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["local-logout", "/be/auth/logout"],
 
     // API
+    // Public
+    ["api-public-area-get", "/api/public/areas"],
+    ["api-public-user-get", "/api/public/users"],
+
     // Articles
     ["api-article-get", "/api/public/news"],
     ["api-article-add", "/api/news"],

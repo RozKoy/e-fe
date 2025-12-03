@@ -11,17 +11,15 @@ async function handleRequest(req: Request, context: Context) {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
-    if (!token) {
-        return NextResponse.json({}, { status: 401 });
+    const headers: HeadersInit = {};
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
     }
 
     const url = `${process.env.API_URL}/api/${path.join("/")}${
         new URL(req.url).search
     }`;
-
-    const headers: HeadersInit = {
-        Authorization: `Bearer ${token}`,
-    };
 
     let body: BodyInit | undefined;
     if (req.method !== "GET" && req.method !== "HEAD") {

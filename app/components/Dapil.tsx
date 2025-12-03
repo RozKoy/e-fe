@@ -1,48 +1,34 @@
 "use client";
 
+import useSWR from "swr";
 import React from "react";
 import Image from "next/image";
-
-const dataAnggota = [
-    {
-        id: 1,
-        nama: "Khabib, S.M",
-        partai: "Partai Golongan Karya",
-        usia: "49 Tahun",
-        jenisKelamin: "Laki-laki",
-        akd: "Sekretaris Komisi I",
-        foto: "/anggota-avt.png",
-        logoPartai: "/gerindra.png",
-    },
-    {
-        id: 2,
-        nama: "Nurmagomedov, S.H",
-        partai: "Partai Bulan Bintang",
-        usia: "55 Tahun",
-        jenisKelamin: "Laki-laki",
-        akd: "Sekretaris Komisi II",
-        foto: "/anggota-avt.png",
-        logoPartai: "/gerindra.png",
-    },
-    {
-        id: 3,
-        nama: "Makhacev, S.H",
-        partai: "Partai Bulan Bintang",
-        usia: "55 Tahun",
-        jenisKelamin: "Laki-laki",
-        akd: "Sekretaris Komisi II",
-        foto: "/anggota-avt.png",
-        logoPartai: "/gerindra.png",
-    },
-];
+import { IUser } from "../_types/user";
+import { IResponse } from "../_types/api";
+import { ROUTE_LISTS } from "../_constants/route";
+import { AutorenewOutlined } from "@mui/icons-material";
 
 interface ModalProps {
-    open: boolean;
+    id: string;
     onClose: () => void;
 }
 
-const Dapil: React.FC<ModalProps> = ({ open, onClose }) => {
-    if (!open) return null;
+const Dapil: React.FC<ModalProps> = ({ id, onClose }) => {
+    const {
+        data: dataUser,
+        // error: errorUser,
+        // mutate: mutateUser,
+        isLoading: isLoadingUser,
+    } = useSWR<IResponse<IUser[]>>(
+        `${ROUTE_LISTS.get("api-user-get")}?${new URLSearchParams({
+            // page: "",
+            // limit: "",
+            // search: "",
+            // roleId: "",
+            areaId: id,
+            // fractionId: "",
+        })}`
+    );
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -62,58 +48,101 @@ const Dapil: React.FC<ModalProps> = ({ open, onClose }) => {
 
                 {/* List Anggota */}
                 <div className="space-y-6">
-                    {dataAnggota.map((item) => (
-                        <div
-                            key={item.id}
-                            className="border-b pb-6 flex flex-col md:flex-row items-start md:items-center gap-4"
-                        >
-                            {/* Foto Anggota */}
-                            <div>
-                                <Image
-                                    src={item.foto}
-                                    alt={item.nama}
-                                    width={180}
-                                    height={260}
-                                    className="rounded-md object-cover"
-                                />
-                            </div>
-
-                            {/* Info Anggota */}
-                            <div className="flex-1">
-                                <h3 className="font-bold text-lg">
-                                    {item.nama}{" "}
-                                    <span className="text-[#C2883C]">
-                                        • {item.partai}
-                                    </span>
-                                </h3>
-
-                                <div className="grid grid-cols-2 gap-y-1 mt-3 text-sm">
-                                    <span>AKD</span>
-                                    <span>: {item.akd}</span>
-
-                                    <span>Usia</span>
-                                    <span>: {item.usia}</span>
-
-                                    <span>Jenis Kelamin</span>
-                                    <span>: {item.jenisKelamin}</span>
+                    {isLoadingUser && (
+                        <div className="text-center">
+                            <AutorenewOutlined
+                                className="animate-spin"
+                                fontSize="large"
+                            />
+                        </div>
+                    )}
+                    {!isLoadingUser &&
+                        dataUser?.data &&
+                        dataUser.data.length !== 0 &&
+                        dataUser.data.map((item, index) => (
+                            <div
+                                key={index}
+                                className="border-b pb-6 flex flex-col md:flex-row items-start md:items-center gap-4"
+                            >
+                                <div>
+                                    <Image
+                                        src={
+                                            item.profile?.imageUrl ??
+                                            "/images/user.png"
+                                        }
+                                        alt={item.profile?.name ?? "-"}
+                                        width={180}
+                                        height={260}
+                                        className="rounded-md object-cover"
+                                        unoptimized
+                                    />
                                 </div>
 
-                                <button className="mt-3 bg-[#1E3A4E] text-white px-4 py-2 rounded-lg text-sm">
-                                    Detail Profil
-                                </button>
-                            </div>
+                                {/* Info Anggota */}
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-lg">
+                                        {item.profile?.name ?? "-"}{" "}
+                                        <span className="text-[#C2883C]">
+                                            •{" "}
+                                            {item.accesses?.[0]?.fraction
+                                                ?.name ?? "-"}
+                                        </span>
+                                    </h3>
 
-                            {/* Logo Partai */}
-                            <div className="ml-auto">
-                                <Image
-                                    src={item.logoPartai}
-                                    alt={item.partai}
-                                    width={80}
-                                    height={80}
-                                />
+                                    <div className="grid grid-cols-2 gap-y-1 mt-3 text-sm">
+                                        <span>AKD</span>
+                                        <span>
+                                            : {item.position?.name ?? "-"}
+                                        </span>
+
+                                        <span>Usia</span>
+                                        <span>
+                                            : {item.profile?.age ?? "-"}
+                                        </span>
+
+                                        <span>Jenis Kelamin</span>
+                                        <span>
+                                            :{" "}
+                                            {item.profile?.gender
+                                                ? item.profile.gender === "l"
+                                                    ? "Laki-laki"
+                                                    : "Perempuan"
+                                                : "-"}
+                                        </span>
+                                    </div>
+
+                                    <button className="mt-3 bg-[#1E3A4E] text-white px-4 py-2 rounded-lg text-sm">
+                                        Detail Profil
+                                    </button>
+                                </div>
+
+                                {/* Logo Partai */}
+                                <div className="ml-auto">
+                                    <Image
+                                        src={
+                                            item.accesses?.[0]?.fraction
+                                                ?.imageUrl ??
+                                            "/images/no-image.jpg"
+                                        }
+                                        alt={
+                                            item.accesses?.[0]?.fraction
+                                                ?.name ?? "-"
+                                        }
+                                        width={80}
+                                        height={80}
+                                        unoptimized
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    {!isLoadingUser && dataUser?.data?.length === 0 && (
+                        <p className="text-center">Tidak ada data</p>
+                    )}
+                    {!isLoadingUser && !dataUser?.data && (
+                        <p className="text-red-500 text-center">
+                            Mohon maaf, terjadi kesalahan sistem
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
