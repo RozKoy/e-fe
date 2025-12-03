@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
     return (
@@ -7,19 +8,19 @@ const Footer = () => {
                 <div className="max-w-8xl mx-auto px-6 sm:px-8">
                     <div className="py-6 flex items-start space-x-4">
                         <div className="shrink-0 pt-1">
-                            {/* <Image
-                            src=""
-                            alt="Logo"
-                            width={50}
-                            height={50}
-                            className="object-contain"
-                        /> */}
+                            <Image
+                                src="/images/lampung-logo.png"
+                                alt="Logo DPRD Lampung"
+                                width={45}
+                                height={45}
+                                className="object-contain"
+                            />
                         </div>
                         <p className="text-sm sm:text-base leading-relaxed">
                             <span className="font-bold">
-                                SIMRESES DPRD LAMPUNG
+                                E-RESES DPRD PROVINSI LAMPUNG
                             </span>{" "}
-                            adalah platform digital untuk masyarakat mengajukan
+                            merupakan platform digital untuk masyarakat mengajukan
                             aspirasi secara langsung kepada DPRD Provinsi
                             Lampung. Mari bersama wujudkan pembangunan yang
                             lebih baik!
@@ -28,7 +29,7 @@ const Footer = () => {
                     <hr className="border-t border-white/30" />
                     <div className="flex justify-between items-center py-4">
                         <p className="text-xs sm:text-sm">
-                            &copy; SIMRESES 2025
+                            &copy; E-RESES 2025
                         </p>
                         <nav className="flex space-x-4 sm:space-x-6 text-sm">
                             <Link

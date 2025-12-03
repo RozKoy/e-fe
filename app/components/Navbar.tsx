@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ROUTE_LISTS } from "../_constants/route";
+import Image from "next/image";
 
 const Navbar = () => {
     const [isClick, setIsClick] = useState(false);
@@ -23,9 +24,16 @@ const Navbar = () => {
         <nav className="bg-[#284C66] shadow-sm top-0">
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12">
                 <div className="flex items-center justify-between h-24">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-3">
+                        <Image
+                            src="/images/lampung-logo.png"
+                            alt="Logo DPRD Lampung"
+                            width={45}
+                            height={45}
+                            className="object-contain"
+                        />
                         <span className="text-white text-lg font-semibold">
-                            DPRD LAMPUNG
+                            DPRD PROVINSI LAMPUNG
                         </span>
                     </div>
                     <div className="hidden md:block">

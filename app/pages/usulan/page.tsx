@@ -27,11 +27,16 @@ const UsulanPage = () => {
                             <button className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition">
                                 Unduh QR
                             </button>
-                            <button className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition">
+                            {/* <button className="">                   
+                            </button> */}
+                            <Link
+                                href={`/pages/proposal/tambahProposal`}
+                                className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition"
+                            >
                                 Tambah Usulan
-                            </button>
+                            </Link>
                         </div>
-                        <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+                        <div className="flex md:flex-row items-center gap-4 mb-6">
                             <button className="flex items-center bg-[#284C66] text-white px-5 py-2 rounded-full font-medium text-sm hover:bg-[#1f3a4d] transition">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +54,7 @@ const UsulanPage = () => {
                                 </svg>
                                 Filter
                             </button>
-                            <div className="relative flex-1 max-w-3xl w-full">
+                            <div className="relative flex-1 max-w-xl w-full">
                                 <input
                                     type="text"
                                     placeholder="Cari"
