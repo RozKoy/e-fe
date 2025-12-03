@@ -26,10 +26,10 @@ const BerandaPage = () => {
     return (
         <div>
             <Navbar />
-            <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12 py-16 md:py-24">
+            <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12 py-8 md:py-16">
                 <div className="flex flex-col md:flex-row items-center justify-between">
                     <div className="md:w-1/2 order-2 md:order-1">
-                        <h1 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight mb-6">
+                        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold leading-tight mb-6">
                             <span className="text-[#F19349] tracking-wider">
                                 SELAMAT DATANG DI
                             </span>
@@ -41,7 +41,7 @@ const BerandaPage = () => {
                                 MANAJEMEN RESES
                             </span>
                             <br />
-                            <span className="text-[#284C66]">DPRD LAMPUNG</span>
+                            <span className="text-[#284C66]">DPRD PROVINSI LAMPUNG</span>
                         </h1>
                         <p className="mt-4 text-lg text-gray-600 max-w-lg">
                             Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -50,9 +50,9 @@ const BerandaPage = () => {
                         </p>
                     </div>
                     <div className="md:w-1/2 flex justify-center order-1 md:order-2">
-                        <div className="relative w-full h-sm:h-80 md:h-96">
+                        <div className="relative w-full h-sm:h-80 md:h-92">
                             <Image
-                                src="/ilustrasi.png"
+                                src="/images/app-logo-fix.png"
                                 alt="hola"
                                 layout="fill"
                                 objectFit="contain"
