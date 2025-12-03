@@ -3,12 +3,21 @@
 import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { IResponse } from "../_types/api";
 import { IArticle } from "../_types/article";
 import { ROUTE_LISTS } from "../_constants/route";
-import { AutorenewOutlined } from "@mui/icons-material";
+import Pagination from "../_components/pagination";
+import { AutorenewOutlined, CalendarTodayOutlined } from "@mui/icons-material";
 
-const Berita = () => {
+interface BeritaProps {
+    pagination?: boolean;
+}
+
+const Berita = ({ pagination = false }: BeritaProps) => {
+    const [page, setPage] = useState<number>(1);
+    const [limit] = useState<number>(9);
+
     const {
         data: dataArticle,
         // error: errorArticle,
@@ -16,8 +25,8 @@ const Berita = () => {
         isLoading: isLoadingArticle,
     } = useSWR<IResponse<IArticle[]>>(
         `${ROUTE_LISTS.get("api-article-get")}?${new URLSearchParams({
-            page: "1",
-            limit: "9",
+            page: page.toString(),
+            limit: limit.toString(),
             // search: "",
             // categoryId: "",
         })}`
@@ -68,21 +77,10 @@ const Berita = () => {
                                     </div>
                                 )}
 
-                                <div className="flex items-center text-sm mb-2 mt-8">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-4 w-4 mr-2 text-white"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M8 7V3m8 4V3m-9 8h10m-11 8h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                        />
-                                    </svg>
+                                <div className="flex gap-1 items-center text-sm mb-2 mt-8">
+                                    <CalendarTodayOutlined
+                                        sx={{ fontSize: 14 }}
+                                    />
                                     {new Date(
                                         item.createdAt
                                     ).toLocaleDateString("en-GB", {
@@ -97,7 +95,7 @@ const Berita = () => {
                                 </h3>
 
                                 <Link
-                                    href={`/pages/berita-detail`}
+                                    href={`/pages/berita/${item.id}`}
                                     className="bg-white text-[#284C66] px-5 py-2 rounded-full text-sm font-medium hover:bg-[#f4f4f4] transition"
                                 >
                                     Lihat Selengkapnya
@@ -116,6 +114,13 @@ const Berita = () => {
                     </p>
                 )}
             </div>
+            {pagination && (
+                <Pagination
+                    page={page}
+                    setPage={setPage}
+                    totalPages={dataArticle?.totalPage || 1}
+                />
+            )}
         </div>
     );
 };

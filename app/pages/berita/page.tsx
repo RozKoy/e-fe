@@ -20,7 +20,7 @@ const BeritaPage = () => {
                     <span>Berita</span>
                 </div>
             </div>
-            <Berita />
+            <Berita pagination={true} />
             <Footer />
         </div>
     );
