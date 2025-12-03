@@ -97,7 +97,7 @@ const InteractiveGeoJSON = ({ onClickDapil }: InteractiveGeoJSONProps) => {
 };
 
 export default function MapPage({ data, loading }: MapProps) {
-    const [id, setId] = useState<string | null>(null);
+    const [area, setArea] = useState<IArea | null>(null);
 
     return (
         <div className="px-12 pt-12">
@@ -128,20 +128,20 @@ export default function MapPage({ data, loading }: MapProps) {
 
                         <InteractiveGeoJSON
                             onClickDapil={(code) => {
-                                const id = data?.find(
+                                const findData = data?.find(
                                     (item) => item.code === code
-                                )?.id;
+                                );
 
-                                setId(id ?? null);
+                                setArea(findData ?? null);
                             }}
                         />
                     </MapContainer>
 
-                    {id && (
+                    {area && (
                         <Dapil
-                            id={id}
+                            area={area}
                             onClose={() => {
-                                setId(null);
+                                setArea(null);
                             }}
                         />
                     )}

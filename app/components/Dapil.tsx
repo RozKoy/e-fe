@@ -7,25 +7,26 @@ import { IUser } from "../_types/user";
 import { IResponse } from "../_types/api";
 import { ROUTE_LISTS } from "../_constants/route";
 import { AutorenewOutlined } from "@mui/icons-material";
+import { IArea } from "../_types/area";
 
 interface ModalProps {
-    id: string;
+    area: IArea;
     onClose: () => void;
 }
 
-const Dapil: React.FC<ModalProps> = ({ id, onClose }) => {
+const Dapil: React.FC<ModalProps> = ({ area, onClose }) => {
     const {
         data: dataUser,
         // error: errorUser,
         // mutate: mutateUser,
         isLoading: isLoadingUser,
     } = useSWR<IResponse<IUser[]>>(
-        `${ROUTE_LISTS.get("api-user-get")}?${new URLSearchParams({
+        `${ROUTE_LISTS.get("api-public-user-get")}?${new URLSearchParams({
             // page: "",
             // limit: "",
             // search: "",
             // roleId: "",
-            areaId: id,
+            areaId: area.id,
             // fractionId: "",
         })}`
     );
@@ -43,7 +44,7 @@ const Dapil: React.FC<ModalProps> = ({ id, onClose }) => {
 
                 {/* Title */}
                 <h2 className="text-center text-xl font-semibold mb-4">
-                    Daftar Anggota Dapil I Bandar Lampung
+                    Daftar Anggota {area.name}
                 </h2>
 
                 {/* List Anggota */}
