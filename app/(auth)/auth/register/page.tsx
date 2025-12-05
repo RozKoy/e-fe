@@ -13,13 +13,14 @@ import Password from "@/app/_components/inputs/password";
 import { useAlert } from "@/app/_providers/AlertProvider";
 
 //
-export default function LoginPage() {
+export default function RegisterPage() {
     const alert = useAlert();
     const router = useRouter();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
@@ -29,22 +30,18 @@ export default function LoginPage() {
         e.preventDefault();
 
         await postRequest({
-            body: { email, password },
+            body: { name, email, password },
             alert,
             setErrors,
             setLoading,
             setErrorMessage,
-            route: "local-login",
-            errorMessage: "Gagal masuk, silahkan coba kembali",
-            successMessage: "Berhasil masuk",
+            route: "api-register",
+            errorMessage: "Gagal mendaftar, silahkan coba kembali",
+            successMessage: "Berhasil mendaftar",
             successAction: () => {
                 setTimeout(() => {
-                    router.push(ROUTE_LISTS.get("dashboard") ?? "/");
-                    alert.addAlert({
-                        type: "success",
-                        message: "Selamat Datang :)",
-                    });
-                }, 1500);
+                    router.push(ROUTE_LISTS.get("login") ?? "/");
+                }, 500);
             },
         });
     };
@@ -107,13 +104,30 @@ export default function LoginPage() {
                             className="flex flex-col gap-3 font-semibold"
                         >
                             <Label
+                                text="Nama"
+                                error={errors?.get("name")}
+                                required
+                            >
+                                <Input
+                                    error={errors?.get("name")}
+                                    autoFocus={true}
+                                    placeholder="Masukkan nama"
+                                    onInput={() =>
+                                        setErrors((prev) => {
+                                            prev?.delete("name");
+                                            return prev;
+                                        })
+                                    }
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </Label>
+                            <Label
                                 text="Email"
                                 error={errors?.get("email")}
                                 required
                             >
                                 <Input
                                     error={errors?.get("email")}
-                                    autoFocus={true}
                                     placeholder="Masukkan email"
                                     onInput={() =>
                                         setErrors((prev) => {
@@ -152,16 +166,16 @@ export default function LoginPage() {
                                 isLoading={loading}
                                 className="font-bold text-primary"
                             >
-                                Masuk
+                                Daftar
                             </Button>
                         </form>
-                        <p className="font-medium text-right text-sm">
-                            Belum punya akun?{" "}
+                        <p className="font-medium text-sm">
+                            Sudah punya akun?{" "}
                             <Link
                                 href={ROUTE_LISTS.get("register") ?? "/"}
                                 className="text-secondary underline hover:opacity-75 transition-all"
                             >
-                                Daftar
+                                Masuk
                             </Link>
                         </p>
                     </div>

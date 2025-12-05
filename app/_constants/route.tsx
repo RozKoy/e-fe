@@ -52,6 +52,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Login
     ["login", "/auth/login"],
 
+    // Registration
+    ["register", "/auth/register"],
+
     // LOCAL
     ["local-login", "/be/auth/login"],
     ["local-logout", "/be/auth/logout"],
@@ -138,5 +141,6 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // Auth
     ["api-login", "/api/auth/login"],
+    ["api-register", "/api/auth/register"],
     ["api-token-check", "/api/auth/check-token"],
 ]);
