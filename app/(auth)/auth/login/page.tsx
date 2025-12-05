@@ -28,6 +28,19 @@ export default function LoginPage() {
     const login = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const loginUrl = ROUTE_LISTS.get("login");
+        const logoutUrl = ROUTE_LISTS.get("local-logout");
+        const profileUrl = ROUTE_LISTS.get("api-profile-get");
+
+        if (!loginUrl || !logoutUrl || !profileUrl) {
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+
+            return;
+        }
+
         await postRequest({
             body: { email, password },
             alert,
@@ -37,14 +50,33 @@ export default function LoginPage() {
             route: "local-login",
             errorMessage: "Gagal masuk, silahkan coba kembali",
             successMessage: "Berhasil masuk",
-            successAction: () => {
-                setTimeout(() => {
-                    router.push(ROUTE_LISTS.get("dashboard") ?? "/");
+            successAction: async () => {
+                const res = await fetch(profileUrl);
+
+                const response = await res.json();
+
+                if (res.ok) {
+                    setTimeout(() => {
+                        router.push(
+                            response?.data?.role
+                                ? ROUTE_LISTS.get("dashboard") ?? "/"
+                                : "/"
+                        );
+                        alert.addAlert({
+                            type: "success",
+                            message: "Selamat Datang :)",
+                        });
+                    }, 500);
+                } else {
+                    await fetch(logoutUrl);
+
                     alert.addAlert({
-                        type: "success",
-                        message: "Selamat Datang :)",
+                        type: "error",
+                        message: "Mohon maaf, sistem sedang bermasalah",
                     });
-                }, 1500);
+
+                    setLoading(false);
+                }
             },
         });
     };
