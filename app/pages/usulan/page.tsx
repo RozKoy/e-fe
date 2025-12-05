@@ -1,84 +1,54 @@
 "use client";
 
+import useSWR from "swr";
 import Link from "next/link";
-import Navbar from "@/app/components/Navbar";
+import { useState } from "react";
+import { IResponse } from "@/app/_types/api";
 import Footer from "@/app/components/Footer";
-import Image from "next/image";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import Navbar from "@/app/components/Navbar";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SearchIcon from "@mui/icons-material/Search";
+import { ROUTE_LISTS } from "@/app/_constants/route";
+import Select from "@/app/_components/inputs/select";
+import Pagination from "@/app/_components/pagination";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { AutorenewOutlined } from "@mui/icons-material";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { IProposal, ProposalStatusType } from "@/app/_types/proposal";
 
-interface UsulanItem {
-    no: number;
-    namaMasyarakat: string;
-    judulPengajuan: string;
-    tanggalPengajuan: string;
-    kategoriUsulan: string;
-    dapil: string;
-    partai: string;
-    logoPartaiUrl: string;
-    wakilRakyat: string;
-    status: "Disetujui" | "Menunggu" | "Ditolak";
-    id: number;
-}
+const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 
 const UsulanPage = () => {
-    const usulanData: UsulanItem[] = [
-        {
-            no: 1,
-            namaMasyarakat: "Nabila P.",
-            judulPengajuan: "Perbaikan Jalan Gg Swadaya",
-            tanggalPengajuan: "01/11/2025",
-            kategoriUsulan: "Infrastruktur",
-            dapil: "Dapil II",
-            partai: "Gerindra",
-            logoPartaiUrl: "/gerindra.png",
-            wakilRakyat: "MULYANTO, S.H, M.H",
-            status: "Disetujui",
-            id: 101,
-        },
-        {
-            no: 2,
-            namaMasyarakat: "Wawan S.",
-            judulPengajuan: "Bantuan Pupuk untuk Petani",
-            tanggalPengajuan: "25/10/2025",
-            kategoriUsulan: "Pertanian",
-            dapil: "Dapil I",
-            partai: "PDIP",
-            logoPartaiUrl: "/gerindra.png",
-            wakilRakyat: "WAHYU, S.E",
-            status: "Menunggu",
-            id: 102,
-        },
-        {
-            no: 3,
-            namaMasyarakat: "Badru T.",
-            judulPengajuan: "Pengadaan Alat Kesehatan Posyandu",
-            tanggalPengajuan: "15/10/2025",
-            kategoriUsulan: "Kesehatan",
-            dapil: "Dapil III",
-            partai: "Demokrat",
-            logoPartaiUrl: "/gerindra.png",
-            wakilRakyat: "FIRDAUS H.",
-            status: "Ditolak",
-            id: 103,
-        },
-    ];
+    const [page, setPage] = useState<number>(1);
+    const [limit, setLimit] = useState<number>(10);
 
-    const getStatusColor = (status: UsulanItem["status"]) => {
+    const {
+        data: dataProposal,
+        // error: errorProposal,
+        // mutate: mutateProposal,
+        isLoading: isLoadingProposal,
+    } = useSWR<IResponse<IProposal[]>>(
+        `${ROUTE_LISTS.get("api-public-proposal-get")}?${new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+            // areaId: "",
+            // search: "",
+            // status: "",
+            // categoryId: "",
+        })}`
+    );
+
+    const getStatusColor = (status: ProposalStatusType) => {
         switch (status) {
-            case "Disetujui":
-                return "bg-green-100 text-green-800";
-            case "Menunggu":
+            case "baru":
+                return "bg-blue-100 text-blue-800";
+            case "diproses":
                 return "bg-yellow-100 text-yellow-800";
-            case "Ditolak":
-                return "bg-red-100 text-red-800";
-            default:
-                return "bg-gray-100 text-gray-800";
+            case "selesai":
+                return "bg-green-100 text-green-800";
         }
     };
 
@@ -101,9 +71,6 @@ const UsulanPage = () => {
                 <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
                     <div className="p-4">
                         <div className="flex justify-end mb-6 space-x-3">
-                            <button className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition">
-                                Unduh QR
-                            </button>
                             <Link
                                 href={`/pages/proposal/tambahProposal`}
                                 className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition"
@@ -145,7 +112,7 @@ const UsulanPage = () => {
                                         <th className="px-4 py-3 border-b">
                                             Judul Pengajuan
                                         </th>
-                                        <th className="px-4 py-3 border-b">
+                                        <th className="px-4 py-3 border-b text-right">
                                             Tanggal Pengajuan
                                         </th>
                                         <th className="px-4 py-3 border-b">
@@ -154,16 +121,7 @@ const UsulanPage = () => {
                                         <th className="px-4 py-3 border-b">
                                             Dapil
                                         </th>
-                                        <th className="px-4 py-3 border-b">
-                                            Partai
-                                        </th>
-                                        <th className="px-4 py-3 border-b">
-                                            Logo Fraksi
-                                        </th>
-                                        <th className="px-4 py-3 border-b">
-                                            Wakil Rakyat
-                                        </th>
-                                        <th className="px-4 py-3 border-b">
+                                        <th className="px-4 py-3 border-b text-center">
                                             Status
                                         </th>
                                         <th className="px-4 py-3 border-b text-center">
@@ -172,150 +130,158 @@ const UsulanPage = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {usulanData.map((item) => (
-                                        <tr
-                                            key={item.id}
-                                            className="border-b hover:bg-gray-50"
-                                        >
-                                            <td className="px-4 py-3">
-                                                {item.no}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {item.namaMasyarakat}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {item.judulPengajuan}
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap">
-                                                {item.tanggalPengajuan}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {item.kategoriUsulan}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {item.dapil}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                {item.partai}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <div className="w-8 h-8 relative">
-                                                    <Image
-                                                        src={item.logoPartaiUrl}
-                                                        alt={`Logo ${item.partai}`}
-                                                        fill
-                                                        className="object-contain"
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap">
-                                                {item.wakilRakyat}
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <span
-                                                    className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                                                        item.status
-                                                    )}`}
-                                                >
-                                                    {item.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-center">
-                                                <div className="flex items-center justify-center space-x-2">
-                                                    <Link
-                                                        href={`/usulan/${item.id}`}
-                                                        className="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50 transition"
-                                                        title="Lihat Detail"
-                                                    >
-                                                        <VisibilityIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </Link>
-                                                    <button
-                                                        className="text-yellow-600 hover:text-yellow-800 p-1 rounded-full hover:bg-yellow-50 transition"
-                                                        title="Edit"
-                                                    >
-                                                        <EditIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
-                                                        title="Hapus"
-                                                    >
-                                                        <DeleteIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50 transition"
-                                                        title="Suka"
-                                                    >
-                                                        <ThumbUpIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition"
-                                                        title="Tidak Suka"
-                                                    >
-                                                        <ThumbDownIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {usulanData.length === 0 && (
+                                    {isLoadingProposal && (
                                         <tr>
                                             <td
                                                 colSpan={11}
-                                                className="text-center py-10 text-gray-500"
+                                                className="p-3 text-center text-gray-500"
                                             >
-                                                No results.
+                                                <AutorenewOutlined
+                                                    className="animate-spin"
+                                                    fontSize="large"
+                                                />
                                             </td>
                                         </tr>
                                     )}
+                                    {!isLoadingProposal &&
+                                        dataProposal?.data?.map(
+                                            (item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="border-b hover:bg-gray-50"
+                                                >
+                                                    <td className="px-4 py-3">
+                                                        {(page - 1) * limit +
+                                                            (index + 1)}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        {item.user?.profile
+                                                            ?.name ?? "-"}
+                                                    </td>
+                                                    <td className="px-4 py-3 overflow-hidden">
+                                                        <p className="line-clamp-2">
+                                                            {item.title}
+                                                        </p>
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-right">
+                                                        {new Date(
+                                                            item.createdAt
+                                                        ).toLocaleDateString(
+                                                            "en-GB",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        {item.category?.name ??
+                                                            item.customCategory}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        {item.area?.name}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-center">
+                                                        <span
+                                                            className={`px-3 py-1 rounded-full font-bold text-xs lowercase ${getStatusColor(
+                                                                item.status
+                                                            )}`}
+                                                        >
+                                                            {item.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-center">
+                                                        <div className="flex items-center justify-center space-x-2">
+                                                            <Link
+                                                                href={`/usulan/${item.id}`}
+                                                                className="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50 transition"
+                                                                title="Lihat Detail"
+                                                            >
+                                                                <VisibilityIcon
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "20px",
+                                                                    }}
+                                                                />
+                                                            </Link>
+                                                            <button
+                                                                className="text-yellow-600 hover:text-yellow-800 p-1 rounded-full hover:bg-yellow-50 transition"
+                                                                title="Edit"
+                                                            >
+                                                                <EditIcon
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "20px",
+                                                                    }}
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
+                                                                title="Hapus"
+                                                            >
+                                                                <DeleteIcon
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "20px",
+                                                                    }}
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                className="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50 transition"
+                                                                title="Suka"
+                                                            >
+                                                                <ThumbUpIcon
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "20px",
+                                                                    }}
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                className="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition"
+                                                                title="Tidak Suka"
+                                                            >
+                                                                <ThumbDownIcon
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "20px",
+                                                                    }}
+                                                                />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
                                 </tbody>
                             </table>
                         </div>
 
                         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-sm text-gray-600">
                             <p>
-                                {usulanData.length} dari {usulanData.length}{" "}
-                                total data
+                                {dataProposal?.data?.length ?? 0} dari{" "}
+                                {dataProposal?.totalData ?? 0} total data
                             </p>
-                            <div className="flex items-center gap-2 mt-3 sm:mt-0">
-                                <select className="border rounded-md px-2 py-1 focus:ring-[#284C66] focus:border-[#284C66]">
-                                    <option>5</option>
-                                    <option>10</option>
-                                    <option>20</option>
-                                </select>
-                                <button className="border rounded-md px-2 py-1 hover:bg-gray-50 transition">
-                                    &lt;
-                                </button>
-                                <button className="bg-[#F19349] text-white rounded-md px-3 py-1 font-semibold">
-                                    1
-                                </button>
-                                <button className="border rounded-md px-2 py-1 hover:bg-gray-50 transition">
-                                    &gt;
-                                </button>
+                            <div className="flex gap-2 mt-3 sm:mt-0">
+                                <Select
+                                    value={limit}
+                                    onChange={(e) => {
+                                        setPage(1);
+                                        setLimit(parseInt(e.target.value));
+                                    }}
+                                >
+                                    {limitOptions.map((value, index) => (
+                                        <option key={index} value={value}>
+                                            {value}
+                                        </option>
+                                    ))}
+                                </Select>
+                                <Pagination
+                                    page={page}
+                                    setPage={setPage}
+                                    totalPages={dataProposal?.totalPage || 1}
+                                />
                             </div>
                         </div>
                     </div>

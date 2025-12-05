@@ -60,6 +60,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Public
     ["api-public-area-get", "/api/public/areas"],
     ["api-public-user-get", "/api/public/users"],
+    ["api-public-proposal-get", "/api/public/proposals"],
     ["api-public-user-structural-get", "/api/public/users/structural"],
 
     // Dashboards

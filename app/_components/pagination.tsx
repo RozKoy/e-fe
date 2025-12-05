@@ -60,13 +60,13 @@ export default function Pagination({
                     <Button
                         key={value}
                         size="xs"
-                        variant="outline"
+                        variant={page === value ? "primary" : "outline"}
                         onClick={() => {
                             if (setPage) {
                                 setPage(value);
                             }
                         }}
-                        disabled={itemCheck(value) || !page || page === value}
+                        disabled={Boolean(itemCheck(value))}
                     >
                         {itemCheck(value) ? "..." : value}
                     </Button>
