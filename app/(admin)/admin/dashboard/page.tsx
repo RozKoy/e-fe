@@ -104,7 +104,9 @@ function Chart({ props }: { props: IGraph }) {
 
 export default function DashboardPage() {
     const [areaId, setAreaId] = useState<string>("");
-    const [year, setYear] = useState<string>("");
+    const [year, setYear] = useState<string>(
+        new Date().getFullYear().toString()
+    );
 
     const { data, isLoading } = useSWR<IResponse<IDashboard>>(
         `${ROUTE_LISTS.get("api-dashboard-get")}?${new URLSearchParams({
@@ -115,6 +117,10 @@ export default function DashboardPage() {
 
     const { data: dataArea } = useSWR<IResponse<IArea[]>>(
         ROUTE_LISTS.get("api-area-get")
+    );
+
+    const { data: dataYear } = useSWR<IResponse<number[]>>(
+        ROUTE_LISTS.get("api-public-proposal-year-get")
     );
 
     return (
@@ -137,7 +143,13 @@ export default function DashboardPage() {
                     firstOption={true}
                     placeholder="Semua Tahun"
                     onChange={(e) => setYear(e.target.value)}
-                ></Select>
+                >
+                    {dataYear?.data?.map((item, index) => (
+                        <option key={index} value={item}>
+                            {item}
+                        </option>
+                    ))}
+                </Select>
             </div>
             <div className="grid gap-5 grid-cols-2 sm:grid-cols-4 md:grid-cols-5 text-primary *:min-h-40 *:p-5 *:rounded-lg *:flex *:flex-col *:justify-between *:shadow-md">
                 <Card

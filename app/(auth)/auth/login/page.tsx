@@ -11,6 +11,7 @@ import Input from "@/app/_components/inputs/input";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Password from "@/app/_components/inputs/password";
 import { useAlert } from "@/app/_providers/AlertProvider";
+import { ArrowBackOutlined } from "@mui/icons-material";
 
 //
 export default function LoginPage() {
@@ -119,6 +120,12 @@ export default function LoginPage() {
                 </div>
                 <div className="bg-primary flex items-center justify-center">
                     <div className="max-w-2xl p-6 md:p-10 rounded-lg flex flex-col gap-6 text-white">
+                        <Link
+                            href={"/"}
+                            className="mr-auto p-1 rounded-lg bg-secondary/50 hover:bg-secondary transition-all"
+                        >
+                            <ArrowBackOutlined />
+                        </Link>
                         <div className="block lg:hidden relative w-32 aspect-square rounded-full mx-auto bg-white">
                             <Image
                                 src="/images/app-logo.png"

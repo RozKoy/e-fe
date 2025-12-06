@@ -172,7 +172,7 @@ export default function RegisterPage() {
                         <p className="font-medium text-sm">
                             Sudah punya akun?{" "}
                             <Link
-                                href={ROUTE_LISTS.get("register") ?? "/"}
+                                href={ROUTE_LISTS.get("login") ?? "/"}
                                 className="text-secondary underline hover:opacity-75 transition-all"
                             >
                                 Masuk
