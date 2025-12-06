@@ -5,6 +5,7 @@ export interface IArticle {
 
     categoryId: string;
 
+    date: string;
     title: string;
     content: string;
     imageUrl: string | null;

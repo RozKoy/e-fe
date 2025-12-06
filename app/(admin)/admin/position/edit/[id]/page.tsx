@@ -108,7 +108,9 @@ export default function EditPositionPage({ params }: EditPositionPageProps) {
         e.preventDefault();
 
         await postRequest({
-            body: mapRequest({ name, level, category, commissionId }),
+            body: mapRequest({ name, level, category, commissionId }, [
+                "commissionId",
+            ]),
             alert,
             setErrors,
             setLoading,
@@ -215,11 +217,12 @@ export default function EditPositionPage({ params }: EditPositionPageProps) {
                 <Label
                     text="Komisi"
                     error={errors?.get("commissionId")}
-                    required
+                    required={category === "komisi"}
                 >
                     <Select
                         value={commissionId}
                         error={errors?.get("commissionId")}
+                        firstOption={category !== "komisi"}
                         placeholder="Pilih komisi"
                         onChange={(e) => {
                             setCommissionId(e.target.value);

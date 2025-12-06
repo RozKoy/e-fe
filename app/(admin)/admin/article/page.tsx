@@ -60,6 +60,15 @@ export default function BaseArticlePage() {
     );
 
     const columns: Column<IArticle>[] = [
+        {
+            header: "Tanggal",
+            accessor: (item: IArticle) =>
+                new Date(item.date).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                }),
+        },
         { header: "Judul", accessor: "title" },
         {
             header: "Kategori",
@@ -184,7 +193,10 @@ export default function BaseArticlePage() {
                 <div>
                     <Select
                         value={limit}
-                        onChange={(e) => setLimit(parseInt(e.target.value))}
+                        onChange={(e) => {
+                            setPage(1);
+                            setLimit(parseInt(e.target.value));
+                        }}
                     >
                         {limitOptions.map((value, index) => (
                             <option key={index} value={value}>

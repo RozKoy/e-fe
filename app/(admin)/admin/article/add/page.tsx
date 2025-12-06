@@ -152,6 +152,19 @@ export default function AddArticlePage() {
                         ))}
                     </Select>
                 </Label>
+                <Label text="Tanggal" error={errors?.get("date")} required>
+                    <Input
+                        type="date"
+                        name="date"
+                        error={errors?.get("date")}
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("date");
+                                return prev?.size ? prev : null;
+                            })
+                        }
+                    />
+                </Label>
                 <div className="md:col-span-2">
                     <Label
                         text="Konten"

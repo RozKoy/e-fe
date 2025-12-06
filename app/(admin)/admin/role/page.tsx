@@ -178,7 +178,10 @@ export default function BaseRolePage() {
                 <div>
                     <Select
                         value={limit}
-                        onChange={(e) => setLimit(parseInt(e.target.value))}
+                        onChange={(e) => {
+                            setPage(1);
+                            setLimit(parseInt(e.target.value));
+                        }}
                     >
                         {limitOptions.map((value, index) => (
                             <option key={index} value={value}>

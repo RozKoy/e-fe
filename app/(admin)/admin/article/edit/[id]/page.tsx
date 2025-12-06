@@ -185,6 +185,20 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
                         ))}
                     </Select>
                 </Label>
+                <Label text="Tanggal" error={errors?.get("date")} required>
+                    <Input
+                        type="date"
+                        name="date"
+                        error={errors?.get("date")}
+                        defaultValue={dataArticle?.data?.date?.split("T")?.[0]}
+                        onInput={() =>
+                            setErrors((prev) => {
+                                prev?.delete("date");
+                                return prev?.size ? prev : null;
+                            })
+                        }
+                    />
+                </Label>
                 <div className="md:col-span-2">
                     <Label
                         text="Konten"
