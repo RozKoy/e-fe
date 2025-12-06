@@ -1,18 +1,19 @@
 "use client";
 
 import useSWR from "swr";
-import { useState } from "react";
 import { IUser } from "../_types/user";
 import Label from "../_components/label";
 import Footer from "./_components/footer";
 import Navbar from "./_components/navbar";
 import { IResponse } from "../_types/api";
 import Button from "../_components/button";
+import { useEffect, useState } from "react";
 import File from "../_components/inputs/file";
 import Input from "../_components/inputs/input";
 import Select from "../_components/inputs/select";
 import { ROUTE_LISTS } from "../_constants/route";
 import { CloseOutlined } from "@mui/icons-material";
+import { useUser } from "../_providers/UserProvider";
 import { useAlert } from "../_providers/AlertProvider";
 import { badRequestResponseFormat } from "../_utils/api";
 
@@ -55,6 +56,7 @@ const genderOptions = [
 //
 export default function GuestLayout({ children }: GuestLayoutProps) {
     const alert = useAlert();
+    const { setUser } = useUser();
 
     const [showProfile, setShowProfile] = useState<boolean>(false);
 
@@ -123,6 +125,10 @@ export default function GuestLayout({ children }: GuestLayoutProps) {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        setUser(dataProfile?.data ?? null);
+    }, [setUser, dataProfile?.data]);
 
     return (
         <>

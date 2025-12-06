@@ -10,9 +10,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+// import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { useUser } from "@/app/_providers/UserProvider";
 import { AutorenewOutlined } from "@mui/icons-material";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+// import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { IProposal, ProposalStatusType } from "@/app/_types/proposal";
@@ -20,6 +21,8 @@ import { IProposal, ProposalStatusType } from "@/app/_types/proposal";
 const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 
 export default function ProposalPage() {
+    const { user } = useUser();
+
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
 
@@ -65,14 +68,19 @@ export default function ProposalPage() {
                 </div>
             </div>
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-                <div className="p-4">
-                    <div className="flex justify-end mb-6 space-x-3">
-                        <Link
-                            href={ROUTE_LISTS.get("public-proposal-add") ?? "/"}
-                            className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition"
-                        >
-                            Tambah Usulan
-                        </Link>
+                <div className="p-4 space-y-6">
+                    <div className="flex justify-end space-x-3">
+                        {user && (
+                            <Link
+                                href={
+                                    ROUTE_LISTS.get("public-proposal-add") ??
+                                    "/"
+                                }
+                                className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition"
+                            >
+                                Tambah Usulan
+                            </Link>
+                        )}
                     </div>
                     <div className="flex flex-col md:flex-row items-center gap-4 order-2">
                         <button className="flex items-center bg-[#284C66] text-white px-5 py-2 rounded-full font-medium text-sm hover:bg-[#1f3a4d] transition w-full md:w-auto">
@@ -195,29 +203,35 @@ export default function ProposalPage() {
                                                             }}
                                                         />
                                                     </Link>
-                                                    <button
-                                                        className="text-yellow-600 hover:text-yellow-800 p-1 rounded-full hover:bg-yellow-50 transition"
-                                                        title="Edit"
-                                                    >
-                                                        <EditIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
-                                                        title="Hapus"
-                                                    >
-                                                        <DeleteIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                    <button
+                                                    {user &&
+                                                        user.id ===
+                                                            item.user.id && (
+                                                            <>
+                                                                <button
+                                                                    className="text-yellow-600 hover:text-yellow-800 p-1 rounded-full hover:bg-yellow-50 transition"
+                                                                    title="Edit"
+                                                                >
+                                                                    <EditIcon
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "20px",
+                                                                        }}
+                                                                    />
+                                                                </button>
+                                                                <button
+                                                                    className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
+                                                                    title="Hapus"
+                                                                >
+                                                                    <DeleteIcon
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "20px",
+                                                                        }}
+                                                                    />
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    {/* <button
                                                         className="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50 transition"
                                                         title="Suka"
                                                     >
@@ -238,7 +252,7 @@ export default function ProposalPage() {
                                                                     "20px",
                                                             }}
                                                         />
-                                                    </button>
+                                                    </button> */}
                                                 </div>
                                             </td>
                                         </tr>
@@ -247,7 +261,7 @@ export default function ProposalPage() {
                         </table>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-sm text-gray-600">
+                    <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600">
                         <p>
                             {dataProposal?.data?.length ?? 0} dari{" "}
                             {dataProposal?.totalData ?? 0} total data

@@ -79,6 +79,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Dashboards
     ["api-dashboard-get", "/api/dashboards"],
 
+    // Proposals
+    ["api-proposal-add", "/api/proposals"],
+
     // Articles
     ["api-article-get", "/api/public/news"],
     ["api-article-add", "/api/news"],

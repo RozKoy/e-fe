@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SWRProvider } from "./_providers/SWRProvider";
+import { UserProvider } from "./_providers/UserProvider";
 import { AlertProvider } from "./_providers/AlertProvider";
 import "./globals.css";
 
@@ -30,7 +31,9 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <AlertProvider>
-                    <SWRProvider>{children}</SWRProvider>
+                    <UserProvider>
+                        <SWRProvider>{children}</SWRProvider>
+                    </UserProvider>
                 </AlertProvider>
             </body>
         </html>

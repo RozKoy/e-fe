@@ -9,13 +9,20 @@ interface SWRProviderProps {
 }
 
 //
+const protectedURL = [
+    "/admin",
+    ROUTE_LISTS.get("public-proposal-add") ?? "/admin",
+    ROUTE_LISTS.get("public-proposal-edit") ?? "/admin",
+];
+
+//
 async function fetcher(url: string) {
     const response = await fetch(url);
 
     if (
         response.status === 401 &&
         typeof window !== "undefined" &&
-        window.location.pathname.startsWith("/admin")
+        protectedURL.some((value) => window.location.pathname.startsWith(value))
     ) {
         window.location.href = ROUTE_LISTS.get("login") ?? "/";
     }
