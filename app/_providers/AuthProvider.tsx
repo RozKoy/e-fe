@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import { IUser } from "../_types/user";
 import { useEffect, useRef } from "react";
 import { IResponse } from "../_types/api";
 import { useAlert } from "./AlertProvider";
@@ -23,11 +24,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const hasError = useRef<boolean>(false);
     const hasMutateStatus = useRef<number>(0);
 
-    const { data, mutate, isLoading } = useSWR<IResponse<object | null>>(
-        ROUTE_LISTS.get("api-token-check")
+    const { data, mutate, isLoading } = useSWR<IResponse<IUser>>(
+        ROUTE_LISTS.get("api-profile-get")
     );
 
-    const isAuth = !isLoading && data?.code !== 401;
+    const isAuth =
+        !isLoading && data?.code !== 401 && data?.data?.role !== null;
 
     useEffect(() => {
         const check = async () => {
@@ -41,7 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     if (
                         hasMutateStatus.current === 2 &&
                         !isLoading &&
-                        data?.code === 401
+                        (data?.code === 401 || data?.data?.role === null)
                     ) {
                         alert.clearAlert();
                         hasError.current = true;

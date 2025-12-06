@@ -12,7 +12,11 @@ interface SWRProviderProps {
 async function fetcher(url: string) {
     const response = await fetch(url);
 
-    if (response.status === 401 && typeof window !== "undefined") {
+    if (
+        response.status === 401 &&
+        typeof window !== "undefined" &&
+        window.location.pathname.startsWith("/admin")
+    ) {
         window.location.href = ROUTE_LISTS.get("login") ?? "/";
     }
 

@@ -185,9 +185,9 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
         setErrors(null);
         setErrorMessage(null);
 
-        let url = ROUTE_LISTS.get("api-profile-update");
+        const url = ROUTE_LISTS.get("api-profile-update");
 
-        if (!url || !dataProfile?.data?.profile?.id) {
+        if (!url) {
             setLoading(false);
 
             alert.addAlert({
@@ -197,8 +197,6 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
 
             return;
         }
-
-        url = url.replace(":id", dataProfile.data.profile.id);
 
         const formData = new FormData(e.currentTarget);
 
@@ -389,7 +387,6 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                                         <Label
                                             text="Nomor HP"
                                             error={errors?.get("phoneNumber")}
-                                            required
                                         >
                                             <Input
                                                 type="tel"
@@ -509,7 +506,7 @@ export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
                                         <Button
                                             type="submit"
                                             size="sm"
-                                            variant="outline"
+                                            variant="primary"
                                             isLoading={loading}
                                         >
                                             Simpan

@@ -122,7 +122,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // User Profiles
     ["api-profile-get", "/api/users/profile"],
-    ["api-profile-update", "/api/userProfiles/:id"],
+    ["api-profile-update", "/api/userProfiles/self"],
 
     // Positions
     ["api-position-get", "/api/positions"],

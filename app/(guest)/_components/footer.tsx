@@ -1,29 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ROUTE_LISTS } from "@/app/_constants/route";
 
 //
-const links = [
-    {
-        name: "Beranda",
-        href: "/",
-    },
-    {
-        name: "Usulan",
-        href: ROUTE_LISTS.get("public-proposal") ?? "/",
-    },
-    {
-        name: "Anggota DPRD",
-        href: ROUTE_LISTS.get("public-member") ?? "/",
-    },
-    {
-        name: "Berita",
-        href: ROUTE_LISTS.get("public-article") ?? "/",
-    },
-];
+interface FooterProps {
+    links: LinkItem[];
+}
+
+interface LinkItem {
+    name: string;
+    href: string;
+}
 
 //
-export default function Footer() {
+export default function Footer({ links }: FooterProps) {
     return (
         <footer className="bg-[#284C66] text-white">
             <div className="max-w-8xl mx-auto px-6 sm:px-8">
