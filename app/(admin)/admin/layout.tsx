@@ -15,6 +15,7 @@ import {
     Diversity2Outlined,
     FilterFramesOutlined,
     ManageAccountsOutlined,
+    ArticleOutlined,
 } from "@mui/icons-material";
 import useSWR from "swr";
 import Link from "next/link";
@@ -63,6 +64,11 @@ const MENU_LIST: MenuListInterface[] = [
         icon: <DashboardOutlined />,
         path: ROUTE_LISTS.get("dashboard"),
         title: "Beranda",
+    },
+    {
+        icon: <ArticleOutlined />,
+        path: ROUTE_LISTS.get("proposal"),
+        title: "Usulan",
     },
     {
         icon: <NewspaperOutlined />,

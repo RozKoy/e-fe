@@ -12,6 +12,9 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Dashboards
     ["dashboard", "/admin/dashboard"],
 
+    // Proposals
+    ["proposal", "/admin/proposal"],
+
     // Articles
     ["article", "/admin/article"],
     ["article-add", "/admin/article/add"],
@@ -80,7 +83,10 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["api-dashboard-get", "/api/dashboards"],
 
     // Proposals
+    ["api-proposal-get", "/api/proposals"],
     ["api-proposal-add", "/api/proposals"],
+    ["api-proposal-assign", "/api/proposalAssignments/assign"],
+    ["api-proposal-finish", "/api/proposalAssignments/finish/:id"],
 
     // Articles
     ["api-article-get", "/api/public/news"],
