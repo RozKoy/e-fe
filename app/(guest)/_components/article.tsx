@@ -83,13 +83,14 @@ export default function Article({ pagination = false }: ArticleProps) {
                                     <CalendarTodayOutlined
                                         sx={{ fontSize: 14 }}
                                     />
-                                    {new Date(
-                                        item.createdAt
-                                    ).toLocaleDateString("en-GB", {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                    })}
+                                    {new Date(item.date).toLocaleDateString(
+                                        "en-GB",
+                                        {
+                                            day: "numeric",
+                                            month: "short",
+                                            year: "numeric",
+                                        }
+                                    )}
                                 </div>
 
                                 <h3 className="font-semibold text-base leading-snug mb-3">

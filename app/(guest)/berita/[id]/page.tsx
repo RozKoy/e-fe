@@ -73,7 +73,7 @@ export default function ArticleDetailPage({ params }: ArticleDetailPageProps) {
                                     />
                                     <span>
                                         {new Date(
-                                            dataArticle.data.createdAt
+                                            dataArticle.data.date
                                         ).toLocaleDateString("en-GB", {
                                             day: "numeric",
                                             month: "short",
