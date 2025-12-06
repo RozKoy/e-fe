@@ -4,17 +4,19 @@ import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { IResponse } from "../_types/api";
-import { IArticle } from "../_types/article";
-import { ROUTE_LISTS } from "../_constants/route";
-import Pagination from "../_components/pagination";
+import { IResponse } from "@/app/_types/api";
+import { IArticle } from "@/app/_types/article";
+import { ROUTE_LISTS } from "@/app/_constants/route";
+import Pagination from "@/app/_components/pagination";
 import { AutorenewOutlined, CalendarTodayOutlined } from "@mui/icons-material";
 
-interface BeritaProps {
+//
+interface ArticleProps {
     pagination?: boolean;
 }
 
-const Berita = ({ pagination = false }: BeritaProps) => {
+//
+export default function Article({ pagination = false }: ArticleProps) {
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(9);
 
@@ -95,7 +97,11 @@ const Berita = ({ pagination = false }: BeritaProps) => {
                                 </h3>
 
                                 <Link
-                                    href={`/pages/berita/${item.id}`}
+                                    href={
+                                        ROUTE_LISTS.get(
+                                            "public-article-detail"
+                                        )?.replace(":id", item.id) ?? "/"
+                                    }
                                     className="bg-white text-[#284C66] px-5 py-2 rounded-full text-sm font-medium hover:bg-[#f4f4f4] transition"
                                 >
                                     Lihat Selengkapnya
@@ -123,6 +129,4 @@ const Berita = ({ pagination = false }: BeritaProps) => {
             )}
         </div>
     );
-};
-
-export default Berita;
+}

@@ -1,4 +1,13 @@
 export const ROUTE_LISTS: Map<string, string> = new Map([
+    // GUEST
+    ["public-member", "/anggota"],
+    ["public-article", "/berita"],
+    ["public-article-detail", "/berita/:id"],
+    ["public-proposal", "/usulan"],
+    ["public-proposal-add", "/usulan/tambah"],
+    ["public-proposal-edit", "/usulan/:id/ubah"],
+    ["public-proposal-detail", "/usulan/:id"],
+
     // ADMIN
     // Dashboards
     ["dashboard", "/admin/dashboard"],

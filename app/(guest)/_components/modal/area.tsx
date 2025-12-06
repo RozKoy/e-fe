@@ -1,20 +1,21 @@
 "use client";
 
 import useSWR from "swr";
-import React from "react";
 import Image from "next/image";
-import { IUser } from "../_types/user";
-import { IResponse } from "../_types/api";
-import { ROUTE_LISTS } from "../_constants/route";
+import { IArea } from "@/app/_types/area";
+import { IUser } from "@/app/_types/user";
+import { IResponse } from "@/app/_types/api";
+import { ROUTE_LISTS } from "@/app/_constants/route";
 import { AutorenewOutlined } from "@mui/icons-material";
-import { IArea } from "../_types/area";
 
-interface ModalProps {
+//
+interface AreaModalProps {
     area: IArea;
     onClose: () => void;
 }
 
-const Dapil: React.FC<ModalProps> = ({ area, onClose }) => {
+//
+export default function AreaModal({ area, onClose }: AreaModalProps) {
     const {
         data: dataUser,
         // error: errorUser,
@@ -148,6 +149,4 @@ const Dapil: React.FC<ModalProps> = ({ area, onClose }) => {
             </div>
         </div>
     );
-};
-
-export default Dapil;
+}

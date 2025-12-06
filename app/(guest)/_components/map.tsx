@@ -1,8 +1,8 @@
 "use client";
 
-import Dapil from "./Dapil";
-import { IArea } from "../_types/area";
+import AreaModal from "./modal/area";
 import { useRef, useState } from "react";
+import { IArea } from "@/app/_types/area";
 import { Feature, Geometry } from "geojson";
 import lampung_dapil from "./lampung_dapil.json";
 import { AutorenewOutlined } from "@mui/icons-material";
@@ -10,6 +10,7 @@ import L, { LeafletMouseEvent, GeoJSON as LeafletGeoJSON } from "leaflet";
 import { GeoJSON, TileLayer, GeoJSONProps, MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+//
 interface MapProps {
     data: IArea[] | undefined;
     loading: boolean;
@@ -26,6 +27,7 @@ interface InteractiveGeoJSONProps {
 
 type RegionFeature = Feature<Geometry, RegionProperties>;
 
+//
 function getColor(d: number): string {
     return d == 1
         ? "#000036"
@@ -96,6 +98,7 @@ const InteractiveGeoJSON = ({ onClickDapil }: InteractiveGeoJSONProps) => {
     );
 };
 
+//
 export default function MapPage({ data, loading }: MapProps) {
     const [area, setArea] = useState<IArea | null>(null);
 
@@ -138,7 +141,7 @@ export default function MapPage({ data, loading }: MapProps) {
                     </MapContainer>
 
                     {area && (
-                        <Dapil
+                        <AreaModal
                             area={area}
                             onClose={() => {
                                 setArea(null);

@@ -3,8 +3,6 @@
 import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
-import Footer from "@/app/components/Footer";
-import Navbar from "@/app/components/Navbar";
 import { IResponse } from "@/app/_types/api";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { AutorenewOutlined, SearchOutlined } from "@mui/icons-material";
@@ -105,14 +103,13 @@ const ItemRender = ({ key, title, items }: ItemRenderProps) => {
     );
 };
 
-const AnggotaPage = () => {
+export default function MemberPage() {
     const { data: dataUser, isLoading: isLoadingUser } = useSWR<
         IResponse<IUserStructure>
     >(`${ROUTE_LISTS.get("api-public-user-structural-get")}`);
 
     return (
-        <div>
-            <Navbar />
+        <>
             <div className="bg-white min-h-screen">
                 <div className="bg-[#284C66] py-24 text-center text-white">
                     <h1 className="text-3xl font-semibold tracking-wide mb-3">
@@ -229,12 +226,6 @@ const AnggotaPage = () => {
                         <h2 className="text-xl font-bold text-[#284C66] mb-2">
                             Semua Anggota DPRD Provinsi Lampung
                         </h2>
-                        {/* <p className="text-sm mb-6">
-                            Menampilkan :{" "}
-                            <span className="font-semibold">
-                                30 Anggota DPRD Provinsi Lampung
-                            </span>
-                        </p> */}
                         {isLoadingUser && (
                             <div className="text-center">
                                 <AutorenewOutlined
@@ -266,9 +257,6 @@ const AnggotaPage = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </div>
+        </>
     );
-};
-
-export default AnggotaPage;
+}
