@@ -112,10 +112,6 @@ export default function AreaModal({ area, onClose }: AreaModalProps) {
                                                 : "-"}
                                         </span>
                                     </div>
-
-                                    <button className="mt-3 bg-[#1E3A4E] text-white px-4 py-2 rounded-lg text-sm">
-                                        Detail Profil
-                                    </button>
                                 </div>
 
                                 {/* Logo Partai */}

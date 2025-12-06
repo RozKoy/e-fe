@@ -3,30 +3,17 @@
 import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
+import { IUser } from "@/app/_types/user";
 import { IResponse } from "@/app/_types/api";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { AutorenewOutlined, SearchOutlined } from "@mui/icons-material";
 
 //
-interface IUserItem {
-    id: string;
-
-    positionId: string;
-    commissionId: string;
-
-    name: string;
-    email: string;
-    level: string;
-    position: string;
-    commission: string;
-    positionCategory: string;
-}
-
 interface IStructureItem {
-    ketua: IUserItem[];
-    wakil: IUserItem[];
-    sekretaris: IUserItem[];
-    anggota: IUserItem[];
+    ketua: IUser[];
+    wakil: IUser[];
+    sekretaris: IUser[];
+    anggota: IUser[];
 }
 
 interface IUserStructure {
@@ -37,15 +24,14 @@ interface IUserStructure {
 }
 
 interface ItemRenderProps {
-    key?: number | string;
     title: string;
     items: IStructureItem;
 }
 
 //
-const ItemRender = ({ key, title, items }: ItemRenderProps) => {
+const ItemRender = ({ title, items }: ItemRenderProps) => {
     return (
-        <div key={key}>
+        <div>
             <h3 className="text-lg font-bold text-[#284C66] mb-6">{title}</h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {Object.keys(items).map((key) => {
@@ -72,27 +58,38 @@ const ItemRender = ({ key, title, items }: ItemRenderProps) => {
                                     </span>
                                     <span className="font-semibold">NAMA</span>
                                     <span className="col-span-2 text-[#284C66] font-bold hover:underline cursor-pointer">
-                                        : {value.name}
+                                        : {value.profile?.name ?? "-"}
                                     </span>
                                     <span className="font-semibold">
                                         JABATAN
                                     </span>
                                     <span className="col-span-2">
-                                        : {value.position}
+                                        : {value.position?.name}
                                     </span>
                                 </div>
-                                <div className="mt-3">
-                                    <Image
-                                        src="/gerindra.png"
-                                        alt="Logo Partai"
-                                        width={80}
-                                        height={80}
-                                        className="h-16 w-auto"
-                                    />
-                                    <p className="mt-1 text-sm font-semibold">
-                                        Partai Amanat Nasional
-                                    </p>
-                                </div>
+                                {value.accesses.length > 0 && (
+                                    <div className="mt-3">
+                                        <Image
+                                            src={
+                                                value.accesses[0]?.fraction
+                                                    ?.imageUrl ??
+                                                "/images/no-image.jpg"
+                                            }
+                                            alt={
+                                                value.accesses[0]?.fraction
+                                                    ?.name ?? "-"
+                                            }
+                                            width={80}
+                                            height={80}
+                                            className="h-16 w-auto"
+                                            unoptimized
+                                        />
+                                        <p className="mt-1 text-sm font-semibold">
+                                            {value.accesses[0]?.fraction
+                                                ?.name ?? "-"}
+                                        </p>
+                                    </div>
+                                )}
                                 <hr className="border-t-2 border-[#284C66] mt-3" />
                             </div>
                         </div>
@@ -235,24 +232,26 @@ export default function MemberPage() {
                             </div>
                         )}
                         <div className="space-y-5">
-                            {!isLoadingUser &&
-                                dataUser?.data?.pimpinan &&
-                                ItemRender({
-                                    title: "PIMPINAN",
-                                    items: dataUser.data.pimpinan,
-                                })}
-                            {!isLoadingUser &&
+                            {!isLoadingUser && dataUser?.data?.pimpinan && (
+                                <ItemRender
+                                    title="PIMPINAN"
+                                    items={dataUser.data.pimpinan}
+                                />
+                            )}
+                            {/* {!isLoadingUser &&
                                 dataUser?.data?.komisi &&
                                 Object.keys(dataUser.data.komisi).map(
-                                    (key, index) =>
-                                        ItemRender({
-                                            key: index,
-                                            title: key,
-                                            items:
+                                    (key, index) => (
+                                        <ItemRender
+                                            key={index}
+                                            title={key}
+                                            items={
                                                 dataUser.data?.komisi[key] ??
-                                                ({} as IStructureItem),
-                                        })
-                                )}
+                                                ({} as IStructureItem)
+                                            }
+                                        />
+                                    )
+                                )} */}
                         </div>
                     </div>
                 </div>

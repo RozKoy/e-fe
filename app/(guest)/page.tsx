@@ -3,10 +3,12 @@
 import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { IArea } from "@/app/_types/area";
 import Article from "./_components/article";
 import { IResponse } from "@/app/_types/api";
+import AreaModal from "./_components/modal/area";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { AutorenewOutlined } from "@mui/icons-material";
 
@@ -17,6 +19,8 @@ const Map = dynamic(() => import("@/app/(guest)/_components/map"), {
 
 //
 export default function BasePage() {
+    const [selectedArea, setSelectedArea] = useState<IArea | null>(null);
+
     const {
         data: dataArea,
         // error: errorArea,
@@ -118,18 +122,20 @@ export default function BasePage() {
                                             </div>
                                         </div>
                                         <div className="flex space-x-4">
-                                            <Link
-                                                href={`/`}
+                                            <button
                                                 className="bg-[#284C66] hover:bg-[#1f3a4d] text-white px-6 py-2 rounded-full text-sm font-semibold transition"
+                                                onClick={() =>
+                                                    setSelectedArea(item)
+                                                }
                                             >
                                                 Anggota Dapil
-                                            </Link>
+                                            </button>
                                             <Link
-                                                href={
+                                                href={`${
                                                     ROUTE_LISTS.get(
                                                         "public-proposal"
                                                     ) ?? "/"
-                                                }
+                                                }?areaId=${item.id}`}
                                                 className="bg-[#F19349] hover:bg-[#e17b2f] text-white px-6 py-2 rounded-full text-sm font-semibold transition"
                                             >
                                                 Usulan Dapil
@@ -146,6 +152,12 @@ export default function BasePage() {
                     </div>
                 </section>
             </div>
+            {selectedArea && (
+                <AreaModal
+                    area={selectedArea}
+                    onClose={() => setSelectedArea(null)}
+                />
+            )}
             <Article />
         </>
     );
