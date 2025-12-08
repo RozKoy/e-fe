@@ -3,8 +3,10 @@
 import useSWR from "swr";
 import Link from "next/link";
 import { useState } from "react";
+import { IArea } from "@/app/_types/area";
 import { IResponse } from "@/app/_types/api";
 import EditIcon from "@mui/icons-material/Edit";
+import { ICategory } from "@/app/_types/category";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -18,13 +20,24 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { IProposal, ProposalStatusType } from "@/app/_types/proposal";
 
+//
 const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 
+const statusOptions: string[] = ["baru", "diproses", "selesai"];
+
+//
 export default function ProposalPage() {
     const { user } = useUser();
 
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
+
+    const [showFilter, setShowFilter] = useState<boolean>(false);
+
+    const [areaId, setAreaId] = useState<string>("");
+    const [search, setSearch] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+    const [categoryId, setCategoryId] = useState<string>("");
 
     const {
         data: dataProposal,
@@ -35,11 +48,27 @@ export default function ProposalPage() {
         `${ROUTE_LISTS.get("api-public-proposal-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
-            // areaId: "",
-            // search: "",
-            // status: "",
-            // categoryId: "",
+            areaId,
+            search,
+            status,
+            categoryId,
         })}`
+    );
+
+    const {
+        data: dataArea,
+        // error: errorCategory,
+        // mutate: mutateCategory,
+        // isLoading: isLoadingCategory,
+    } = useSWR<IResponse<IArea[]>>(`${ROUTE_LISTS.get("api-public-area-get")}`);
+
+    const {
+        data: dataCategory,
+        // error: errorCategory,
+        // mutate: mutateCategory,
+        // isLoading: isLoadingCategory,
+    } = useSWR<IResponse<ICategory[]>>(
+        `${ROUTE_LISTS.get("api-public-category-get")}`
     );
 
     const getStatusColor = (status: ProposalStatusType) => {
@@ -70,20 +99,19 @@ export default function ProposalPage() {
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
                 <div className="p-4 space-y-6">
                     <div className="flex justify-end space-x-3">
-                        {user && (
-                            <Link
-                                href={
-                                    ROUTE_LISTS.get("public-proposal-add") ??
-                                    "/"
-                                }
-                                className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition"
-                            >
-                                Tambah Usulan
-                            </Link>
-                        )}
+                        <Link
+                            href={ROUTE_LISTS.get("public-proposal-add") ?? "/"}
+                            className="bg-[#284C66] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#1f3a4d] transition"
+                        >
+                            Tambah Usulan
+                        </Link>
                     </div>
-                    <div className="flex flex-col md:flex-row items-center gap-4 order-2">
-                        <button className="flex items-center bg-[#284C66] text-white px-5 py-2 rounded-full font-medium text-sm hover:bg-[#1f3a4d] transition w-full md:w-auto">
+                    <div className="relative flex flex-col md:flex-row items-center gap-4 order-2">
+                        <button
+                            type="button"
+                            className="flex items-center bg-[#284C66] text-white px-5 py-2 rounded-full font-medium text-sm hover:bg-[#1f3a4d] transition w-full md:w-auto"
+                            onClick={() => setShowFilter((prev) => !prev)}
+                        >
                             <FilterListIcon
                                 className="h-4 w-4 mr-2"
                                 style={{ fontSize: "18px" }}
@@ -93,20 +121,68 @@ export default function ProposalPage() {
                         <div className="relative flex-1 max-w-full w-full">
                             <input
                                 type="text"
+                                value={search}
                                 placeholder="Cari..."
                                 className="w-full border border-gray-300 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#284C66]"
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                             <SearchIcon
                                 className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
                                 style={{ fontSize: "20px" }}
                             />
                         </div>
+                        {showFilter && (
+                            <div className="absolute left-0 top-[120%] min-w-72 max-w-96 p-4 rounded-xl bg-white border-2 border-gray-100 shadow space-y-3">
+                                <Select
+                                    value={areaId}
+                                    firstOption={true}
+                                    placeholder="Semua Dapil"
+                                    onChange={(e) => setAreaId(e.target.value)}
+                                >
+                                    {dataArea?.data?.map((item, index) => (
+                                        <option key={index} value={item.id}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </Select>
+                                <Select
+                                    value={categoryId}
+                                    firstOption={true}
+                                    placeholder="Semua Kategori"
+                                    onChange={(e) =>
+                                        setCategoryId(e.target.value)
+                                    }
+                                >
+                                    {dataCategory?.data?.map((item, index) => (
+                                        <option key={index} value={item.id}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </Select>
+                                <Select
+                                    value={status}
+                                    firstOption={true}
+                                    placeholder="Semua Status"
+                                    onChange={(e) => setStatus(e.target.value)}
+                                >
+                                    {statusOptions.map((item, index) => (
+                                        <option
+                                            key={index}
+                                            value={item}
+                                            className="uppercase"
+                                        >
+                                            {item}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </div>
+                        )}
                     </div>
 
                     <div className="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm">
                         <table className="min-w-full text-sm text-left border-collapse">
                             <thead>
-                                <tr className="bg-[#f6f0e0] text-gray-700 font-semibold sticky top-0">
+                                <tr className="bg-[#f6f0e0] text-gray-700 font-semibold">
                                     <th className="px-4 py-3 border-b">No</th>
                                     <th className="px-4 py-3 border-b">
                                         Nama Masyarakat
