@@ -43,7 +43,7 @@ export default function AddProposalPage() {
         // error: errorCategory,
         // isLoading: isLoadingCategory,
     } = useSWR<IResponse<ICategory[]>>(
-        `${ROUTE_LISTS.get("api-category-get")}`
+        `${ROUTE_LISTS.get("api-public-category-get")}`
     );
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
