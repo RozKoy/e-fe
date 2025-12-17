@@ -97,6 +97,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["api-proposal-delete", "/api/proposals/:id"],
     ["api-proposal-assign", "/api/proposalAssignments/assign"],
     ["api-proposal-finish", "/api/proposalAssignments/finish/:id"],
+    ["api-proposal-self-vote-get", "/api/proposalVotes/self/:id"],
 
     // Articles
     ["api-article-get", "/api/public/news"],

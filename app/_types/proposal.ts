@@ -30,6 +30,19 @@ export interface IProposalVote {
     disagree: number;
 }
 
+export interface IProposalSelfVote {
+    id: string;
+
+    userId: string;
+    proposalId: string;
+
+    agree: boolean;
+
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+}
+
 export interface IProposalDiscussion {
     data: {
         id: string;

@@ -3,6 +3,7 @@
 import {
     IProposal,
     IProposalVote,
+    IProposalSelfVote,
     ProposalStatusType,
     IProposalDiscussion,
 } from "@/app/_types/proposal";
@@ -96,6 +97,15 @@ export default function ProposalDetailPage({
     );
 
     const {
+        data: dataSelfVote,
+        // error: errorSelfVote,
+        mutate: mutateSelfVote,
+        // isLoading: isLoadingSelfVote,
+    } = useSWR<IResponse<IProposalSelfVote>>(
+        `${ROUTE_LISTS.get("api-proposal-self-vote-get")?.replace(":id", id)}`
+    );
+
+    const {
         data: dataDiscussion,
         // error: errorDiscussion,
         mutate: mutateDiscussion,
@@ -146,6 +156,7 @@ export default function ProposalDetailPage({
             successMessage: "Berhasil melakukan vote",
             successAction: () => {
                 mutateVote();
+                mutateSelfVote();
             },
         });
     };
@@ -203,14 +214,22 @@ export default function ProposalDetailPage({
             <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
                 <div className="flex justify-start space-x-4 mb-8">
                     <button
-                        className="flex items-center space-x-2 bg-gray-400 hover:bg-green-500/50 text-white py-2 px-4 rounded-full transition duration-150 ease-in-out cursor-pointer"
+                        className={`${
+                            dataSelfVote?.data?.agree === true
+                                ? "bg-green-400/50"
+                                : "bg-gray-400"
+                        } flex items-center space-x-2 hover:bg-green-500/50 text-white py-2 px-4 rounded-full transition duration-150 ease-in-out cursor-pointer`}
                         onClick={() => handleVote(true)}
                     >
                         <ThumbUpIcon fontSize="small" />
                         <span>{dataVote?.data?.agree}</span>
                     </button>
                     <button
-                        className="flex items-center space-x-2 bg-gray-400 hover:bg-red-500/50 text-white py-2 px-4 rounded-full transition duration-150 ease-in-out cursor-pointer"
+                        className={`${
+                            dataSelfVote?.data?.agree === false
+                                ? "bg-red-400/50"
+                                : "bg-gray-400"
+                        } flex items-center space-x-2 bg-gray-400 hover:bg-red-500/50 text-white py-2 px-4 rounded-full transition duration-150 ease-in-out cursor-pointer`}
                         onClick={() => handleVote(false)}
                     >
                         <ThumbDownIcon fontSize="small" />
