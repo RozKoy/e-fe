@@ -75,10 +75,18 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     // Public
     ["api-public-area-get", "/api/public/areas"],
     ["api-public-user-get", "/api/public/users"],
-    ["api-public-proposal-get", "/api/public/proposals"],
-    ["api-public-proposal-year-get", "/api/public/proposals/year"],
     ["api-public-user-structural-get", "/api/public/users/structural"],
     ["api-public-category-get", "/api/public/categories"],
+    ["api-public-proposal-get", "/api/public/proposals"],
+    ["api-public-proposal-one", "/api/public/proposals/:id"],
+    ["api-public-proposal-year-get", "/api/public/proposals/year"],
+    ["api-public-proposal-vote-get", "/api/public/proposalVotes/count/:id"],
+    ["api-public-proposal-vote-add", "/api/proposalVotes/vote/:id"],
+    [
+        "api-public-proposal-discussion-get",
+        "/api/public/proposalDiscussions/proposal/:id",
+    ],
+    ["api-public-proposal-discussion-add", "/api/proposalDiscussions/:id"],
 
     // Dashboards
     ["api-dashboard-get", "/api/dashboards"],

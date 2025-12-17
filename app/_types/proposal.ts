@@ -11,6 +11,9 @@ export interface IProposal {
     status: ProposalStatusType;
     description: string;
     customCategory: string | null;
+    fileName: string | null;
+    filePath: string | null;
+    fileUrl: string | null;
 
     area: IArea;
     user: IUser;
@@ -19,4 +22,29 @@ export interface IProposal {
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
+}
+
+export interface IProposalVote {
+    total: number;
+    agree: number;
+    disagree: number;
+}
+
+export interface IProposalDiscussion {
+    data: {
+        id: string;
+
+        userId: string;
+        proposalId: string;
+
+        message: string;
+
+        user: IUser;
+
+        createdAt: string;
+        updatedAt: string;
+        deletedAt: string | null;
+    }[];
+    totalData: number;
+    totalPages: number;
 }

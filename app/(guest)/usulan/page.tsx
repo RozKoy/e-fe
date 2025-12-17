@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { IArea } from "@/app/_types/area";
 import { IResponse } from "@/app/_types/api";
-import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
 import { ICategory } from "@/app/_types/category";
+import { useSearchParams } from "next/navigation";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -28,13 +29,14 @@ const statusOptions: string[] = ["baru", "diproses", "selesai"];
 //
 export default function ProposalPage() {
     const { user } = useUser();
+    const params = useSearchParams();
 
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
 
     const [showFilter, setShowFilter] = useState<boolean>(false);
 
-    const [areaId, setAreaId] = useState<string>("");
+    const [areaId, setAreaId] = useState<string>(params.get("areaId") ?? "");
     const [search, setSearch] = useState<string>("");
     const [status, setStatus] = useState<string>("");
     const [categoryId, setCategoryId] = useState<string>("");
@@ -282,53 +284,18 @@ export default function ProposalPage() {
                                                     {user &&
                                                         user.id ===
                                                             item.user.id && (
-                                                            <>
-                                                                <button
-                                                                    className="text-yellow-600 hover:text-yellow-800 p-1 rounded-full hover:bg-yellow-50 transition"
-                                                                    title="Edit"
-                                                                >
-                                                                    <EditIcon
-                                                                        style={{
-                                                                            fontSize:
-                                                                                "20px",
-                                                                        }}
-                                                                    />
-                                                                </button>
-                                                                <button
-                                                                    className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
-                                                                    title="Hapus"
-                                                                >
-                                                                    <DeleteIcon
-                                                                        style={{
-                                                                            fontSize:
-                                                                                "20px",
-                                                                        }}
-                                                                    />
-                                                                </button>
-                                                            </>
+                                                            <button
+                                                                className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
+                                                                title="Hapus"
+                                                            >
+                                                                <DeleteIcon
+                                                                    style={{
+                                                                        fontSize:
+                                                                            "20px",
+                                                                    }}
+                                                                />
+                                                            </button>
                                                         )}
-                                                    {/* <button
-                                                        className="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50 transition"
-                                                        title="Suka"
-                                                    >
-                                                        <ThumbUpIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="text-gray-600 hover:text-gray-800 p-1 rounded-full hover:bg-gray-100 transition"
-                                                        title="Tidak Suka"
-                                                    >
-                                                        <ThumbDownIcon
-                                                            style={{
-                                                                fontSize:
-                                                                    "20px",
-                                                            }}
-                                                        />
-                                                    </button> */}
                                                 </div>
                                             </td>
                                         </tr>
