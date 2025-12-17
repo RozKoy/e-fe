@@ -16,6 +16,8 @@ import Pagination from "@/app/_components/pagination";
 // import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useUser } from "@/app/_providers/UserProvider";
 import { AutorenewOutlined } from "@mui/icons-material";
+import { useAlert } from "@/app/_providers/AlertProvider";
+import DeleteModal from "@/app/_components/modals/delete";
 // import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -28,6 +30,7 @@ const statusOptions: string[] = ["baru", "diproses", "selesai"];
 
 //
 export default function ProposalPage() {
+    const alert = useAlert();
     const { user } = useUser();
     const params = useSearchParams();
 
@@ -41,10 +44,17 @@ export default function ProposalPage() {
     const [status, setStatus] = useState<string>("");
     const [categoryId, setCategoryId] = useState<string>("");
 
+    const [selectedProposal, setSelectedProposal] = useState<IProposal | null>(
+        null
+    );
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+
     const {
         data: dataProposal,
         // error: errorProposal,
-        // mutate: mutateProposal,
+        mutate: mutateProposal,
         isLoading: isLoadingProposal,
     } = useSWR<IResponse<IProposal[]>>(
         `${ROUTE_LISTS.get("api-public-proposal-get")}?${new URLSearchParams({
@@ -82,6 +92,52 @@ export default function ProposalPage() {
             case "selesai":
                 return "bg-green-100 text-green-800";
         }
+    };
+
+    const handleDeleteClose = () => {
+        setSelectedProposal(null);
+        setDeleteModal(false);
+    };
+
+    const handleDeleteItem = (item: IProposal) => {
+        setSelectedProposal(item);
+        setDeleteModal(true);
+    };
+
+    const handleDelete = async () => {
+        let url = ROUTE_LISTS.get("api-proposal-delete");
+
+        if (!url || !selectedProposal?.id) {
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+
+            return;
+        }
+
+        setIsLoading(true);
+
+        url = url.replace(":id", selectedProposal.id);
+
+        const res = await fetch(url, { method: "DELETE" });
+
+        if (res.ok) {
+            alert.addAlert({
+                type: "success",
+                message: "Berhasil menghapus data",
+            });
+            await mutateProposal();
+        } else {
+            alert.addAlert({
+                type: "error",
+                message: "Gagal menghapus data",
+            });
+        }
+
+        setIsLoading(false);
+        setDeleteModal(false);
+        setSelectedProposal(null);
     };
 
     return (
@@ -283,10 +339,17 @@ export default function ProposalPage() {
                                                     </Link>
                                                     {user &&
                                                         user.id ===
-                                                            item.user.id && (
+                                                            item.user.id &&
+                                                        item.status ===
+                                                            "baru" && (
                                                             <button
-                                                                className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
                                                                 title="Hapus"
+                                                                className="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition"
+                                                                onClick={() =>
+                                                                    handleDeleteItem(
+                                                                        item
+                                                                    )
+                                                                }
                                                             >
                                                                 <DeleteIcon
                                                                     style={{
@@ -332,6 +395,12 @@ export default function ProposalPage() {
                     </div>
                 </div>
             </div>
+            <DeleteModal
+                show={deleteModal}
+                onClose={handleDeleteClose}
+                onConfirm={handleDelete}
+                isLoading={isLoading}
+            />
         </div>
     );
 }
