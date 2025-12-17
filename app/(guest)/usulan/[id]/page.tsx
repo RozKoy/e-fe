@@ -157,6 +157,7 @@ export default function ProposalDetailPage({
             successAction: () => {
                 mutateVote();
                 mutateSelfVote();
+                setLoading(false);
             },
         });
     };
@@ -192,6 +193,7 @@ export default function ProposalDetailPage({
             successAction: () => {
                 setComment("");
                 mutateDiscussion();
+                setLoading(false);
             },
         });
     };
