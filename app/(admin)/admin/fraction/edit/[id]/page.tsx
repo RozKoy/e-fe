@@ -10,11 +10,14 @@ import Button from "@/app/_components/button";
 import File from "@/app/_components/inputs/file";
 import { IFraction } from "@/app/_types/fraction";
 import Input from "@/app/_components/inputs/input";
+import { permissionCheck } from "@/app/_utils/auth";
 import { ROUTE_LISTS } from "@/app/_constants/route";
+import { useUser } from "@/app/_providers/UserProvider";
 import { Diversity2Outlined } from "@mui/icons-material";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import React, { useEffect, useRef, useState } from "react";
 import { badRequestResponseFormat } from "@/app/_utils/api";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -45,6 +48,8 @@ export default function EditFractionPage({ params }: EditFractionPageProps) {
 
     const alert = useAlert();
     const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -115,6 +120,27 @@ export default function EditFractionPage({ params }: EditFractionPageProps) {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Ubah Fraksi"])) {
+                const timeout = setTimeout(() => {
+                    router.push(prevRoute);
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     useEffect(() => {
         if (!hasError.current) {

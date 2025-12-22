@@ -10,14 +10,18 @@ import useSWR from "swr";
 // import DefaultLink from "next/link";
 // import Link from "@/app/_components/link";
 import { IArea } from "@/app/_types/area";
+import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
+import { permissionCheck } from "@/app/_utils/auth";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
+import { useUser } from "@/app/_providers/UserProvider";
 import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 // import DeleteModal from "@/app/_components/modals/delete";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -32,6 +36,9 @@ const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 //
 export default function BaseAreaPage() {
     const alert = useAlert();
+    const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -132,6 +139,27 @@ export default function BaseAreaPage() {
     //     setDeleteModal(false);
     //     setSelectedArea(null);
     // };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Lihat Area"])) {
+                const timeout = setTimeout(() => {
+                    router.push(ROUTE_LISTS.get("dashboard") ?? "/");
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     useEffect(() => {
         if (!hasError.current) {

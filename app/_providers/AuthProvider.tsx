@@ -6,8 +6,8 @@ import { useEffect, useRef } from "react";
 import { IResponse } from "../_types/api";
 import { useAlert } from "./AlertProvider";
 import { useRouter } from "next/navigation";
+import { useLoading } from "./LoadingProvider";
 import { ROUTE_LISTS } from "../_constants/route";
-import { AutorenewOutlined } from "@mui/icons-material";
 
 //
 interface AuthProviderProps {
@@ -18,6 +18,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
     const alert = useAlert();
     const router = useRouter();
+    const { setRootLoading } = useLoading();
 
     const checkTimer = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -52,25 +53,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     } else if (isLoading) {
                         check();
                     }
+                    setRootLoading(isLoading || !isAuth);
                 }, 750);
             }
         };
         if (!hasError.current) {
             check();
         }
-    }, [data, alert, mutate, router, isLoading]);
+    }, [data, alert, isAuth, mutate, router, isLoading, setRootLoading]);
 
-    return (
-        <>
-            {(isLoading || !isAuth) && (
-                <div className="fixed z-50 w-full h-full flex items-center justify-center backdrop-blur">
-                    <AutorenewOutlined
-                        className="animate-spin"
-                        fontSize="large"
-                    />
-                </div>
-            )}
-            {children}
-        </>
-    );
+    return <>{children}</>;
 }

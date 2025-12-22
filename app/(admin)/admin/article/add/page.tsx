@@ -1,21 +1,24 @@
 "use client";
 
 import useSWR from "swr";
-import { useState } from "react";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import File from "@/app/_components/inputs/file";
 import { ICategory } from "@/app/_types/category";
 import Input from "@/app/_components/inputs/input";
+import { permissionCheck } from "@/app/_utils/auth";
 import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { NewspaperOutlined } from "@mui/icons-material";
+import { useUser } from "@/app/_providers/UserProvider";
 import Textarea from "@/app/_components/inputs/textarea";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { badRequestResponseFormat } from "@/app/_utils/api";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -35,6 +38,8 @@ const prevRoute: string = ROUTE_LISTS.get("article") ?? "/";
 export default function AddArticlePage() {
     const alert = useAlert();
     const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -103,6 +108,27 @@ export default function AddArticlePage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Buat Berita"])) {
+                const timeout = setTimeout(() => {
+                    router.push(prevRoute);
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     return (
         <>

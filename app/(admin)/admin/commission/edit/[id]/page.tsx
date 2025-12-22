@@ -7,11 +7,14 @@ import Label from "@/app/_components/label";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import Input from "@/app/_components/inputs/input";
+import { permissionCheck } from "@/app/_utils/auth";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { ICommission } from "@/app/_types/commission";
+import { useUser } from "@/app/_providers/UserProvider";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { FilterFramesOutlined } from "@mui/icons-material";
 import { mapRequest, postRequest } from "@/app/_utils/api";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 import React, { startTransition, useEffect, useRef, useState } from "react";
 
@@ -45,6 +48,8 @@ export default function EditCommissionPage({
 
     const alert = useAlert();
     const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -85,6 +90,27 @@ export default function EditCommissionPage({
             },
         });
     };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Ubah Komisi"])) {
+                const timeout = setTimeout(() => {
+                    router.push(prevRoute);
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     useEffect(() => {
         if (!hasError.current) {

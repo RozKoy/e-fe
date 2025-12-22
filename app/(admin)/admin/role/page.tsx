@@ -2,22 +2,26 @@
 
 import {
     AddOutlined,
-    DeleteOutline,
     EditOutlined,
+    DeleteOutline,
     WorkspacesOutline,
 } from "@mui/icons-material";
 import useSWR from "swr";
 import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { IRole } from "@/app/_types/role";
+import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
+import { permissionCheck } from "@/app/_utils/auth";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
+import { useUser } from "@/app/_providers/UserProvider";
 import Table, { Column } from "@/app/_components/table";
 import DeleteModal from "@/app/_components/modals/delete";
 import { useAlert } from "@/app/_providers/AlertProvider";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -32,6 +36,9 @@ const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 //
 export default function BaseRolePage() {
     const alert = useAlert();
+    const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -63,26 +70,30 @@ export default function BaseRolePage() {
             header: "Aksi",
             accessor: (item: IRole) => (
                 <div className="flex items-center justify-center">
-                    <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                        <DefaultLink
-                            href={
-                                ROUTE_LISTS.get("role-edit")?.replace(
-                                    ":id",
-                                    item.id
-                                ) ?? "#"
-                            }
+                    {permissionCheck(user, "Ubah Peran") && (
+                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                            <DefaultLink
+                                href={
+                                    ROUTE_LISTS.get("role-edit")?.replace(
+                                        ":id",
+                                        item.id
+                                    ) ?? "#"
+                                }
+                            >
+                                <EditOutlined />
+                            </DefaultLink>
+                        </div>
+                    )}
+                    {permissionCheck(user, "Hapus Peran") && (
+                        <button
+                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                            onClick={() => {
+                                handleDeleteItem(item);
+                            }}
                         >
-                            <EditOutlined />
-                        </DefaultLink>
-                    </div>
-                    <button
-                        className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                        onClick={() => {
-                            handleDeleteItem(item);
-                        }}
-                    >
-                        <DeleteOutline />
-                    </button>
+                            <DeleteOutline />
+                        </button>
+                    )}
                 </div>
             ),
         },
@@ -135,6 +146,34 @@ export default function BaseRolePage() {
     };
 
     useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (
+                !permissionCheck(user, [
+                    "Lihat Peran",
+                    "Buat Peran",
+                    "Ubah Peran",
+                    "Hapus Peran",
+                ])
+            ) {
+                const timeout = setTimeout(() => {
+                    router.push(ROUTE_LISTS.get("dashboard") ?? "/");
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
+
+    useEffect(() => {
         if (!hasError.current) {
             if (
                 !isLoadingRole &&
@@ -159,15 +198,17 @@ export default function BaseRolePage() {
                     <WorkspacesOutline />
                     <h2>Manajemen Peran</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("role-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, ["Buat Peran"]) && (
+                    <Link
+                        href={ROUTE_LISTS.get("role-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataRole?.data}

@@ -1,19 +1,22 @@
 "use client";
 
 import useSWR from "swr";
-import { useMemo, useState } from "react";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import Input from "@/app/_components/inputs/input";
+import { permissionCheck } from "@/app/_utils/auth";
+import { useEffect, useMemo, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { IPermission } from "@/app/_types/permission";
 import { WorkspacesOutline } from "@mui/icons-material";
+import { useUser } from "@/app/_providers/UserProvider";
 import Checkbox from "@/app/_components/inputs/checkbox";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { mapRequest, postRequest } from "@/app/_utils/api";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -57,6 +60,8 @@ function mapPermissionsByGroup(data: IPermission[]): PermissionGroup[] {
 export default function AddRolePage() {
     const alert = useAlert();
     const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -99,6 +104,27 @@ export default function AddRolePage() {
             },
         });
     };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Buat Peran"])) {
+                const timeout = setTimeout(() => {
+                    router.push(prevRoute);
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     return (
         <>

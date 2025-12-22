@@ -10,11 +10,14 @@ import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
 import { IPosition } from "@/app/_types/position";
 import Input from "@/app/_components/inputs/input";
+import { permissionCheck } from "@/app/_utils/auth";
 import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { PeopleAltOutlined } from "@mui/icons-material";
+import { useUser } from "@/app/_providers/UserProvider";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { mapRequest, postRequest } from "@/app/_utils/api";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 import React, { startTransition, useEffect, useRef, useState } from "react";
 
@@ -46,6 +49,8 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
     const alert = useAlert();
     const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -101,6 +106,27 @@ export default function EditUserPage({ params }: EditUserPageProps) {
             },
         });
     };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Ubah Pengguna"])) {
+                const timeout = setTimeout(() => {
+                    router.push(prevRoute);
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     useEffect(() => {
         if (!hasError.current) {

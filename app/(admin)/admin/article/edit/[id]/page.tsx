@@ -11,13 +11,16 @@ import { IArticle } from "@/app/_types/article";
 import File from "@/app/_components/inputs/file";
 import { ICategory } from "@/app/_types/category";
 import Input from "@/app/_components/inputs/input";
+import { permissionCheck } from "@/app/_utils/auth";
 import Select from "@/app/_components/inputs/select";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import { NewspaperOutlined } from "@mui/icons-material";
+import { useUser } from "@/app/_providers/UserProvider";
 import Textarea from "@/app/_components/inputs/textarea";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import React, { useEffect, useRef, useState } from "react";
 import { badRequestResponseFormat } from "@/app/_utils/api";
+import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -48,6 +51,8 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
 
     const alert = useAlert();
     const router = useRouter();
+    const { user } = useUser();
+    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -126,6 +131,27 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        setRootLoading(true);
+
+        if (user) {
+            if (!permissionCheck(user, ["Ubah Berita"])) {
+                const timeout = setTimeout(() => {
+                    router.push(prevRoute);
+                    setRootLoading(false);
+                }, 1000);
+
+                return () => clearTimeout(timeout);
+            }
+
+            const timeout = setTimeout(() => {
+                setRootLoading(false);
+            }, 1000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [user, router, setRootLoading]);
 
     useEffect(() => {
         if (!hasError.current) {
