@@ -50,9 +50,10 @@ export default function BasePage() {
                             </span>
                         </h1>
                         <p className="mt-4 text-lg text-gray-600 max-w-lg">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua.
+                            Platform digital yang memfasilitasi masyarakat dalam
+                            menyampaikan aspirasi kepada DPRD Provinsi Lampung
+                            serta mendukung pengelolaan kegiatan reses secara
+                            transparan dan akuntabel.
                         </p>
                     </div>
                     <div className="md:w-1/2 flex justify-center order-1 md:order-2">
@@ -68,6 +69,7 @@ export default function BasePage() {
                     </div>
                 </div>
             </div>
+            <Article />
             <Map data={dataArea?.data} loading={isLoadingArea} />
             <div className="bg-white">
                 <section className="bg-gray-50 py-16">
@@ -158,7 +160,7 @@ export default function BasePage() {
                     onClose={() => setSelectedArea(null)}
                 />
             )}
-            <Article />
+            
         </>
     );
 }
