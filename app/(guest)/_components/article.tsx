@@ -93,7 +93,7 @@ export default function Article({ pagination = false }: ArticleProps) {
                                     )}
                                 </div>
 
-                                <h3 className="font-semibold text-base leading-snug mb-3">
+                                <h3 className="line-clamp-3 font-semibold text-base leading-snug mb-8">
                                     {item.title}
                                 </h3>
 
