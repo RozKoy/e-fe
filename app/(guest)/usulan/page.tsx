@@ -7,7 +7,6 @@ import { IArea } from "@/app/_types/area";
 import { IResponse } from "@/app/_types/api";
 // import EditIcon from "@mui/icons-material/Edit";
 import { ICategory } from "@/app/_types/category";
-import { useSearchParams } from "next/navigation";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -32,14 +31,16 @@ const statusOptions: string[] = ["baru", "diproses", "selesai"];
 export default function ProposalPage() {
     const alert = useAlert();
     const { user } = useUser();
-    const params = useSearchParams();
 
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
 
     const [showFilter, setShowFilter] = useState<boolean>(false);
 
-    const [areaId, setAreaId] = useState<string>(params.get("areaId") ?? "");
+    const [areaId, setAreaId] = useState<string>(() => {
+        if (typeof window === "undefined") return "";
+        return new URLSearchParams(window.location.search).get("areaId") ?? "";
+    });
     const [search, setSearch] = useState<string>("");
     const [status, setStatus] = useState<string>("");
     const [categoryId, setCategoryId] = useState<string>("");
