@@ -1,6 +1,7 @@
 import { IArea } from "./area";
 import { IUser } from "./user";
 import { ICategory } from "./category";
+import { IRole } from "./role";
 
 export type ProposalStatusType = "baru" | "diproses" | "selesai";
 
@@ -18,6 +19,20 @@ export interface IProposal {
     area: IArea;
     user: IUser;
     category: ICategory;
+    assignments: IProposalAssignment[];
+
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+}
+
+export interface IProposalAssignment {
+    id: string;
+
+    roleId: string;
+    proposalId: string;
+
+    role: IRole;
 
     createdAt: string;
     updatedAt: string;

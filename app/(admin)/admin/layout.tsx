@@ -79,7 +79,6 @@ const MENU_LIST: MenuListInterface[] = [
         icon: <NewspaperOutlined />,
         path: ROUTE_LISTS.get("article"),
         title: "Berita",
-        permission: ["Buat Berita", "Ubah Berita", "Hapus Berita"],
     },
     {
         icon: <CategoryOutlined />,

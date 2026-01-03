@@ -9,7 +9,6 @@ import {
 import useSWR from "swr";
 import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
-import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import { IArticle } from "@/app/_types/article";
 import { permissionCheck } from "@/app/_utils/auth";
@@ -21,7 +20,6 @@ import { useUser } from "@/app/_providers/UserProvider";
 import Table, { Column } from "@/app/_components/table";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
-import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -36,9 +34,7 @@ const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 //
 export default function BaseArticlePage() {
     const alert = useAlert();
-    const router = useRouter();
     const { user } = useUser();
-    const { setRootLoading } = useLoading();
 
     const hasError = useRef<boolean>(false);
 
@@ -81,37 +77,40 @@ export default function BaseArticlePage() {
             header: "Kategori",
             accessor: (item: IArticle) => item.category?.name,
         },
-        {
-            header: "Aksi",
-            accessor: (item: IArticle) => (
-                <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Ubah Berita") && (
-                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                            <DefaultLink
-                                href={
-                                    ROUTE_LISTS.get("article-edit")?.replace(
-                                        ":id",
-                                        item.id
-                                    ) ?? "#"
-                                }
-                            >
-                                <EditOutlined />
-                            </DefaultLink>
-                        </div>
-                    )}
-                    {permissionCheck(user, "Hapus Berita") && (
-                        <button
-                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                            onClick={() => {
-                                handleDeleteItem(item);
-                            }}
-                        >
-                            <DeleteOutline />
-                        </button>
-                    )}
-                </div>
-            ),
-        },
+        ...(permissionCheck(user, ["Ubah Berita", "Hapus Berita"])
+            ? [
+                  {
+                      header: "Aksi",
+                      accessor: (item: IArticle) => (
+                          <div className="flex items-center justify-center">
+                              {permissionCheck(user, "Ubah Berita") && (
+                                  <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                                      <DefaultLink
+                                          href={
+                                              ROUTE_LISTS.get(
+                                                  "article-edit"
+                                              )?.replace(":id", item.id) ?? "#"
+                                          }
+                                      >
+                                          <EditOutlined />
+                                      </DefaultLink>
+                                  </div>
+                              )}
+                              {permissionCheck(user, "Hapus Berita") && (
+                                  <button
+                                      className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                      onClick={() => {
+                                          handleDeleteItem(item);
+                                      }}
+                                  >
+                                      <DeleteOutline />
+                                  </button>
+                              )}
+                          </div>
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     const handleDeleteClose = () => {
@@ -161,33 +160,6 @@ export default function BaseArticlePage() {
     };
 
     useEffect(() => {
-        setRootLoading(true);
-
-        if (user) {
-            if (
-                !permissionCheck(user, [
-                    "Buat Berita",
-                    "Ubah Berita",
-                    "Hapus Berita",
-                ])
-            ) {
-                const timeout = setTimeout(() => {
-                    router.push(ROUTE_LISTS.get("dashboard") ?? "/");
-                    setRootLoading(false);
-                }, 1000);
-
-                return () => clearTimeout(timeout);
-            }
-
-            const timeout = setTimeout(() => {
-                setRootLoading(false);
-            }, 1000);
-
-            return () => clearTimeout(timeout);
-        }
-    }, [user, router, setRootLoading]);
-
-    useEffect(() => {
         if (!hasError.current) {
             if (
                 !isLoadingArticle &&
@@ -212,15 +184,17 @@ export default function BaseArticlePage() {
                     <NewspaperOutlined />
                     <h2>Manajemen Berita</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("article-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, "Buat Berita") && (
+                    <Link
+                        href={ROUTE_LISTS.get("article-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataArticle?.data}

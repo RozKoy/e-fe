@@ -82,37 +82,40 @@ export default function BasePositionPage() {
             header: "Komisi",
             accessor: (item: IPosition) => item?.commission?.name ?? "-",
         },
-        {
-            header: "Aksi",
-            accessor: (item: IPosition) => (
-                <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Ubah Posisi") && (
-                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                            <DefaultLink
-                                href={
-                                    ROUTE_LISTS.get("position-edit")?.replace(
-                                        ":id",
-                                        item.id
-                                    ) ?? "#"
-                                }
-                            >
-                                <EditOutlined />
-                            </DefaultLink>
-                        </div>
-                    )}
-                    {permissionCheck(user, "Hapus Posisi") && (
-                        <button
-                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                            onClick={() => {
-                                handleDeleteItem(item);
-                            }}
-                        >
-                            <DeleteOutline />
-                        </button>
-                    )}
-                </div>
-            ),
-        },
+        ...(permissionCheck(user, ["Ubah Posisi", "Hapus Posisi"])
+            ? [
+                  {
+                      header: "Aksi",
+                      accessor: (item: IPosition) => (
+                          <div className="flex items-center justify-center">
+                              {permissionCheck(user, "Ubah Posisi") && (
+                                  <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                                      <DefaultLink
+                                          href={
+                                              ROUTE_LISTS.get(
+                                                  "position-edit"
+                                              )?.replace(":id", item.id) ?? "#"
+                                          }
+                                      >
+                                          <EditOutlined />
+                                      </DefaultLink>
+                                  </div>
+                              )}
+                              {permissionCheck(user, "Hapus Posisi") && (
+                                  <button
+                                      className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                      onClick={() => {
+                                          handleDeleteItem(item);
+                                      }}
+                                  >
+                                      <DeleteOutline />
+                                  </button>
+                              )}
+                          </div>
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     const handleDeleteClose = () => {
@@ -214,15 +217,17 @@ export default function BasePositionPage() {
                     <WorkOutline />
                     <h2>Manajemen Posisi</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("position-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, "Buat Posisi") && (
+                    <Link
+                        href={ROUTE_LISTS.get("position-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataPosition?.data}

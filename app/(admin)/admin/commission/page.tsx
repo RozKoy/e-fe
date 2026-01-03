@@ -66,37 +66,40 @@ export default function BaseCommissionPage() {
 
     const columns: Column<ICommission>[] = [
         { header: "Nama", accessor: "name" },
-        {
-            header: "Aksi",
-            accessor: (item: ICommission) => (
-                <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Ubah Komisi") && (
-                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                            <DefaultLink
-                                href={
-                                    ROUTE_LISTS.get("commission-edit")?.replace(
-                                        ":id",
-                                        item.id
-                                    ) ?? "#"
-                                }
-                            >
-                                <EditOutlined />
-                            </DefaultLink>
-                        </div>
-                    )}
-                    {permissionCheck(user, "Hapus Komisi") && (
-                        <button
-                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                            onClick={() => {
-                                handleDeleteItem(item);
-                            }}
-                        >
-                            <DeleteOutline />
-                        </button>
-                    )}
-                </div>
-            ),
-        },
+        ...(permissionCheck(user, ["Ubah Komisi", "Hapus Komisi"])
+            ? [
+                  {
+                      header: "Aksi",
+                      accessor: (item: ICommission) => (
+                          <div className="flex items-center justify-center">
+                              {permissionCheck(user, "Ubah Komisi") && (
+                                  <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                                      <DefaultLink
+                                          href={
+                                              ROUTE_LISTS.get(
+                                                  "commission-edit"
+                                              )?.replace(":id", item.id) ?? "#"
+                                          }
+                                      >
+                                          <EditOutlined />
+                                      </DefaultLink>
+                                  </div>
+                              )}
+                              {permissionCheck(user, "Hapus Komisi") && (
+                                  <button
+                                      className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                      onClick={() => {
+                                          handleDeleteItem(item);
+                                      }}
+                                  >
+                                      <DeleteOutline />
+                                  </button>
+                              )}
+                          </div>
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     const handleDeleteClose = () => {
@@ -198,15 +201,17 @@ export default function BaseCommissionPage() {
                     <FilterFramesOutlined />
                     <h2>Manajemen Komisi</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("commission-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, "Buat Komisi") && (
+                    <Link
+                        href={ROUTE_LISTS.get("commission-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataCommission?.data}

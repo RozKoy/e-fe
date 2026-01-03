@@ -67,37 +67,40 @@ export default function BaseCategoryPage() {
 
     const columns: Column<ICategory>[] = [
         { header: "Nama", accessor: "name" },
-        {
-            header: "Aksi",
-            accessor: (item: ICategory) => (
-                <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Ubah Kategori") && (
-                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                            <DefaultLink
-                                href={
-                                    ROUTE_LISTS.get("category-edit")?.replace(
-                                        ":id",
-                                        item.id
-                                    ) ?? "#"
-                                }
-                            >
-                                <EditOutlined />
-                            </DefaultLink>
-                        </div>
-                    )}
-                    {permissionCheck(user, "Hapus Kategori") && (
-                        <button
-                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                            onClick={() => {
-                                handleDeleteItem(item);
-                            }}
-                        >
-                            <DeleteOutline />
-                        </button>
-                    )}
-                </div>
-            ),
-        },
+        ...(permissionCheck(user, ["Ubah Kategori", "Hapus Kategori"])
+            ? [
+                  {
+                      header: "Aksi",
+                      accessor: (item: ICategory) => (
+                          <div className="flex items-center justify-center">
+                              {permissionCheck(user, "Ubah Kategori") && (
+                                  <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                                      <DefaultLink
+                                          href={
+                                              ROUTE_LISTS.get(
+                                                  "category-edit"
+                                              )?.replace(":id", item.id) ?? "#"
+                                          }
+                                      >
+                                          <EditOutlined />
+                                      </DefaultLink>
+                                  </div>
+                              )}
+                              {permissionCheck(user, "Hapus Kategori") && (
+                                  <button
+                                      className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                      onClick={() => {
+                                          handleDeleteItem(item);
+                                      }}
+                                  >
+                                      <DeleteOutline />
+                                  </button>
+                              )}
+                          </div>
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     const handleDeleteClose = () => {
@@ -199,15 +202,17 @@ export default function BaseCategoryPage() {
                     <CategoryOutlined />
                     <h2>Manajemen Kategori</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("category-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, "Buat Kategori") && (
+                    <Link
+                        href={ROUTE_LISTS.get("category-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataCategory?.data}

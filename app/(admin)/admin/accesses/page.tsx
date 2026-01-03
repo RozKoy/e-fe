@@ -84,37 +84,46 @@ export default function BaseUserAccessPage() {
             accessor: (item: IUserAccess) =>
                 item.public ? "Publik" : "Privat",
         },
-        {
-            header: "Aksi",
-            accessor: (item: IUserAccess) => (
-                <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Ubah Akses Pengguna") && (
-                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                            <DefaultLink
-                                href={
-                                    ROUTE_LISTS.get("access-edit")?.replace(
-                                        ":id",
-                                        item.id
-                                    ) ?? "#"
-                                }
-                            >
-                                <EditOutlined />
-                            </DefaultLink>
-                        </div>
-                    )}
-                    {permissionCheck(user, "Hapus Akses Pengguna") && (
-                        <button
-                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                            onClick={() => {
-                                handleDeleteItem(item);
-                            }}
-                        >
-                            <DeleteOutline />
-                        </button>
-                    )}
-                </div>
-            ),
-        },
+        ...(permissionCheck(user, [
+            "Ubah Akses Pengguna",
+            "Hapus Akses Pengguna",
+        ])
+            ? [
+                  {
+                      header: "Aksi",
+                      accessor: (item: IUserAccess) => (
+                          <div className="flex items-center justify-center">
+                              {permissionCheck(user, "Ubah Akses Pengguna") && (
+                                  <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                                      <DefaultLink
+                                          href={
+                                              ROUTE_LISTS.get(
+                                                  "access-edit"
+                                              )?.replace(":id", item.id) ?? "#"
+                                          }
+                                      >
+                                          <EditOutlined />
+                                      </DefaultLink>
+                                  </div>
+                              )}
+                              {permissionCheck(
+                                  user,
+                                  "Hapus Akses Pengguna"
+                              ) && (
+                                  <button
+                                      className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                      onClick={() => {
+                                          handleDeleteItem(item);
+                                      }}
+                                  >
+                                      <DeleteOutline />
+                                  </button>
+                              )}
+                          </div>
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     const handleDeleteClose = () => {
@@ -216,15 +225,17 @@ export default function BaseUserAccessPage() {
                     <BadgeOutlined />
                     <h2>Manajemen Akses Pengguna</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("access-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, "Buat Akses Pengguna") && (
+                    <Link
+                        href={ROUTE_LISTS.get("access-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataUserAccess?.data}

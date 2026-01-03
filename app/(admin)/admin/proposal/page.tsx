@@ -125,36 +125,40 @@ export default function BaseProposalPage() {
             ),
         },
         {
+            header: "Ditugaskan Kepada",
+            accessor: (item: IProposal) => item.assignments?.[0]?.role?.name,
+        },
+        {
             header: "Aksi",
             accessor: (item: IProposal) => (
                 <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Disposisi Proposal") && (
-                        <>
-                            {(item.status === "baru" ||
-                                item.status === "diproses") && (
-                                <button
-                                    className="p-1 rounded-lg hover:bg-blue-100 text-blue-500 cursor-pointer transition-all"
-                                    onClick={() => {
-                                        setAssignModal(true);
-                                        setSelectedProposal(item);
-                                    }}
-                                >
-                                    <AssignmentReturnOutlined />
-                                </button>
-                            )}
-                            {item.status === "diproses" && (
-                                <button
-                                    className="p-1 rounded-lg hover:bg-green-100 text-green-500 cursor-pointer transition-all"
-                                    onClick={() => {
-                                        setFinishModal(true);
-                                        setSelectedProposal(item);
-                                    }}
-                                >
-                                    <AssignmentTurnedInOutlined />
-                                </button>
-                            )}
-                        </>
+                    {((item.status === "baru" &&
+                        permissionCheck(user, ["Disposisi Proposal"])) ||
+                        (item.status === "diproses" &&
+                            item.assignments?.[0]?.roleId ===
+                                user?.roleId)) && (
+                        <button
+                            className="p-1 rounded-lg hover:bg-blue-100 text-blue-500 cursor-pointer transition-all"
+                            onClick={() => {
+                                setAssignModal(true);
+                                setSelectedProposal(item);
+                            }}
+                        >
+                            <AssignmentReturnOutlined />
+                        </button>
                     )}
+                    {item.status === "diproses" &&
+                        item.assignments?.[0]?.roleId === user?.roleId && (
+                            <button
+                                className="p-1 rounded-lg hover:bg-green-100 text-green-500 cursor-pointer transition-all"
+                                onClick={() => {
+                                    setFinishModal(true);
+                                    setSelectedProposal(item);
+                                }}
+                            >
+                                <AssignmentTurnedInOutlined />
+                            </button>
+                        )}
                     {/* <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
                         <DefaultLink
                             href={

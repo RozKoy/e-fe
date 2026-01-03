@@ -77,37 +77,40 @@ export default function BaseUserPage() {
             accessor: (item: IUser) => item.position?.name ?? "-",
         },
         { header: "Peran", accessor: (item: IUser) => item.role?.name ?? "-" },
-        {
-            header: "Aksi",
-            accessor: (item: IUser) => (
-                <div className="flex items-center justify-center">
-                    {permissionCheck(user, "Ubah Pengguna") && (
-                        <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
-                            <DefaultLink
-                                href={
-                                    ROUTE_LISTS.get("user-edit")?.replace(
-                                        ":id",
-                                        item.id
-                                    ) ?? "#"
-                                }
-                            >
-                                <EditOutlined />
-                            </DefaultLink>
-                        </div>
-                    )}
-                    {permissionCheck(user, "Hapus Pengguna") && (
-                        <button
-                            className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                            onClick={() => {
-                                handleDeleteItem(item);
-                            }}
-                        >
-                            <DeleteOutline />
-                        </button>
-                    )}
-                </div>
-            ),
-        },
+        ...(permissionCheck(user, ["Ubah Pengguna", "Hapus Pengguna"])
+            ? [
+                  {
+                      header: "Aksi",
+                      accessor: (item: IUser) => (
+                          <div className="flex items-center justify-center">
+                              {permissionCheck(user, "Ubah Pengguna") && (
+                                  <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
+                                      <DefaultLink
+                                          href={
+                                              ROUTE_LISTS.get(
+                                                  "user-edit"
+                                              )?.replace(":id", item.id) ?? "#"
+                                          }
+                                      >
+                                          <EditOutlined />
+                                      </DefaultLink>
+                                  </div>
+                              )}
+                              {permissionCheck(user, "Hapus Pengguna") && (
+                                  <button
+                                      className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                      onClick={() => {
+                                          handleDeleteItem(item);
+                                      }}
+                                  >
+                                      <DeleteOutline />
+                                  </button>
+                              )}
+                          </div>
+                      ),
+                  },
+              ]
+            : []),
     ];
 
     const handleDeleteClose = () => {
@@ -209,15 +212,17 @@ export default function BaseUserPage() {
                     <PeopleAltOutlined />
                     <h2>Manajemen Pengguna</h2>
                 </div>
-                <Link
-                    href={ROUTE_LISTS.get("user-add") ?? "#"}
-                    size="sm"
-                    variant="primary"
-                    startIcon={<AddOutlined fontSize="small" />}
-                    className="ml-auto"
-                >
-                    Tambah
-                </Link>
+                {permissionCheck(user, "Buat Pengguna") && (
+                    <Link
+                        href={ROUTE_LISTS.get("user-add") ?? "#"}
+                        size="sm"
+                        variant="primary"
+                        startIcon={<AddOutlined fontSize="small" />}
+                        className="ml-auto"
+                    >
+                        Tambah
+                    </Link>
+                )}
             </div>
             <Table
                 data={dataUser?.data}
