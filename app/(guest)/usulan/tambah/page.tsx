@@ -18,6 +18,8 @@ import { AutorenewOutlined } from "@mui/icons-material";
 import Textarea from "@/app/_components/inputs/textarea";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { badRequestResponseFormat } from "@/app/_utils/api";
+import MapPicker from "../../_components/mapfield";
+
 
 //
 export default function AddProposalPage() {
@@ -243,6 +245,12 @@ export default function AddProposalPage() {
                                         }
                                     />
                                 </Label>
+                                <div>
+                                    Pilih Lokasi
+                                    <div>
+                                    <MapPicker></MapPicker>
+                                    </div>
+                                </div>
                                 <Label
                                     text="Gambar"
                                     // error={errors?.get("image")}
