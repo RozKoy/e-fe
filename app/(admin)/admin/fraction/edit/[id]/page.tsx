@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import DefaultLink from "next/link";
+import Image from "next/image";
 import Link from "@/app/_components/link";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
@@ -186,16 +186,26 @@ export default function EditFractionPage({ params }: EditFractionPageProps) {
                         }
                     />
                     {dataFraction?.data?.imageUrl && (
-                        <p className="text-sm">
-                            Gambar sebelumnya :{" "}
-                            <DefaultLink
-                                href={dataFraction.data.imageUrl}
-                                target="_blank"
-                                className="font-medium text-primary hover:text-primary/90"
-                            >
-                                Buka
-                            </DefaultLink>
-                        </p>
+                        // <p className="text-sm">
+                        //     Gambar sebelumnya :{" "}
+                        //     <DefaultLink
+                        //         href={dataFraction.data.imageUrl}
+                        //         target="_blank"
+                        //         className="font-medium text-primary hover:text-primary/90"
+                        //     >
+                        //         Buka
+                        //     </DefaultLink>
+                        // </p>
+                        <div className="relative max-w-full max-h-96 mx-auto aspect-video">
+                            <Image
+                                src={dataFraction?.data?.imageUrl}
+                                alt={dataFraction?.data?.name}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                style={{ objectFit: "contain" }}
+                                unoptimized
+                            />
+                        </div>
                     )}
                 </Label>
                 <p className="text-red-500 text-center">

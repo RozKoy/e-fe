@@ -3,7 +3,7 @@
 import {
     // EditOutlined,
     CloseOutlined,
-    // DeleteOutline,
+    DeleteOutline,
     ArticleOutlined,
     CheckCircleOutline,
     AssignmentReturnOutlined,
@@ -24,7 +24,7 @@ import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
 import { useUser } from "@/app/_providers/UserProvider";
 import Table, { Column } from "@/app/_components/table";
-// import DeleteModal from "@/app/_components/modals/delete";
+import DeleteModal from "@/app/_components/modals/delete";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { mapRequest, postRequest } from "@/app/_utils/api";
 import { useLoading } from "@/app/_providers/LoadingProvider";
@@ -62,7 +62,7 @@ export default function BaseProposalPage() {
     );
 
     const [assignModal, setAssignModal] = useState<boolean>(false);
-    // const [deleteModal, setDeleteModal] = useState<boolean>(false);
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [finishModal, setFinishModal] = useState<boolean>(false);
 
     const {
@@ -135,8 +135,8 @@ export default function BaseProposalPage() {
                     {((item.status === "baru" &&
                         permissionCheck(user, ["Disposisi Proposal"])) ||
                         (item.status === "diproses" &&
-                            item.assignments?.[0]?.roleId ===
-                                user?.roleId)) && (
+                            item.assignments?.[0]?.roleId === user?.roleId &&
+                            item.area.id === user.accesses?.[0]?.areaId)) && (
                         <button
                             className="p-1 rounded-lg hover:bg-blue-100 text-blue-500 cursor-pointer transition-all"
                             onClick={() => {
@@ -148,7 +148,8 @@ export default function BaseProposalPage() {
                         </button>
                     )}
                     {item.status === "diproses" &&
-                        item.assignments?.[0]?.roleId === user?.roleId && (
+                        item.assignments?.[0]?.roleId === user?.roleId &&
+                        item.area.id === user.accesses?.[0]?.areaId && (
                             <button
                                 className="p-1 rounded-lg hover:bg-green-100 text-green-500 cursor-pointer transition-all"
                                 onClick={() => {
@@ -157,6 +158,17 @@ export default function BaseProposalPage() {
                                 }}
                             >
                                 <AssignmentTurnedInOutlined />
+                            </button>
+                        )}
+                    {item.status !== "selesai" &&
+                        permissionCheck(user, ["Hapus Proposal"]) && (
+                            <button
+                                className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
+                                onClick={() => {
+                                    handleDeleteItem(item);
+                                }}
+                            >
+                                <DeleteOutline />
                             </button>
                         )}
                     {/* <div className="p-1 rounded-lg hover:bg-yellow-100 text-yellow-500 cursor-pointer transition-all">
@@ -170,65 +182,57 @@ export default function BaseProposalPage() {
                         >
                             <EditOutlined />
                         </DefaultLink>
-                    </div>
-                    <button
-                        className="p-1 rounded-lg hover:bg-red-100 text-red-500 cursor-pointer transition-all"
-                        onClick={() => {
-                            handleDeleteItem(item);
-                        }}
-                    >
-                        <DeleteOutline />
-                    </button> */}
+                    </div> */}
                 </div>
             ),
         },
     ];
 
-    // const handleDeleteClose = () => {
-    //     setSelectedProposal(null);
-    //     setDeleteModal(false);
-    // };
+    const handleDeleteClose = () => {
+        setSelectedProposal(null);
+        setDeleteModal(false);
+    };
 
-    // const handleDeleteItem = (item: IProposal) => {
-    //     setSelectedProposal(item);
-    //     setDeleteModal(true);
-    // };
+    const handleDeleteItem = (item: IProposal) => {
+        setSelectedProposal(item);
+        setDeleteModal(true);
+    };
 
-    // const handleDelete = async () => {
-    //     let url = ROUTE_LISTS.get("api-role-delete");
+    const handleDelete = async () => {
+        let url = ROUTE_LISTS.get("api-proposal-delete");
 
-    //     if (!url || !selectedProposal?.id) {
-    //         alert.addAlert({
-    //             type: "error",
-    //             message: "Mohon maaf, sistem sedang bermasalah",
-    //         });
+        if (!url || !selectedProposal?.id) {
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
 
-    //         return;
-    //     }
+            return;
+        }
 
-    //     setIsLoading(true);
+        setIsLoading(true);
 
-    //     url = url.replace(":id", selectedProposal.id);
+        url = url.replace(":id", selectedProposal.id);
 
-    //     const res = await fetch(url, { method: "DELETE" });
+        const res = await fetch(url, { method: "DELETE" });
 
-    //     if (res.ok) {
-    //         alert.addAlert({
-    //             type: "success",
-    //             message: "Berhasil menghapus data",
-    //         });
-    //         await mutateProposal();
-    //     } else {
-    //         alert.addAlert({
-    //             type: "error",
-    //             message: "Gagal menghapus data",
-    //         });
-    //     }
+        if (res.ok) {
+            alert.addAlert({
+                type: "success",
+                message: "Berhasil menghapus data",
+            });
+            await mutateProposal();
+        } else {
+            alert.addAlert({
+                type: "error",
+                message: "Gagal menghapus data",
+            });
+        }
 
-    //     setIsLoading(false);
-    //     setDeleteModal(false);
-    //     setSelectedProposal(null);
-    // };
+        setIsLoading(false);
+        setDeleteModal(false);
+        setSelectedProposal(null);
+    };
 
     const handleAssign = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -360,12 +364,12 @@ export default function BaseProposalPage() {
                     totalPages={dataProposal?.totalPage || 1}
                 />
             </div>
-            {/* <DeleteModal
+            <DeleteModal
                 show={deleteModal}
                 onClose={handleDeleteClose}
                 onConfirm={handleDelete}
                 isLoading={isLoading}
-            /> */}
+            />
             {assignModal && selectedProposal && (
                 <div className="fixed left-0 top-0 z-40 w-full h-full flex items-center justify-center">
                     <div

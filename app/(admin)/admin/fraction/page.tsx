@@ -73,12 +73,13 @@ export default function BaseFractionPage() {
             accessor: (item: IFraction) => (
                 <>
                     {item.imageUrl && (
-                        <div className="relative w-full max-w-32 h-auto mx-auto aspect-video">
+                        <div className="relative max-w-96 max-h-72 aspect-video">
                             <Image
                                 src={item.imageUrl}
                                 alt={item.name}
-                                style={{ objectFit: "cover" }}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                style={{ objectFit: "contain" }}
                                 unoptimized
                             />
                         </div>
