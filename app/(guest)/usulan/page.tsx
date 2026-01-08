@@ -258,6 +258,9 @@ export default function ProposalPage() {
                                     <th className="px-4 py-3 border-b">
                                         Dapil
                                     </th>
+                                    <th className="px-4 py-3 border-b">
+                                        Dewan
+                                    </th>
                                     <th className="px-4 py-3 border-b text-center">
                                         Status
                                     </th>
@@ -314,6 +317,12 @@ export default function ProposalPage() {
                                             </td>
                                             <td className="px-4 py-3">
                                                 {item.area?.name}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                {
+                                                    item.peopleInCharges
+                                                        ?.profile?.name
+                                                }
                                             </td>
                                             <td className="px-4 py-3 text-center">
                                                 <span

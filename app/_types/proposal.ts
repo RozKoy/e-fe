@@ -1,7 +1,7 @@
 import { IArea } from "./area";
 import { IUser } from "./user";
-import { ICategory } from "./category";
 import { IRole } from "./role";
+import { ICategory } from "./category";
 
 export type ProposalStatusType = "baru" | "diproses" | "selesai";
 
@@ -10,6 +10,8 @@ export interface IProposal {
 
     title: string;
     status: ProposalStatusType;
+    latitude: string | null;
+    longitude: string | null;
     description: string;
     customCategory: string | null;
     fileName: string | null;
@@ -18,8 +20,9 @@ export interface IProposal {
 
     area: IArea;
     user: IUser;
-    category: ICategory;
+    category: ICategory | null;
     assignments: IProposalAssignment[];
+    peopleInCharges: IUser | null;
 
     createdAt: string;
     updatedAt: string;

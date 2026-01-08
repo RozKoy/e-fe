@@ -10,6 +10,7 @@ import {
 import useSWR from "swr";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import Label from "@/app/_components/label";
 import { IResponse } from "@/app/_types/api";
@@ -33,6 +34,11 @@ interface Param {
 interface ProposalDetailPageProps {
     params: Promise<Param>;
 }
+
+//
+const MapPicker = dynamic(() => import("../../_components/mapfield"), {
+    ssr: false,
+});
 
 //
 function formatTimeAgo(input: Date | string | number): string {
@@ -279,6 +285,54 @@ export default function ProposalDetailPage({
                     )}
                 </div>
 
+                {dataProposal?.data?.peopleInCharges && (
+                    <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-8 p-4">
+                        <h2 className="text-xl font-bold text-[#284C66] border-b pb-3 mb-6">
+                            Informasi Anggota Dewan
+                        </h2>
+                        {isLoadingProposal && (
+                            <div className="text-center">
+                                <AutorenewOutlined
+                                    className="animate-spin"
+                                    fontSize="large"
+                                />
+                            </div>
+                        )}
+                        {!isLoadingProposal && dataProposal?.data && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                                <div className="flex flex-col">
+                                    <span className="text-gray-500 text-sm">
+                                        Nama Lengkap
+                                    </span>
+                                    <span className="text-gray-800 font-medium">
+                                        {dataProposal.data.peopleInCharges
+                                            .profile?.name ?? "-"}
+                                    </span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-gray-500 text-sm">
+                                        Posisi
+                                    </span>
+                                    <span className="text-gray-800 font-medium">
+                                        {dataProposal.data.peopleInCharges
+                                            .position?.name ?? "-"}
+                                    </span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-gray-500 text-sm">
+                                        Partai
+                                    </span>
+                                    <span className="text-gray-800 font-medium">
+                                        {dataProposal.data.peopleInCharges
+                                            .accesses?.[0]?.fraction?.name ??
+                                            "-"}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-12 p-4">
                     <h2 className="text-xl font-bold text-[#284C66] border-b pb-3 mb-6">
                         Informasi Usulan
@@ -375,6 +429,21 @@ export default function ProposalDetailPage({
                         </div>
                     )}
                 </div>
+
+                {dataProposal?.data?.latitude &&
+                    dataProposal?.data?.longitude && (
+                        <div>
+                            <MapPicker
+                                latitude={parseFloat(
+                                    dataProposal.data.latitude
+                                )}
+                                longitude={parseFloat(
+                                    dataProposal.data.longitude
+                                )}
+                                disabled={true}
+                            ></MapPicker>
+                        </div>
+                    )}
 
                 <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 space-y-4">
                     <h2 className="text-xl font-bold text-[#284C66] border-b pb-3">

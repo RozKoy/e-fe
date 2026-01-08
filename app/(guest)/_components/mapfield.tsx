@@ -1,37 +1,41 @@
 "use client";
 
+import L from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+//
 type LatLng = {
     lat: number;
     lng: number;
 };
 
-const DEFAULT_POSITION: LatLng = {
-    lat: -5.2697,
-    lng: 105.1061,
-};
-
-// Fix leaflet icon
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
+interface MapPickerProps {
+    disabled?: boolean;
+    latitude?: number;
+    longitude?: number;
+}
 
 interface LocationMarkerProps {
+    disabled?: boolean;
     position: LatLng;
     onChange: (pos: LatLng) => void;
 }
 
-function LocationMarker({ position, onChange }: LocationMarkerProps) {
+//
+const DEFAULT_POSITION: LatLng = {
+    lat: -5.408867814426882,
+    lng: 105.26011168956758,
+};
+
+//
+function LocationMarker({ disabled, position, onChange }: LocationMarkerProps) {
     useMapEvents({
         click(e) {
-            onChange({ lat: e.latlng.lat, lng: e.latlng.lng });
+            if (!disabled) {
+                onChange({ lat: e.latlng.lat, lng: e.latlng.lng });
+            }
         },
     });
 
@@ -50,31 +54,32 @@ function LocationMarker({ position, onChange }: LocationMarkerProps) {
     );
 }
 
-export default function MapPicker() {
+export default function MapPicker({
+    disabled,
+    latitude,
+    longitude,
+}: MapPickerProps) {
     const [position, setPosition] = useState<LatLng>(() => {
-        if (typeof window === "undefined") return DEFAULT_POSITION;
-
-        const saved = localStorage.getItem("selected_location");
-        if (!saved) return DEFAULT_POSITION;
-
+        if (typeof latitude === "number" && typeof longitude === "number") {
+            return {
+                lat: latitude,
+                lng: longitude,
+            };
+        }
         try {
-            const parsed: unknown = JSON.parse(saved);
+            const saved = localStorage.getItem("selected_location");
+            if (!saved) return DEFAULT_POSITION;
 
+            const parsed = JSON.parse(saved);
             if (
                 typeof parsed === "object" &&
                 parsed !== null &&
                 "lat" in parsed &&
                 "lng" in parsed
             ) {
-                const data = parsed as LatLng;
-                return {
-                    lat: data.lat,
-                    lng: data.lng,
-                };
+                return parsed as LatLng;
             }
-        } catch {
-            return DEFAULT_POSITION;
-        }
+        } catch {}
 
         return DEFAULT_POSITION;
     });
@@ -83,27 +88,48 @@ export default function MapPicker() {
         localStorage.setItem("selected_location", JSON.stringify(position));
     }, [position]);
 
+    useEffect(() => {
+        const proto = L.Icon.Default.prototype;
+
+        if ("_getIconUrl" in proto) {
+            delete (proto as Record<string, unknown>)["_getIconUrl"];
+        }
+
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl:
+                "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+            iconUrl:
+                "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+            shadowUrl:
+                "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        });
+    }, []);
+
     return (
         <div style={{ width: "100%", height: "400px" }}>
+            {!disabled && (
+                <>
+                    <input type="hidden" name="latitude" value={position.lat} />
+                    <input
+                        type="hidden"
+                        name="longitude"
+                        value={position.lng}
+                    />
+                </>
+            )}
             <MapContainer
                 center={[position.lat, position.lng]}
                 zoom={9}
                 style={{ height: "100%", width: "100%" }}
                 scrollWheelZoom
             >
-                <TileLayer
-                    attribution="&copy; OpenStreetMap contributors"
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <LocationMarker
+                    position={position}
+                    onChange={setPosition}
+                    disabled={disabled}
                 />
-
-                <LocationMarker position={position} onChange={setPosition} />
             </MapContainer>
-
-            {/* <div style={{ marginTop: 12 }}>
-                <strong>Latitude:</strong> {position.lat}
-                <br />
-                <strong>Longitude:</strong> {position.lng}
-            </div> */}
         </div>
     );
 }

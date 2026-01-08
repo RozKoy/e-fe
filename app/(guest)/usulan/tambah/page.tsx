@@ -2,8 +2,10 @@
 
 import useSWR from "swr";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { IArea } from "@/app/_types/area";
 import Link from "@/app/_components/link";
+import { IUser } from "@/app/_types/user";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
@@ -18,8 +20,10 @@ import { AutorenewOutlined } from "@mui/icons-material";
 import Textarea from "@/app/_components/inputs/textarea";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { badRequestResponseFormat } from "@/app/_utils/api";
-import MapPicker from "../../_components/mapfield";
 
+const MapPicker = dynamic(() => import("../../_components/mapfield"), {
+    ssr: false,
+});
 
 //
 export default function AddProposalPage() {
@@ -31,6 +35,7 @@ export default function AddProposalPage() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [tempCategory, setTempCategory] = useState<string>("");
+    const [tempArea, setTempArea] = useState<string>("");
 
     const [errors, setErrors] = useState<Map<string, string> | null>(null);
 
@@ -39,6 +44,17 @@ export default function AddProposalPage() {
         // error: errorArea,
         // isLoading: isLoadingArea,
     } = useSWR<IResponse<IArea[]>>(`${ROUTE_LISTS.get("api-public-area-get")}`);
+
+    const {
+        data: dataUser,
+        // error: errorUser,
+        // mutate: mutateUser,
+        // isLoading: isLoadingUser,
+    } = useSWR<IResponse<IUser[]>>(
+        `${ROUTE_LISTS.get("api-public-user-get")}?${new URLSearchParams({
+            areaId: tempArea,
+        })}`
+    );
 
     const {
         data: dataCategory,
@@ -143,12 +159,13 @@ export default function AddProposalPage() {
                                     error={errors?.get("areaId")}
                                     placeholder="Pilih dapil"
                                     defaultValue={""}
-                                    onChange={() =>
+                                    onChange={(e) => {
+                                        setTempArea(e.target.value);
                                         setErrors((prev) => {
                                             prev?.delete("areaId");
                                             return prev?.size ? prev : null;
-                                        })
-                                    }
+                                        });
+                                    }}
                                 >
                                     {dataArea?.data?.map((item, index) => (
                                         <option key={index} value={item.id}>
@@ -158,48 +175,66 @@ export default function AddProposalPage() {
                                 </Select>
                             </Label>
                             <Label
-                                text="Kategori"
-                                error={errors?.get("categoryId")}
-                                required
+                                text="Dewan"
+                                error={errors?.get("peopleInChargeId")}
                             >
                                 <Select
-                                    name="categoryId"
-                                    error={errors?.get("categoryId")}
-                                    value={tempCategory}
-                                    firstOption={true}
-                                    placeholder="Buat kategori"
-                                    onChange={(e) => {
-                                        setTempCategory(e.target.value);
+                                    name="peopleInChargeId"
+                                    error={errors?.get("peopleInChargeId")}
+                                    placeholder="Pilih dewan"
+                                    defaultValue={""}
+                                    onChange={() =>
                                         setErrors((prev) => {
-                                            prev?.delete("categoryId");
+                                            prev?.delete("peopleInChargeId");
                                             return prev?.size ? prev : null;
-                                        });
-                                    }}
+                                        })
+                                    }
                                 >
-                                    {dataCategory?.data?.map((item, index) => (
-                                        <option key={index} value={item.id}>
-                                            {item.name}
-                                        </option>
-                                    ))}
+                                    {dataUser?.data
+                                        ?.filter(
+                                            (item) =>
+                                                item.position && item.accesses
+                                        )
+                                        ?.map((item, index) => (
+                                            <option key={index} value={item.id}>
+                                                {item.profile?.name ??
+                                                    item.email}{" "}
+                                                ({item.position?.name})
+                                            </option>
+                                        ))}
                                 </Select>
                             </Label>
                             <div className="md:col-span-2 flex flex-col-reverse md:flex-row gap-6 *:w-full">
                                 <Label
-                                    text="Judul"
-                                    error={errors?.get("title")}
+                                    text="Kategori"
+                                    error={errors?.get("categoryId")}
                                     required
                                 >
-                                    <Input
-                                        name="title"
-                                        error={errors?.get("title")}
-                                        placeholder="Masukkan judul"
-                                        onInput={() =>
+                                    <Select
+                                        name="categoryId"
+                                        error={errors?.get("categoryId")}
+                                        value={tempCategory}
+                                        firstOption={true}
+                                        placeholder="Buat kategori"
+                                        onChange={(e) => {
+                                            setTempCategory(e.target.value);
                                             setErrors((prev) => {
-                                                prev?.delete("title");
+                                                prev?.delete("categoryId");
                                                 return prev?.size ? prev : null;
-                                            })
-                                        }
-                                    />
+                                            });
+                                        }}
+                                    >
+                                        {dataCategory?.data?.map(
+                                            (item, index) => (
+                                                <option
+                                                    key={index}
+                                                    value={item.id}
+                                                >
+                                                    {item.name}
+                                                </option>
+                                            )
+                                        )}
+                                    </Select>
                                 </Label>
                                 {!tempCategory && (
                                     <Label
@@ -229,6 +264,23 @@ export default function AddProposalPage() {
                             </div>
                             <div className="md:col-span-2 space-y-6">
                                 <Label
+                                    text="Judul"
+                                    error={errors?.get("title")}
+                                    required
+                                >
+                                    <Input
+                                        name="title"
+                                        error={errors?.get("title")}
+                                        placeholder="Masukkan judul"
+                                        onInput={() =>
+                                            setErrors((prev) => {
+                                                prev?.delete("title");
+                                                return prev?.size ? prev : null;
+                                            })
+                                        }
+                                    />
+                                </Label>
+                                <Label
                                     text="Deskripsi"
                                     error={errors?.get("description")}
                                     required
@@ -248,15 +300,15 @@ export default function AddProposalPage() {
                                 <div>
                                     Pilih Lokasi
                                     <div>
-                                    <MapPicker></MapPicker>
+                                        <MapPicker></MapPicker>
                                     </div>
                                 </div>
                                 <Label
-                                    text="Gambar"
+                                    text="File"
                                     // error={errors?.get("image")}
                                 >
                                     <File
-                                        name="image"
+                                        name="file"
                                         // error={errors?.get("image")}
                                         // onChange={() =>
                                         //     setErrors((prev) => {
