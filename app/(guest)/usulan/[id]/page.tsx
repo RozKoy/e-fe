@@ -300,6 +300,32 @@ export default function ProposalDetailPage({
                         )}
                         {!isLoadingProposal && dataProposal?.data && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                                {dataProposal.data.peopleInCharges?.profile
+                                    ?.imageUrl && (
+                                    <div className="row-span-2 flex flex-col">
+                                        <span className="text-gray-500 text-sm">
+                                            Foto
+                                        </span>
+                                        <div className="relative max-w-36 max-h-36 aspect-square">
+                                            <Image
+                                                src={
+                                                    dataProposal.data
+                                                        .peopleInCharges
+                                                        ?.profile?.imageUrl
+                                                }
+                                                alt={
+                                                    dataProposal.data
+                                                        .peopleInCharges
+                                                        ?.profile?.name
+                                                }
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, 50vw"
+                                                style={{ objectFit: "contain" }}
+                                                unoptimized
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="flex flex-col">
                                     <span className="text-gray-500 text-sm">
                                         Nama Lengkap
@@ -328,6 +354,34 @@ export default function ProposalDetailPage({
                                             "-"}
                                     </span>
                                 </div>
+                                {dataProposal.data.peopleInCharges.accesses?.[0]
+                                    ?.fraction?.imageUrl && (
+                                    <div className="flex flex-col">
+                                        <span className="text-gray-500 text-sm">
+                                            Logo Partai
+                                        </span>
+                                        <div className="relative max-w-36 max-h-36 aspect-square">
+                                            <Image
+                                                src={
+                                                    dataProposal.data
+                                                        .peopleInCharges
+                                                        .accesses?.[0]?.fraction
+                                                        ?.imageUrl
+                                                }
+                                                alt={
+                                                    dataProposal.data
+                                                        .peopleInCharges
+                                                        .accesses?.[0]?.fraction
+                                                        ?.name
+                                                }
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, 50vw"
+                                                style={{ objectFit: "contain" }}
+                                                unoptimized
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
