@@ -72,7 +72,7 @@ export default function BaseArticlePage() {
                     year: "numeric",
                 }),
         },
-        { header: "Judul", accessor: "title" },
+        { header: "Judul", accessor: "title", className: "text-left" },
         {
             header: "Kategori",
             accessor: (item: IArticle) => item.category?.name,

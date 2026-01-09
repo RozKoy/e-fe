@@ -65,7 +65,7 @@ export default function BaseCommissionPage() {
     );
 
     const columns: Column<ICommission>[] = [
-        { header: "Nama", accessor: "name" },
+        { header: "Nama", accessor: "name", className: "text-left" },
         ...(permissionCheck(user, ["Ubah Komisi", "Hapus Komisi"])
             ? [
                   {

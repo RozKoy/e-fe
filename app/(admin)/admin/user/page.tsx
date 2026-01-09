@@ -67,10 +67,11 @@ export default function BaseUserPage() {
     );
 
     const columns: Column<IUser>[] = [
-        { header: "Email", accessor: "email" },
+        { header: "Email", accessor: "email", className: "text-left" },
         {
             header: "Nama",
             accessor: (item: IUser) => item.profile?.name ?? "-",
+            className: "text-left",
         },
         {
             header: "Posisi",

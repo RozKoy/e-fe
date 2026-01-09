@@ -67,13 +67,13 @@ export default function BaseFractionPage() {
     );
 
     const columns: Column<IFraction>[] = [
-        { header: "Nama", accessor: "name" },
+        { header: "Nama", accessor: "name", className: "text-left" },
         {
             header: "Gambar",
             accessor: (item: IFraction) => (
                 <>
                     {item.imageUrl && (
-                        <div className="relative max-w-96 max-h-72 aspect-video">
+                        <div className="relative max-w-24 max-h-24 m-auto aspect-square">
                             <Image
                                 src={item.imageUrl}
                                 alt={item.name}

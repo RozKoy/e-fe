@@ -2,6 +2,7 @@
 
 import {
     // EditOutlined,
+    InfoOutlined,
     CloseOutlined,
     DeleteOutline,
     ArticleOutlined,
@@ -10,24 +11,27 @@ import {
     AssignmentTurnedInOutlined,
 } from "@mui/icons-material";
 import useSWR from "swr";
+import Link from "next/link";
 // import DefaultLink from "next/link";
 import { IRole } from "@/app/_types/role";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
-import { IProposal } from "@/app/_types/proposal";
 import { permissionCheck } from "@/app/_utils/auth";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useUser } from "@/app/_providers/UserProvider";
 import Table, { Column } from "@/app/_components/table";
 import DeleteModal from "@/app/_components/modals/delete";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import { mapRequest, postRequest } from "@/app/_utils/api";
 import { useLoading } from "@/app/_providers/LoadingProvider";
+import { IProposal, IProposalVote } from "@/app/_types/proposal";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
 //
@@ -78,6 +82,18 @@ export default function BaseProposalPage() {
         })}`
     );
 
+    const {
+        data: dataVote,
+        // error: errorVote,
+        // mutate: mutateVote,
+        // isLoading: isLoadingVote,
+    } = useSWR<IResponse<IProposalVote>>(
+        `${ROUTE_LISTS.get("api-public-proposal-vote-get")?.replace(
+            ":id",
+            selectedProposal?.id ?? ""
+        )}`
+    );
+
     const { data: dataRole } = useSWR<IResponse<IRole[]>>(
         `${ROUTE_LISTS.get("api-role-get")}`
     );
@@ -97,12 +113,14 @@ export default function BaseProposalPage() {
             accessor: (item: IProposal) => (
                 <p className="max-w-72 text-left">{item.area?.name ?? "-"}</p>
             ),
+            className: "text-left",
         },
         {
             header: "Nama Pengusul",
             accessor: (item: IProposal) => item.user.profile?.name ?? "-",
+            className: "text-left",
         },
-        { header: "Judul", accessor: "title" },
+        { header: "Judul", accessor: "title", className: "text-left" },
         {
             header: "Kategori",
             accessor: (item: IProposal) =>
@@ -125,6 +143,11 @@ export default function BaseProposalPage() {
             ),
         },
         {
+            header: "Dewan",
+            accessor: (item: IProposal) => item.peopleInCharges?.profile?.name,
+            className: "text-left",
+        },
+        {
             header: "Ditugaskan Kepada",
             accessor: (item: IProposal) => item.assignments?.[0]?.role?.name,
         },
@@ -132,6 +155,14 @@ export default function BaseProposalPage() {
             header: "Aksi",
             accessor: (item: IProposal) => (
                 <div className="flex items-center justify-center">
+                    <Link
+                        href={(
+                            ROUTE_LISTS.get("proposal-detail") ?? ""
+                        ).replace(":id", item.id)}
+                        className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 cursor-pointer transition-all"
+                    >
+                        <InfoOutlined />
+                    </Link>
                     {((item.status === "baru" &&
                         permissionCheck(user, ["Disposisi Proposal"])) ||
                         (item.status === "diproses" &&
@@ -457,6 +488,34 @@ export default function BaseProposalPage() {
                                     >
                                         {selectedProposal.status}
                                     </p>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-primary">
+                                        File Pendukung
+                                    </p>
+                                    <p>
+                                        {selectedProposal?.fileUrl ? (
+                                            <Link
+                                                href={selectedProposal.fileUrl}
+                                                target="_blank"
+                                                className="font-medium text-primary hover:underline transition-all"
+                                            >
+                                                Buka
+                                            </Link>
+                                        ) : (
+                                            "-"
+                                        )}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <div className="flex items-center gap-0.5">
+                                        <ThumbUpIcon fontSize="small" />
+                                        {dataVote?.data?.agree ?? 0}
+                                    </div>
+                                    <div className="flex items-center gap-0.5">
+                                        <ThumbDownIcon fontSize="small" />
+                                        {dataVote?.data?.disagree ?? 0}
+                                    </div>
                                 </div>
                             </div>
                             <Label

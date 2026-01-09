@@ -64,8 +64,8 @@ export default function BaseRolePage() {
     );
 
     const columns: Column<IRole>[] = [
-        { header: "Name", accessor: "name" },
-        { header: "Deskripsi", accessor: "description" },
+        { header: "Name", accessor: "name", className: "text-left" },
+        { header: "Deskripsi", accessor: "description", className: "text-left line-clamp-2" },
         ...(permissionCheck(user, ["Ubah Peran", "Hapus Peran"])
             ? [
                   {

@@ -69,7 +69,7 @@ export default function BasePositionPage() {
     );
 
     const columns: Column<IPosition>[] = [
-        { header: "Nama", accessor: "name" },
+        { header: "Nama", accessor: "name", className: "text-left" },
         {
             header: "Grup",
             accessor: (item: IPosition) => item?.category?.toUpperCase() ?? "-",

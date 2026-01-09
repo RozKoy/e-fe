@@ -14,6 +14,7 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
 
     // Proposals
     ["proposal", "/admin/proposal"],
+    ["proposal-detail", "/admin/proposal/:id"],
 
     // Articles
     ["article", "/admin/article"],

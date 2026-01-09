@@ -70,14 +70,17 @@ export default function BaseUserAccessPage() {
         {
             header: "Email",
             accessor: (item: IUserAccess) => item.user?.email ?? "-",
+            className: "text-left",
         },
         {
             header: "Area",
             accessor: (item: IUserAccess) => item.area?.name ?? "-",
+            className: "text-left",
         },
         {
             header: "Partai",
             accessor: (item: IUserAccess) => item.fraction?.name ?? "-",
+            className: "text-left",
         },
         {
             header: "Visibilitas",

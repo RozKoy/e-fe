@@ -64,7 +64,7 @@ export default function BaseAreaPage() {
     );
 
     const columns: Column<IArea>[] = [
-        { header: "Nama", accessor: "name" },
+        { header: "Nama", accessor: "name", className: "text-left" },
         // {
         //     header: "Aksi",
         //     accessor: (item: IArea) => (
