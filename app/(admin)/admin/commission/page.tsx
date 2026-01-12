@@ -11,6 +11,8 @@ import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
+import Button from "@/app/_components/button";
+import Input from "@/app/_components/inputs/input";
 import { useEffect, useRef, useState } from "react";
 import { permissionCheck } from "@/app/_utils/auth";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -42,9 +44,13 @@ export default function BaseCommissionPage() {
 
     const hasError = useRef<boolean>(false);
 
+    const searchRef = useRef<string>("");
+
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [search, setSearch] = useState<string>("");
 
     const [selectedCommission, setSelectedCommission] =
         useState<ICommission | null>(null);
@@ -60,7 +66,7 @@ export default function BaseCommissionPage() {
         `${ROUTE_LISTS.get("api-commission-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
-            // search: "",
+            search,
         })}`
     );
 
@@ -212,6 +218,25 @@ export default function BaseCommissionPage() {
                         Tambah
                     </Link>
                 )}
+            </div>
+            <div className="flex">
+                <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
+                    <Input
+                        placeholder="Pencarian..."
+                        onChange={(e) => {
+                            if (!e.target.value) {
+                                setSearch("");
+                            }
+                            searchRef.current = e.target.value;
+                        }}
+                    />
+                    <Button
+                        rounded="full"
+                        onClick={() => setSearch(searchRef.current)}
+                    >
+                        Cari
+                    </Button>
+                </div>
             </div>
             <Table
                 data={dataCommission?.data}
