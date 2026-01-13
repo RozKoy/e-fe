@@ -23,6 +23,11 @@ import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
 import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import Input from "@/app/_components/inputs/input";
+import Button from "@/app/_components/button";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { IArea } from "@/app/_types/area";
+import { IFraction } from "@/app/_types/fraction";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -42,9 +47,17 @@ export default function BaseUserAccessPage() {
 
     const hasError = useRef<boolean>(false);
 
+    const searchRef = useRef<string>("");
+
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [showFilter, setShowFilter] = useState<boolean>(false);
+
+    const [areaId, setAreaId] = useState<string>("");
+    const [search, setSearch] = useState<string>("");
+    const [fractionId, setFractionId] = useState<string>("");
 
     const [selectedUserAccess, setSelectedUserAccess] =
         useState<IUserAccess | null>(null);
@@ -60,10 +73,26 @@ export default function BaseUserAccessPage() {
         `${ROUTE_LISTS.get("api-access-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
-            // search: "",
-            // areaId: "",
-            // fractionId: "",
+            search,
+            areaId,
+            fractionId,
         })}`
+    );
+
+    const {
+        data: dataArea,
+        // error: errorArea,
+        // mutate: mutateArea,
+        // isLoading: isLoadingArea,
+    } = useSWR<IResponse<IArea[]>>(`${ROUTE_LISTS.get("api-area-get")}`);
+
+    const {
+        data: dataFraction,
+        // error: errorFraction,
+        // mutate: mutateFraction,
+        // isLoading: isLoadingFraction,
+    } = useSWR<IResponse<IFraction[]>>(
+        `${ROUTE_LISTS.get("api-fraction-get")}`
     );
 
     const columns: Column<IUserAccess>[] = [
@@ -238,6 +267,65 @@ export default function BaseUserAccessPage() {
                     >
                         Tambah
                     </Link>
+                )}
+            </div>
+            <div className="relative flex justify-between">
+                <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
+                    <Input
+                        placeholder="Pencarian..."
+                        onChange={(e) => {
+                            if (!e.target.value) {
+                                setSearch("");
+                            }
+                            searchRef.current = e.target.value;
+                        }}
+                    />
+                    <Button
+                        rounded="full"
+                        onClick={() => setSearch(searchRef.current)}
+                    >
+                        Cari
+                    </Button>
+                </div>
+                <Button
+                    rounded="full"
+                    startIcon={
+                        <FilterListIcon
+                            className="h-4 w-4 mr-2"
+                            style={{ fontSize: "18px" }}
+                        />
+                    }
+                    onClick={() => setShowFilter((prev) => !prev)}
+                >
+                    Filter
+                </Button>
+                {showFilter && (
+                    <div className="absolute right-0 top-[120%] min-w-72 max-w-96 p-4 rounded-xl bg-white border-2 border-gray-100 shadow space-y-3">
+                        <Select
+                            placeholder="Semua Area"
+                            firstOption={true}
+                            value={areaId}
+                            onChange={(e) => setAreaId(e.target.value)}
+                        >
+                            {dataArea?.data?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </Select>
+                        <Select
+                            placeholder="Semua Partai"
+                            firstOption={true}
+                            value={fractionId}
+                            onChange={(e) => setFractionId(e.target.value)}
+                        >
+                            {dataFraction?.data?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </Select>
+                    </div>
                 )}
             </div>
             <Table
