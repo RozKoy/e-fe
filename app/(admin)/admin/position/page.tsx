@@ -11,16 +11,20 @@ import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
+import Button from "@/app/_components/button";
 import { IPosition } from "@/app/_types/position";
+import Input from "@/app/_components/inputs/input";
 import { useEffect, useRef, useState } from "react";
 import { permissionCheck } from "@/app/_utils/auth";
 import { ROUTE_LISTS } from "@/app/_constants/route";
 import Select from "@/app/_components/inputs/select";
 import Pagination from "@/app/_components/pagination";
+import { ICommission } from "@/app/_types/commission";
 import Table, { Column } from "@/app/_components/table";
 import { useUser } from "@/app/_providers/UserProvider";
 import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
 
@@ -33,6 +37,36 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
 const limitOptions: number[] = [5, 10, 15, 20, 25, 50];
 
+const levelOptions = [
+    {
+        value: "ketua",
+        label: "Ketua",
+    },
+    {
+        value: "wakil",
+        label: "Wakil",
+    },
+    {
+        value: "sekretaris",
+        label: "Sekretaris",
+    },
+    {
+        value: "anggota",
+        label: "Anggota",
+    },
+];
+
+const categoryOptions = [
+    {
+        value: "pimpinan",
+        label: "Pimpinan",
+    },
+    {
+        value: "komisi",
+        label: "Komisi",
+    },
+];
+
 //
 export default function BasePositionPage() {
     const alert = useAlert();
@@ -42,9 +76,18 @@ export default function BasePositionPage() {
 
     const hasError = useRef<boolean>(false);
 
+    const searchRef = useRef<string>("");
+
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [showFilter, setShowFilter] = useState<boolean>(false);
+
+    const [level, setLevel] = useState<string>("");
+    const [search, setSearch] = useState<string>("");
+    const [category, setCategory] = useState<string>("");
+    const [commissionId, setCommissionId] = useState<string>("");
 
     const [selectedPosition, setSelectedPosition] = useState<IPosition | null>(
         null
@@ -61,11 +104,20 @@ export default function BasePositionPage() {
         `${ROUTE_LISTS.get("api-position-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
-            // level: "",
-            // search: "",
-            // category: "",
-            // commissionId: "",
+            level,
+            search,
+            category,
+            commissionId,
         })}`
+    );
+
+    const {
+        data: dataCommission,
+        // error: errorCommission,
+        // mutate: mutateCommission,
+        // isLoading: isLoadingCommission,
+    } = useSWR<IResponse<ICommission[]>>(
+        `${ROUTE_LISTS.get("api-commission-get")}`
     );
 
     const columns: Column<IPosition>[] = [
@@ -227,6 +279,77 @@ export default function BasePositionPage() {
                     >
                         Tambah
                     </Link>
+                )}
+            </div>
+            <div className="relative flex justify-between">
+                <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
+                    <Input
+                        placeholder="Pencarian..."
+                        onChange={(e) => {
+                            if (!e.target.value) {
+                                setSearch("");
+                            }
+                            searchRef.current = e.target.value;
+                        }}
+                    />
+                    <Button
+                        rounded="full"
+                        onClick={() => setSearch(searchRef.current)}
+                    >
+                        Cari
+                    </Button>
+                </div>
+                <Button
+                    rounded="full"
+                    startIcon={
+                        <FilterListIcon
+                            className="h-4 w-4 mr-2"
+                            style={{ fontSize: "18px" }}
+                        />
+                    }
+                    onClick={() => setShowFilter((prev) => !prev)}
+                >
+                    Filter
+                </Button>
+                {showFilter && (
+                    <div className="absolute right-0 top-[120%] min-w-72 max-w-96 p-4 rounded-xl bg-white border-2 border-gray-100 shadow space-y-3">
+                        <Select
+                            placeholder="Semua Grup"
+                            firstOption={true}
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            {categoryOptions.map((item, index) => (
+                                <option key={index} value={item.value}>
+                                    {item.label}
+                                </option>
+                            ))}
+                        </Select>
+                        <Select
+                            placeholder="Semua Tingkat"
+                            firstOption={true}
+                            value={level}
+                            onChange={(e) => setLevel(e.target.value)}
+                        >
+                            {levelOptions.map((item, index) => (
+                                <option key={index} value={item.value}>
+                                    {item.label}
+                                </option>
+                            ))}
+                        </Select>
+                        <Select
+                            placeholder="Semua Komisi"
+                            firstOption={true}
+                            value={commissionId}
+                            onChange={(e) => setCommissionId(e.target.value)}
+                        >
+                            {dataCommission?.data?.map((item, index) => (
+                                <option key={index} value={item.id}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </Select>
+                    </div>
                 )}
             </div>
             <Table
