@@ -1,24 +1,31 @@
 "use client";
 
 import {
+    mapRequest,
+    postRequest,
+    badRequestResponseFormat,
+} from "@/app/_utils/api";
+import {
     // EditOutlined,
     InfoOutlined,
     CloseOutlined,
     DeleteOutline,
     ArticleOutlined,
     CheckCircleOutline,
+    UploadFileOutlined,
+    FileDownloadOutlined,
     AssignmentReturnOutlined,
     AssignmentTurnedInOutlined,
 } from "@mui/icons-material";
 import useSWR from "swr";
 import Link from "next/link";
-// import DefaultLink from "next/link";
 import { IArea } from "@/app/_types/area";
 import { IRole } from "@/app/_types/role";
 import Label from "@/app/_components/label";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
 import Button from "@/app/_components/button";
+import File from "@/app/_components/inputs/file";
 import { ICategory } from "@/app/_types/category";
 import Input from "@/app/_components/inputs/input";
 import { permissionCheck } from "@/app/_utils/auth";
@@ -32,7 +39,6 @@ import Table, { Column } from "@/app/_components/table";
 import DeleteModal from "@/app/_components/modals/delete";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useAlert } from "@/app/_providers/AlertProvider";
-import { mapRequest, postRequest } from "@/app/_utils/api";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { useLoading } from "@/app/_providers/LoadingProvider";
 import { IProposal, IProposalVote } from "@/app/_types/proposal";
@@ -64,6 +70,8 @@ export default function BaseProposalPage() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const [showFilter, setShowFilter] = useState<boolean>(false);
+    const [showImport, setShowImport] = useState<boolean>(false);
+    const [showExport, setShowExport] = useState<boolean>(false);
 
     const [areaId, setAreaId] = useState<string>("");
     const [search, setSearch] = useState<string>("");
@@ -348,6 +356,82 @@ export default function BaseProposalPage() {
         });
     };
 
+    const handleImport = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        setIsLoading(true);
+
+        setErrors(null);
+        setErrorMessage(null);
+
+        const url = ROUTE_LISTS.get("api-proposal-import");
+
+        if (!url) {
+            setIsLoading(false);
+
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+
+            return;
+        }
+
+        const formData = new FormData(e.currentTarget);
+
+        const res = await fetch(url, {
+            method: "POST",
+            body: formData,
+        });
+
+        const response = await res.json();
+
+        if (res.ok) {
+            alert.addAlert({
+                type: "success",
+                message: "Berhasil melakukan import",
+            });
+
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+        } else {
+            if (Array.isArray(response.message)) {
+                setErrors(badRequestResponseFormat(response.message));
+            } else {
+                setErrorMessage(response.message);
+
+                alert.addAlert({
+                    type: "error",
+                    message: "Gagal melakukan import",
+                });
+            }
+
+            setIsLoading(false);
+        }
+    };
+
+    const handleExport = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const url = ROUTE_LISTS.get("api-proposal-export");
+
+        if (!url) {
+            alert.addAlert({
+                type: "error",
+                message: "Mohon maaf, sistem sedang bermasalah",
+            });
+
+            return;
+        }
+
+        const formData = new FormData(e.currentTarget);
+
+        const params = new URLSearchParams(formData as any);
+
+        window.open(`${url}?${params.toString()}`, "_blank");
+    };
+
     useEffect(() => {
         setRootLoading(true);
 
@@ -400,7 +484,7 @@ export default function BaseProposalPage() {
                     <h2>Manajemen Usulan</h2>
                 </div>
             </div>
-            <div className="relative z-40 flex justify-between">
+            <div className="relative z-40 flex flex-wrap md:flex-nowrap justify-end md:justify-between gap-1.5">
                 <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
                     <Input
                         placeholder="Pencarian..."
@@ -418,18 +502,44 @@ export default function BaseProposalPage() {
                         Cari
                     </Button>
                 </div>
-                <Button
-                    rounded="full"
-                    startIcon={
-                        <FilterListIcon
-                            className="h-4 w-4 mr-2"
-                            style={{ fontSize: "18px" }}
-                        />
-                    }
-                    onClick={() => setShowFilter((prev) => !prev)}
-                >
-                    Filter
-                </Button>
+                <div className="flex gap-1">
+                    <Button
+                        rounded="full"
+                        startIcon={
+                            <UploadFileOutlined
+                                className="h-4 w-4 mr-2"
+                                style={{ fontSize: "18px" }}
+                            />
+                        }
+                        onClick={() => setShowImport((prev) => !prev)}
+                    >
+                        Import
+                    </Button>
+                    <Button
+                        rounded="full"
+                        startIcon={
+                            <FileDownloadOutlined
+                                className="h-4 w-4 mr-2"
+                                style={{ fontSize: "18px" }}
+                            />
+                        }
+                        onClick={() => setShowExport((prev) => !prev)}
+                    >
+                        Export
+                    </Button>
+                    <Button
+                        rounded="full"
+                        startIcon={
+                            <FilterListIcon
+                                className="h-4 w-4 mr-2"
+                                style={{ fontSize: "18px" }}
+                            />
+                        }
+                        onClick={() => setShowFilter((prev) => !prev)}
+                    >
+                        Filter
+                    </Button>
+                </div>
                 {showFilter && (
                     <div className="absolute right-0 top-[120%] min-w-72 max-w-96 p-4 rounded-xl bg-white border-2 border-gray-100 shadow space-y-3">
                         <Select
@@ -720,6 +830,148 @@ export default function BaseProposalPage() {
                                 Ya, selesaikan
                             </Button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {showImport && (
+                <div className="fixed left-0 top-0 z-40 w-full h-full flex items-center justify-center">
+                    <div
+                        className="absolute w-full h-full backdrop-blur-xs"
+                        onClick={() => {
+                            setShowImport(false);
+                        }}
+                    ></div>
+                    <div className="relative min-w-md p-8 rounded-xl bg-white border border-gray-200 flex flex-col items-center justify-center gap-3">
+                        <button
+                            type="button"
+                            className="absolute p-1 rounded-xl hover:bg-gray-100 right-3 top-3 transition-all"
+                            onClick={() => {
+                                setShowImport(false);
+                            }}
+                        >
+                            <CloseOutlined />
+                        </button>
+                        <form
+                            onSubmit={handleImport}
+                            className="w-full space-y-1"
+                        >
+                            <Label
+                                text="File"
+                                error={errors?.get("file")}
+                                required
+                            >
+                                <File
+                                    name="file"
+                                    note=".xlsx"
+                                    error={errors?.get("file")}
+                                    onChange={() =>
+                                        setErrors((prev) => {
+                                            prev?.delete("file");
+                                            return prev?.size ? prev : null;
+                                        })
+                                    }
+                                />
+                            </Label>
+                            <p className="text-red-500 text-center">
+                                {errorMessage && errorMessage}
+                            </p>
+                            <p className="font-semibold text-sm">
+                                Sudah Punya Template?{" "}
+                                <Link
+                                    href={"/templates/proposal-import.xlsx"}
+                                    className="text-primary hover:text-primary/80 hover:underline"
+                                    download={true}
+                                >
+                                    Unduh Template
+                                </Link>
+                            </p>
+                            <div className="w-full mt-3 flex gap-3 items-center justify-end">
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setShowImport(false);
+                                    }}
+                                >
+                                    Batal
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    variant="primary"
+                                    isLoading={isLoading}
+                                >
+                                    Import
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            {showExport && (
+                <div className="fixed left-0 top-0 z-40 w-full h-full flex items-center justify-center">
+                    <div
+                        className="absolute w-full h-full backdrop-blur-xs"
+                        onClick={() => {
+                            setShowExport(false);
+                        }}
+                    ></div>
+                    <div className="relative min-w-md md:max-w-8/12 p-8 rounded-xl bg-white border border-gray-200 flex flex-col items-center justify-center gap-3">
+                        <button
+                            type="button"
+                            className="absolute p-1 rounded-xl hover:bg-gray-100 right-3 top-3 transition-all"
+                            onClick={() => {
+                                setShowExport(false);
+                            }}
+                        >
+                            <CloseOutlined />
+                        </button>
+                        <form
+                            onSubmit={handleExport}
+                            className="w-full space-y-1"
+                        >
+                            <Label text="Area">
+                                <Select
+                                    name="areaId"
+                                    placeholder="Semua Area"
+                                    firstOption={true}
+                                    defaultValue={""}
+                                >
+                                    {dataArea?.data?.map((item, index) => (
+                                        <option key={index} value={item.id}>
+                                            {item.name}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                                <Label text="Tanggal Awal">
+                                    <Input name="startDate" type="date" />
+                                </Label>
+                                <Label text="Tanggal Akhir">
+                                    <Input name="endDate" type="date" />
+                                </Label>
+                            </div>
+                            <div className="w-full mt-3 flex gap-3 items-center justify-end">
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setShowExport(false);
+                                    }}
+                                >
+                                    Batal
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    variant="primary"
+                                    isLoading={isLoading}
+                                >
+                                    Export
+                                </Button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

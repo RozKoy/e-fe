@@ -99,6 +99,8 @@ export const ROUTE_LISTS: Map<string, string> = new Map([
     ["api-proposal-assign", "/api/proposalAssignments/assign"],
     ["api-proposal-finish", "/api/proposalAssignments/finish/:id"],
     ["api-proposal-self-vote-get", "/api/proposalVotes/self/:id"],
+    ["api-proposal-import", "/api/proposals/import"],
+    ["api-proposal-export", "/api/proposals/export"],
 
     // Articles
     ["api-article-get", "/api/public/news"],
