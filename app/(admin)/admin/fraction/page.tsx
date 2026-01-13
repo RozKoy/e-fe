@@ -24,6 +24,8 @@ import { useAlert } from "@/app/_providers/AlertProvider";
 import DeleteModal from "@/app/_components/modals/delete";
 import { useLoading } from "@/app/_providers/LoadingProvider";
 import Breadcrumb, { BreadcrumbItem } from "@/app/_components/breadcrumb";
+import Input from "@/app/_components/inputs/input";
+import Button from "@/app/_components/button";
 
 //
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -43,9 +45,13 @@ export default function BaseFractionPage() {
 
     const hasError = useRef<boolean>(false);
 
+    const searchRef = useRef<string>("");
+
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [search, setSearch] = useState<string>("");
 
     const [selectedFraction, setSelectedFraction] = useState<IFraction | null>(
         null
@@ -62,7 +68,7 @@ export default function BaseFractionPage() {
         `${ROUTE_LISTS.get("api-fraction-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
-            // search: "",
+            search,
         })}`
     );
 
@@ -233,6 +239,25 @@ export default function BaseFractionPage() {
                         Tambah
                     </Link>
                 )}
+            </div>
+            <div className="flex">
+                <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
+                    <Input
+                        placeholder="Pencarian..."
+                        onChange={(e) => {
+                            if (!e.target.value) {
+                                setSearch("");
+                            }
+                            searchRef.current = e.target.value;
+                        }}
+                    />
+                    <Button
+                        rounded="full"
+                        onClick={() => setSearch(searchRef.current)}
+                    >
+                        Cari
+                    </Button>
+                </div>
             </div>
             <Table
                 data={dataFraction?.data}
