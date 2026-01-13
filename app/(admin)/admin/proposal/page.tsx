@@ -400,7 +400,7 @@ export default function BaseProposalPage() {
                     <h2>Manajemen Usulan</h2>
                 </div>
             </div>
-            <div className="relative flex justify-between">
+            <div className="relative z-40 flex justify-between">
                 <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
                     <Input
                         placeholder="Pencarian..."

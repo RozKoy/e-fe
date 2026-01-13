@@ -216,7 +216,7 @@ export default function BaseArticlePage() {
                     </Link>
                 )}
             </div>
-            <div className="relative flex justify-between">
+            <div className="relative z-40 flex justify-between">
                 <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
                     <Input
                         placeholder="Pencarian..."
