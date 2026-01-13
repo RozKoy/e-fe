@@ -11,7 +11,9 @@ import DefaultLink from "next/link";
 import Link from "@/app/_components/link";
 import { useRouter } from "next/navigation";
 import { IResponse } from "@/app/_types/api";
+import Button from "@/app/_components/button";
 import { ICategory } from "@/app/_types/category";
+import Input from "@/app/_components/inputs/input";
 import { permissionCheck } from "@/app/_utils/auth";
 import { useEffect, useRef, useState } from "react";
 import { ROUTE_LISTS } from "@/app/_constants/route";
@@ -42,9 +44,13 @@ export default function BaseCategoryPage() {
 
     const hasError = useRef<boolean>(false);
 
+    const searchRef = useRef<string>("");
+
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(10);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [search, setSearch] = useState<string>("");
 
     const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
         null
@@ -61,7 +67,7 @@ export default function BaseCategoryPage() {
         `${ROUTE_LISTS.get("api-category-get")}?${new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
-            // search: "",
+            search,
         })}`
     );
 
@@ -213,6 +219,25 @@ export default function BaseCategoryPage() {
                         Tambah
                     </Link>
                 )}
+            </div>
+            <div className="flex">
+                <div className="w-full lg:w-fit lg:min-w-md flex gap-1">
+                    <Input
+                        placeholder="Pencarian..."
+                        onChange={(e) => {
+                            if (!e.target.value) {
+                                setSearch("");
+                            }
+                            searchRef.current = e.target.value;
+                        }}
+                    />
+                    <Button
+                        rounded="full"
+                        onClick={() => setSearch(searchRef.current)}
+                    >
+                        Cari
+                    </Button>
+                </div>
             </div>
             <Table
                 data={dataCategory?.data}
